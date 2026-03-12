@@ -12,4 +12,4 @@ const HeadlinePage = () => {
   )
 }
 
-export default HeadlinePage
+export default HeadlinePage;
