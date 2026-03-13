@@ -9,7 +9,7 @@ app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:5173' }));
 app.use(express.json());
 
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ status: 'hell', timestamp: new Date().toISOString() });
 });
 
 app.get('/api/news', (_req, res) => {
