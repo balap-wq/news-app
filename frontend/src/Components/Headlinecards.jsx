@@ -22,37 +22,37 @@ export default function Headlinecards({
         title: "Sample News Title",
         source: "Sample Source",
         publishedAt: "2024-06-01T12:00:00Z",
-        urlToImage: null,
+        urlToImage: "https://picsum.photos/200/300?grayscale",
       },
         {
         title: "Another News Title",
         source: "Another Source",
         publishedAt: "2024-06-02T15:30:00Z",
-        urlToImage: null,
+        urlToImage: "https://picsum.photos/200/300?grayscale",
         } ,
         {
         title: "Third News Title",
         source: "Third Source",
         publishedAt: "2024-06-03T10:45:00Z",
-        urlToImage: null,   
+        urlToImage: "https://picsum.photos/200/300?grayscale",   
         }   ,
         {
         title: "Fourth News Title",     
         source: "Fourth Source",
         publishedAt: "2024-06-04T08:20:00Z",
-        urlToImage: null,
+        urlToImage: "https://picsum.photos/200/300?grayscale",
         } , 
         {
         title: "Sample News Title",
         source: "Sample Source",
         publishedAt: "2024-06-01T12:00:00Z",
-        urlToImage: null,
+        urlToImage: "https://picsum.photos/200/300?grayscale",
       },
         {
         title: "Another News Title",
         source: "Another Source",
         publishedAt: "2024-06-02T15:30:00Z",
-        urlToImage: null,
+        urlToImage: "https://picsum.photos/200/300?grayscale",
         } ,
         {
         title: "Third News Title",
@@ -76,30 +76,36 @@ export default function Headlinecards({
     ];
 
   return (
-    <div className=" p-10 grid grid-cols-3 gap-10">
+    <div className="p-30 grid grid-cols-1 md:grid md:grid-cols-2 lg:grid-cols-3 gap-10 mx-auto">
         {item.map((data,index)=>(
 
    
     <div key={index}
     // onClick={onClick}
-      className=" cursor-pointer rounded-xl shadow-md hover:shadow-lg transition-shadow bg-amber-200 overflow-hidden"
-    >
-      <img
+      className="w-2/2  flex justify-between cursor-pointer rounded-xl shadow-md hover:shadow-lg transition-shadow p-3 bg-amber-200 overflow-hidden"
+    > 
+
+    <div className="w-1/3">
+       <img
         src={data.urlToImage || placeholder}
         alt={ data.title}
-        className="w-full h-40 object-cover"
+        className="w-full h-40 "
       />
+    </div>
 
-      <div className="p-4">
+     <div className="w-1/2 mt-3">
+       <div className="">
         <h2 className="text-lg font-semibold line-clamp-2 mb-2">
           {data.title}
         </h2>
+      </div>
 
-        <div className="text-sm text-gray-500 flex justify-between">
-          <span>{data.source}</span>
+        <div className="  text-sm text-gray-500">
+          <span>Source: {data.source}</span><br />
           <span>{data.publishedAt}</span>
         </div>
-      </div>
+     </div>
+     
     </div>
     ))}
     </div>
