@@ -19,24 +19,28 @@ export default function Headlinecards({
     
     const item=[
       {
+        id:1,
         title: "Sample News Title",
         source: "Sample Source",
         publishedAt: "2024-06-01T12:00:00Z",
         urlToImage: "https://picsum.photos/200/300?grayscale",
       },
         {
+        id:2,
         title: "Another News Title",
         source: "Another Source",
         publishedAt: "2024-06-02T15:30:00Z",
         urlToImage: "https://picsum.photos/200/300?grayscale",
         } ,
         {
+          id:3,
         title: "Third News Title",
         source: "Third Source",
         publishedAt: "2024-06-03T10:45:00Z",
         urlToImage: "https://picsum.photos/200/300?grayscale",   
         }   ,
         {
+          id:4,
         title: "Fourth News Title",     
         source: "Fourth Source",
         publishedAt: "2024-06-04T08:20:00Z",
