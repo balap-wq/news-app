@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import HeadlineCardSkeleton from "../Components/HeadlineCardSkeleton";
-import HeadlineCard from "../Components/headlinecards";
+import HeadlineCards from "../Components/Headlinecards";
 
 export default function HeadlinesPage() {
 
@@ -49,6 +49,7 @@ export default function HeadlinesPage() {
         : headlines.map((headline) => (
             <HeadlineCard key={headline.id} data={headline} />
           ))}
+
       </div>
 
     </div>
