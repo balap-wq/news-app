@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import HeadlineCardSkeleton from "../components/HeadlineCardSkeleton";
-import HeadlineCard from "../components/HeadlineCard";
+import HeadlineCardSkeleton from "../Components/HeadlineCardSkeleton";
+import HeadlineCard from "../Components/headlinecards";
 
 export default function HeadlinesPage() {
 
@@ -43,14 +43,12 @@ export default function HeadlinesPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
         {loading
-          ? Array.from({ length: 9 }).map((_, index) => (
-              <HeadlineCardSkeleton key={index} />
-            ))
-          : headlines.map((headline) => (
-              <HeadlineCard key={headline.id} headline={headline} />
-            ))
-        }
-
+        ? Array.from({ length: 9 }).map((_, index) => (
+            <HeadlineCardSkeleton key={index} />
+          ))
+        : headlines.map((headline) => (
+            <HeadlineCard key={headline.id} data={headline} />
+          ))}
       </div>
 
     </div>
