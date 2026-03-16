@@ -1,6 +1,5 @@
 import React from 'react'
 import Headlinecards from '../Components/Headlinecards'
-import HeadlineCard from '../Components/Headlinecards'
 
 const HeadlinePage = () => {
   return (

@@ -84,7 +84,7 @@ export default function Headlinecards({
     // onClick={onClick}
       className="w-2/2  flex justify-between cursor-pointer rounded-xl shadow-md hover:shadow-lg transition-shadow p-3 bg-amber-200 overflow-hidden"
     > 
-    
+
     <div className="w-1/3">
        <img
         src={data.urlToImage || placeholder}
