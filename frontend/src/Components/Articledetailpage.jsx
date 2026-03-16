@@ -13,7 +13,7 @@ const Articledetailpage = () => {
   return (
     <div className="max-w-3xl mx-auto p-10">
 
-     
+    
 
       <h1 className="text-3xl font-bold mt-4">
         {article.title}
@@ -21,7 +21,7 @@ const Articledetailpage = () => {
 
      
 
-      <p className="mt-6 text-lg">
+      <p className="mt-6 text-lg" >
         {article.description}
       </p>
 

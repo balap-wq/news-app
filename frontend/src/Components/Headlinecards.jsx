@@ -22,7 +22,7 @@ She also claimed that the actress frequently shared photos of their outings toge
 
 Vijay and Sangeetha first met in 1996. Originally from Sri Lanka and raised in Britain, Sangeetha later married Vijay in the United Kingdom in 1998 through a registered marriage. The couple also held a traditional Hindu wedding ceremony in Chennai on August 25, 1999. They have two children: a son, Jason, and a daughter, Dhivya.`
 ,
-      urlToImage: placeholder,
+      urlToImage: "https://wallpapercave.com/wp/wp8319044.jpg",
     },
     {
       id: 2,
