@@ -1,20 +1,37 @@
-import { findTopHeadlines, countArticles } from "../repositories/headlinesRepository.js";
+import * as headlinesRepository from "../repositories/headlinesRepository.js";
 
-export async function getHeadlines(req, res) {
+export const getHeadlines = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, fields } = req.query;
 
-  const page = Number(req.query.page || 1);
-  const limit = Number(req.query.limit || 9);
+    const skip = (page - 1) * limit;
 
-  const offset = (page - 1) * limit;
+    const articles = await headlinesRepository.getArticles(skip, limit);
+    const total = await headlinesRepository.countArticles();
 
-  const articles = await findTopHeadlines({ limit, offset });
-  const total = await countArticles();
+    let filteredArticles = articles;
 
-  res.json({
-    data: articles,
-    total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit)
-  });
-}
+    if (fields) {
+      // ✅ CHANGE: trim added
+      const fieldArray = fields.split(",").map(f => f.trim());
+
+      filteredArticles = articles.map(article => {
+        let obj = {};
+        fieldArray.forEach(f => {
+          obj[f] = article[f];
+        });
+        return obj;
+      });
+    }
+
+    res.json({
+      total,
+      page: Number(page),
+      totalPages: Math.ceil(total / limit),
+      data: filteredArticles
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

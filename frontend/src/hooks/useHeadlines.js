@@ -17,6 +17,7 @@ function useHeadlines({page = 1,category,country}){
             setError(null);
 
             try{
+                await new Promise((resolve) => setTimeout(resolve, 150000));
                 const response = await axiosInstance.get("/api/headlines",{
                     params:{page,category,country},
                     signal:controller.signal

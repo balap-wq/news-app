@@ -10,6 +10,7 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Navigate to="/headlinepage" />} />
           <Route path='/headlinepage' element={<HeadlinePage />} />
+          <Route path='/article/:id' element={<Articledetailpage />} />
         </Routes>
       </BrowserRouter>    
     </>
