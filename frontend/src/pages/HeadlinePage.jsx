@@ -24,7 +24,7 @@ const HeadlinePage = () => {
     {error && <p className='text-center text-red-500'>{error}</p>}
     
     <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        {data.map((article, index) => (
+        {data.map((article) => (
           <Headlinecards
             key={article.id}
             title={article.title}
