@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Articledetailpage from "./Articledetailpage";
-
+import EmptyState from "./Emptystate";
+import Errormessage from "./Errormessage";
 export default function Headlinecards() {
 
   
@@ -11,17 +12,17 @@ export default function Headlinecards() {
   const placeholder = "https://picsum.photos/seed/picsum/200/300";
 
   const item = [
-    {
-      id: 1,
+   {
+     id: 1,
       title: "ANNA ANNI",
-      source: "Sample Source",
+       source: "Sample Source",
       publishedAt: "2024-06-01T12:00:00Z",
       description: `Sangeetha alleged that since 2021, Vijay had emotionally withdrawn from their relationship and treated her with verbal disdain. According to the petition, she experienced what she described as constructive desertion, which forced her to live separately within the same matrimonial home. During this period, Vijay reportedly continued traveling abroad and attending public events with a particular actress.
 
-She also claimed that the actress frequently shared photos of their outings together on social media. Sangeetha stated that Vijay neither denied nor objected to these posts, which she believes implicitly endorsed the public perception of their association.
+ She also claimed that the actress frequently shared photos of their outings together on social media. Sangeetha stated that Vijay neither denied nor objected to these posts, which she believes implicitly endorsed the public perception of their association.
 
 Vijay and Sangeetha first met in 1996. Originally from Sri Lanka and raised in Britain, Sangeetha later married Vijay in the United Kingdom in 1998 through a registered marriage. The couple also held a traditional Hindu wedding ceremony in Chennai on August 25, 1999. They have two children: a son, Jason, and a daughter, Dhivya.`
-,
+ ,
       urlToImage: "https://wallpapercave.com/wp/wp8319044.jpg",
     },
     {
