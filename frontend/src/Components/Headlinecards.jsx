@@ -1,9 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import useHeadlines from "../hooks/useHeadlines";
-import HeadlineCardSkeleton from "./HeadlineCardSkeleton";
+import Articledetailpage from "./Articledetailpage";
+import EmptyState from "./Emptystate";
+import Errormessage from "./Errormessage";
 
-export default function Headlinecards() {
+
+export default function Headlinecards({ title, source, publishedAt, urlToImage,article}) {
 
   const navigate = useNavigate();
 
@@ -15,71 +17,40 @@ export default function Headlinecards() {
 
   const placeholder = "https://picsum.photos/seed/picsum/200/300";
 
-  if (error) {
-    return (
-      <h2 className="text-center mt-10 text-red-500">
-        Error loading headlines
-      </h2>
-    );
-  }
+  
 
   return (
-    <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mx-auto">
+  <div className=" mx-auto">
 
-      {/*Skeleton */}
-      {loading
-        ? Array.from({ length: 9 }).map((_, index) => (
-            <HeadlineCardSkeleton key={index} />
-          ))
+      <div
+        key={article.id}
+        onClick={() => navigate(`/article/${article.id}`, { state: article })}
+        className="cursor-pointer bg-blue-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
+      >
+        
+        {/* Image */}
+        <img
+          src={urlToImage || placeholder}
+          alt={title}
+          className="w-full h-48 sm:h-44 md:h-48 object-cover"
+        />
 
-        : data.map((article, index) => {
+        {/* Content */}
+        <div className="p-4 flex flex-col justify-between">
+          
+          <h2 className="text-base sm:text-lg font-semibold line-clamp-2 leading-snug">
+            {title}
+          </h2>
 
-            const formattedDate = new Date(
-              article.publishedAt
-            ).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            });
+          <div className="mt-3 text-sm text-gray-500">
+            <p className="truncate">Source: {source}</p>
+            <p>{publishedAt}</p>
+          </div>
 
-            return (
-              <div
-                key={article.url || index}
-                onClick={() =>
-                  navigate(`/article/${index}`, { state: article })
-                }
-                className="flex justify-between cursor-pointer rounded-xl shadow-md hover:shadow-lg transition-shadow p-3 bg-blue-50 overflow-hidden"
-              >
+        </div>
 
-                {/* Image */}
-                <div className="w-1/3">
-                  <img
-                    src={article.urlToImage || placeholder}
-                    alt={article.title}
-                    className="w-full h-40 object-cover"
-                  />
-                </div>
-
-                {/* Content */}
-                <div className="w-1/2 mt-3">
-
-                  <h2 className="text-lg font-semibold line-clamp-2 mb-2">
-                    {article.title}
-                  </h2>
-
-                  <div className="text-sm text-gray-500">
-                    <span>
-                      Source: {article.source?.name || "Unknown"}
-                    </span>
-                    <br />
-                    <span>{formattedDate}</span>
-                  </div>
-
-                </div>
-
-              </div>
-            );
-          })}
-    </div>
+      </div>
+  
+</div>
   );
 }

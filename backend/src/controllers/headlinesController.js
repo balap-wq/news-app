@@ -1,37 +1,33 @@
-import * as headlinesRepository from "../repositories/headlinesRepository.js";
+import { findTopHeadlines, countArticles } from '../services/articleService.js';
 
-export const getHeadlines = async (req, res) => {
+export async function getHeadlines(req, res) {
   try {
-    const { page = 1, limit = 10, fields } = req.query;
+    let { page = 1, limit = 9 } = req.query;
 
-    const skip = (page - 1) * limit;
+    page = parseInt(page);
+    limit = parseInt(limit);
 
-    const articles = await headlinesRepository.getArticles(skip, limit);
-    const total = await headlinesRepository.countArticles();
+    if (page < 1) page = 1;
+    if (limit < 1) limit = 9;
 
-    let filteredArticles = articles;
+    const offset = (page - 1) * limit;
 
-    if (fields) {
-      // CHANGE: trim added
-      const fieldArray = fields.split(",").map(f => f.trim());
+    const [articles, total] = await Promise.all([
+      findTopHeadlines({ limit, offset }),
+      countArticles(),
+    ]);
 
-      filteredArticles = articles.map(article => {
-        let obj = {};
-        fieldArray.forEach(f => {
-          obj[f] = article[f];
-        });
-        return obj;
-      });
-    }
+    const totalPages = Math.ceil(total / limit);
 
     res.json({
+      data: articles,
       total,
-      page: Number(page),
-      totalPages: Math.ceil(total / limit),
-      data: filteredArticles
+      page,
+      limit,
+      totalPages,
     });
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
   }
-};
+}
