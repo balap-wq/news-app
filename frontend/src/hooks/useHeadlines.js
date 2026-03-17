@@ -1,50 +1,57 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../api/axiosInstance";
 
-function useHeadlines({page = 1,category,country}){
+function useHeadlines({ page = 1, category, country }) {
 
-    const[data,setData] = useState([]);
-    const[loading,setLoading] = useState(false);
-    const[error,setError]=useState(null);
-    const[totalResults,setTotalResults]=useState(0);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [totalResults, setTotalResults] = useState(0);
 
-    useEffect(()=>{
+  useEffect(() => {
 
-        const controller = new AbortController();
+    const controller = new AbortController();
 
-        const fetchHeadlines = async ()=>{
-            setLoading(true);
-            setError(null);
+    const fetchHeadlines = async () => {
 
-            try{
-                await new Promise((resolve) => setTimeout(resolve, 150000));
-                const response = await axiosInstance.get("/api/headlines",{
-                    params:{page,category,country},
-                    signal:controller.signal
-                });
+      setLoading(true);
+      setError(null);
 
-                setData(response.data.data || [])
-                setTotalResults(response.data.total ||0);
+      try {
 
-                }catch (err) {
-                    if (err.name !=="CanceledError"){
-                        setError(err.message)
-                    }
-                } finally{
-                    setLoading(false);
-                }
-            };
+        // ADDED DELAY HERE
+        await new Promise((resolve) => setTimeout(resolve, 1500));
 
-            fetchHeadlines();
+        const response = await axiosInstance.get("/api/headlines", {
+          params: { page, category, country },
+          signal: controller.signal
+        });
 
-            return ()=>{
-                controller.abort();
-            };
+        setData(response.data.data || []);
+        setTotalResults(response.data.total || 0);
 
-        },[page,category,country]);
+      } catch (err) {
 
-        return{data,loading,error,totalResults};
+        if (err.name !== "CanceledError") {
+          setError(err.message);
+        }
 
-} 
+      } finally {
+
+        setLoading(false);
+
+      }
+    };
+
+    fetchHeadlines();
+
+    return () => {
+      controller.abort();
+    };
+
+  }, [page, category, country]);
+
+  return { data, loading, error, totalResults };
+}
 
 export default useHeadlines;

@@ -26,7 +26,7 @@ export default function Headlinecards() {
   return (
     <div className="p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mx-auto">
 
-      {/* ✅ Skeleton */}
+      {/*Skeleton */}
       {loading
         ? Array.from({ length: 9 }).map((_, index) => (
             <HeadlineCardSkeleton key={index} />
@@ -44,7 +44,7 @@ export default function Headlinecards() {
 
             return (
               <div
-                key={index}
+                key={article.url || index}
                 onClick={() =>
                   navigate(`/article/${index}`, { state: article })
                 }

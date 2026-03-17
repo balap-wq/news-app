@@ -12,7 +12,7 @@ export const getHeadlines = async (req, res) => {
     let filteredArticles = articles;
 
     if (fields) {
-      // ✅ CHANGE: trim added
+      // CHANGE: trim added
       const fieldArray = fields.split(",").map(f => f.trim());
 
       filteredArticles = articles.map(article => {

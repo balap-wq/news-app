@@ -16,7 +16,7 @@ describe("GET /api/headlines", () => {
     jest.clearAllMocks();
   });
 
-  // ✅ EXISTING TEST (NO CHANGE)
+  //  EXISTING TEST
   test("pagination logic", async () => {
 
     mockGetArticles.mockResolvedValue([
@@ -51,7 +51,7 @@ describe("GET /api/headlines", () => {
 
   });
 
-  // ✅ NEW TEST (FIELD FILTERING 🔥)
+  // NEW TEST (FIELD FILTERING )
   test("field filtering logic", async () => {
 
     mockGetArticles.mockResolvedValue([
@@ -76,7 +76,7 @@ describe("GET /api/headlines", () => {
       page: 1,
       totalPages: 1,
       data: [
-        { title: "News 1", author: "A" } // ✅ content removed
+        { title: "News 1", author: "A" } // content removed
       ]
     });
 
