@@ -2,13 +2,13 @@ import { findTopHeadlines, countArticles } from '../services/articleService.js';
 
 export async function getHeadlines(req, res) {
   try {
-    let { page = 1, limit = 20 } = req.query;
+    let { page = 1, limit = 9 } = req.query;
 
     page = parseInt(page);
     limit = parseInt(limit);
 
     if (page < 1) page = 1;
-    if (limit < 1) limit = 20;
+    if (limit < 1) limit = 9;
 
     const offset = (page - 1) * limit;
 

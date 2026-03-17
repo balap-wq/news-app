@@ -22,10 +22,21 @@ const HeadlinePage = () => {
 
     {loading && <p className='text-center text-blue-300 mt-4'>Loading....</p>}
     {error && <p className='text-center text-red-500'>{error}</p>}
-    <Headlinecards data={data}/>
+    
+    <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        {data.map((article, index) => (
+          <Headlinecards
+            key={article.id}
+            title={article.title}
+            source={article.sourceName}
+            publishedAt={article.publishedAt}
+            urlToImage={article.urlToImage}
+            article={article}
+          />
+        ))}
+      </div>
 
     <div className='flex justify-center gap-4 mt-6'>
-
       <button onClick={()=>{
         setCurrentPage(p => p-1);
         window.scrollTo(0,0);
