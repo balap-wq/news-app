@@ -1,8 +1,11 @@
-const express = require("express");
+import express from "express";
+import headlineRoutes from './routes/headlineRoutes.js';
 
 const app = express();
 
 app.use(express.json());
+
+app.use(headlineRoutes);
 
 // Temporary endpoint so tests run
 app.get("/api/headlines", (req, res) => {
@@ -25,4 +28,4 @@ app.get("/api/headlines", (req, res) => {
 
 });
 
-module.exports = app;
+export default app;
