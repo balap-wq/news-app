@@ -22,8 +22,8 @@ function useHeadlines({page = 1,category,country}){
                     signal:controller.signal
                 });
 
-                setData(response.data.data || [])
-                setTotalResults(response.data.total ||0);
+                setData(response.data.articles|| response.data.data || [])
+                setTotalResults(response.data.totalResults || response.data.total ||0);
 
                 }catch (err) {
                     if (err.name !=="CanceledError"){

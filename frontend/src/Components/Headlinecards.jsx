@@ -30,15 +30,15 @@ Vijay and Sangeetha first met in 1996. Originally from Sri Lanka and raised in B
       title: "Another News Title",
       source: "Another Source",
       publishedAt: "2024-06-02T15:30:00Z",
-      description: "Details about the second news article.",
+      // description: "Details about the second news article.",
       urlToImage: placeholder,
     },
     {
       id: 3,
-      title: "Third News Title",
+      // title: "Third News Title",
       source: "Third Source",
       publishedAt: "2024-06-03T10:45:00Z",
-      description: "More information about the third article.",
+      // description: "More information about the third article.",
       urlToImage: placeholder,
     },
     {
@@ -117,49 +117,49 @@ Vijay and Sangeetha first met in 1996. Originally from Sri Lanka and raised in B
   ];
 
   return (
-   <div className="p-30 grid grid-cols-1 md:grid md:grid-cols-2 lg:grid-cols-3 gap-10 mx-auto">
-      {item.map((data) => {
+  <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  {item.map((data) => {
 
-        const formattedDate = new Date(data.publishedAt).toLocaleDateString(
-          "en-US",
-          {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          }
-        );
+    const formattedDate = new Date(data.publishedAt).toLocaleDateString(
+      "en-US",
+      {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }
+    );
 
-        return (
-          <div
-            key={data.id}
-            onClick={() =>
-              navigate(`/article/${data.id}`, { state: data })
-            }
-           className="w-2/2  flex justify-between cursor-pointer rounded-xl shadow-md hover:shadow-lg transition-shadow p-3 bg-blue-50 overflow-hidden"
-    > 
-            <div className="w-1/3">
-            <img
-              src={data.urlToImage || placeholder}
-              alt={data.title}
-              className="w-full h-40 object-cover"
-            />
-             </div>
+    return (
+      <div
+        key={data.id}
+        onClick={() => navigate(`/article/${data.id}`, { state: data })}
+        className="cursor-pointer bg-blue-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
+      >
+        
+        {/* Image */}
+        <img
+          src={data.urlToImage || placeholder}
+          alt={data.title}
+          className="w-full h-48 sm:h-44 md:h-48 object-cover"
+        />
 
-            <div className="w-1/2 mt-3">
-       <div className="">
-              <h2 className="text-lg font-semibold line-clamp-2 mb-2">
-                {data.title}
-              </h2>
-               </div>
+        {/* Content */}
+        <div className="p-4 flex flex-col justify-between flex-grow">
+          
+          <h2 className="text-base sm:text-lg font-semibold line-clamp-2 leading-snug">
+            {data.title}
+          </h2>
 
-              <div className="  text-sm text-gray-500">
-          <span>Source: {data.source}</span><br />
-          <span>{data.publishedAt}</span>
-        </div>
-     </div>
+          <div className="mt-3 text-sm text-gray-500">
+            <p className="truncate">Source: {data.source}</p>
+            <p>{formattedDate}</p>
           </div>
-        );
-      })}
-    </div>
+
+        </div>
+
+      </div>
+    );
+  })}
+</div>
   );
 }
