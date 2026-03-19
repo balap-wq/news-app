@@ -8,13 +8,16 @@ const Articledetailpage = () => {
   const location = useLocation();
   const article = location.state;
   const error = location.state?.error;
+  
 
-  if (!article.description||!article.title) {
-    return <h2 className="text-center mt-10"><EmptyState /></h2>;
+    //  Handle no article (refresh / direct URL access)
+  if (!article) {
+    return <EmptyState />;
   }
-  else if (error){
 
-  return <h2 className="text-center mt-10"><Errormessage message={error} /></h2>;
+  //  Handle missing data
+  if (!article.title || !article.description) {
+    return <EmptyState />;
   }
 
   return (
