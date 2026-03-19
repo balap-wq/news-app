@@ -5,8 +5,9 @@ import EmptyState from "./Emptystate";
 import Errormessage from "./Errormessage";
 
 
-export default function Headlinecards({ title, source, publishedAt, urlToImage,article}) {
+export default function Headlinecards({article}) {
 
+  const { title, urlToImage, source, publishedAt } = article;
   const navigate = useNavigate();
 
   const placeholder = "https://picsum.photos/seed/picsum/200/300";

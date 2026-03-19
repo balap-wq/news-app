@@ -27,10 +27,6 @@ const HeadlinePage = () => {
         {data.map((article) => (
           <Headlinecards
             key={article.id}
-            title={article.title}
-            source={article.sourceName}
-            publishedAt={article.publishedAt}
-            urlToImage={article.urlToImage}
             article={article}
           />
         ))}
