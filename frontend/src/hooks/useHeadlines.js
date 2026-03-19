@@ -3,13 +3,13 @@ import axiosInstance from "../api/axiosInstance";
 
 function useHeadlines({page = 1,category,country}){
 
-    const[data,setData] = useState([]);
+    const[ data, setData] = useState([]);
 
-    const[loading,setLoading] = useState(false);
+    const[ loading, setLoading] = useState(false);
 
-    const[error,setError]=useState(null);
+    const[ error, setError]=useState(null);
 
-    const[totalResults,setTotalResults]=useState(0);
+    const[ totalResults, setTotalResults]=useState(0);
 
     useEffect(()=>{
 
