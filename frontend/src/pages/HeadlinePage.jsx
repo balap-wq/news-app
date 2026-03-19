@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Headlinecards from '../Components/Headlinecards'
 import useHeadlines from '../hooks/useHeadlines';
 import {ArrowRight ,ArrowLeft} from 'lucide-react'
+import HeadlineCardSkeleton from '../Components/HeadlineCardSkeleton';
 
 const HeadlinePage = () => {
 
@@ -14,6 +15,9 @@ const HeadlinePage = () => {
   const pageSize = 9;
   const totalPages = Math.ceil(totalResults / pageSize); 
 
+  // if(loading){
+  //   return<HeadlineCardSkeleton/>
+  // }
   return (
     <div>
       <div className="mx-auto w-full text-center mt-7">
@@ -23,7 +27,7 @@ const HeadlinePage = () => {
     {loading && <p className='text-center text-blue-300 mt-4'>Loading....</p>}
     {error && <p className='text-center text-red-500'>{error}</p>}
     
-    <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+    {/* <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {data.map((article, index) => (
           <Headlinecards
             key={article.id}
@@ -34,7 +38,26 @@ const HeadlinePage = () => {
             article={article}
           />
         ))}
-      </div>
+      </div> */}
+      <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+
+  {loading
+    ? Array.from({ length: 9 }).map((_, index) => (
+        <HeadlineCardSkeleton key={index} />
+      ))
+    : data.map((article) => (
+        <Headlinecards
+          key={article.id}
+          title={article.title}
+          source={article.sourceName}
+          publishedAt={article.publishedAt}
+          urlToImage={article.urlToImage}
+          article={article}
+        />
+      ))
+  }
+
+</div>
 
     <div className='flex justify-center gap-4 mt-6'>
       <button onClick={()=>{
@@ -72,4 +95,4 @@ const HeadlinePage = () => {
   );
 };
 
-export default HeadlinePage
+export default HeadlinePage;
