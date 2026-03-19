@@ -28,36 +28,25 @@ const HeadlinePage = () => {
       {loading && <p className='text-center text-blue-300 mt-4'>Loading....</p>}
       {error && <p className='text-center text-red-500'>{error}</p>}
 
-      {/* <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        {data?.map((article) => (
-
-          <Headlinecards key={article.id} article={article} />
-
-        ))}
-      </div> */}
       <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
 
-  {loading
-    ? Array.from({ length: 9 }).map((_, index) => (
-        <HeadlineCardSkeleton key={index} />
-      ))
-    : data.map((article) => (
-        <Headlinecards
-          key={article.id}
-          title={article.title}
-          source={article.sourceName}
-          publishedAt={article.publishedAt}
-          urlToImage={article.urlToImage}
-          article={article}
-        />
-      ))
-  }
+        {loading
+          ? Array.from({ length: 9 }).map((_, index) => (
+            <HeadlineCardSkeleton key={index} />
+          ))
+          : data?.map((article) => (
+            <Headlinecards
+              key={article.id}
+              article={article}
+            />
+          ))
+        }
 
-</div>
+      </div>
 
       <div className='flex justify-center gap-4 mt-6'>
 
-       <Button
+        <Button
           onClick={() => {
             setCurrentPage(p => p - 1);
             window.scrollTo(0, 0);
@@ -66,17 +55,17 @@ const HeadlinePage = () => {
         >
           <ArrowLeft size={18} />
           Prev
-       </Button>
+        </Button>
         <span className='px-4 py-2 mb-5 font-semibold text-lg'>{currentPage}</span>
 
         <Button
-           onClick={()=>{
-            setCurrentPage(p=>p+1)
-            window.scrollTo(0,0)
-           }}
-           disabled={currentPage>=totalPages}
+          onClick={() => {
+            setCurrentPage(p => p + 1)
+            window.scrollTo(0, 0)
+          }}
+          disabled={currentPage >= totalPages}
         >
-          <ArrowRight size={18}/>
+          <ArrowRight size={18} />
           Next
         </Button>
 
