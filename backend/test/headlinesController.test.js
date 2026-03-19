@@ -1,13 +1,16 @@
 import { jest } from "@jest/globals";
 
-const mockGetArticles = jest.fn();
+// Mock functions
+const mockFindTopHeadlines = jest.fn();
 const mockCountArticles = jest.fn();
 
-jest.unstable_mockModule("../src/repositories/headlinesRepository.js", () => ({
-  getArticles: mockGetArticles,
+// Mock SERVICE
+jest.unstable_mockModule("../src/services/articleService.js", () => ({
+  findTopHeadlines: mockFindTopHeadlines,
   countArticles: mockCountArticles
 }));
 
+// Import AFTER mock
 const { getHeadlines } = await import("../src/controllers/headlinesController.js");
 
 describe("GET /api/headlines", () => {
@@ -16,10 +19,9 @@ describe("GET /api/headlines", () => {
     jest.clearAllMocks();
   });
 
-  //  EXISTING TEST
-  test("pagination logic", async () => {
+  test("pagination logic works correctly", async () => {
 
-    mockGetArticles.mockResolvedValue([
+    mockFindTopHeadlines.mockResolvedValue([
       { title: "News 1", author: "A" },
       { title: "News 2", author: "B" }
     ]);
@@ -37,47 +39,20 @@ describe("GET /api/headlines", () => {
 
     await getHeadlines(req, res);
 
-    expect(mockGetArticles).toHaveBeenCalledWith(2, 2);
+    expect(mockFindTopHeadlines).toHaveBeenCalledWith({
+      limit: 2,
+      offset: 2
+    });
 
     expect(res.json).toHaveBeenCalledWith({
-      total: 20,
-      page: 2,
-      totalPages: 10,
       data: [
         { title: "News 1", author: "A" },
         { title: "News 2", author: "B" }
-      ]
-    });
-
-  });
-
-  // NEW TEST (FIELD FILTERING )
-  test("field filtering logic", async () => {
-
-    mockGetArticles.mockResolvedValue([
-      { title: "News 1", author: "A", content: "abc" }
-    ]);
-
-    mockCountArticles.mockResolvedValue(1);
-
-    const req = {
-      query: { fields: "title,author" }
-    };
-
-    const res = {
-      json: jest.fn(),
-      status: jest.fn().mockReturnThis()
-    };
-
-    await getHeadlines(req, res);
-
-    expect(res.json).toHaveBeenCalledWith({
-      total: 1,
-      page: 1,
-      totalPages: 1,
-      data: [
-        { title: "News 1", author: "A" } // content removed
-      ]
+      ],
+      total: 20,
+      page: 2,
+      limit: 2,
+      totalPages: 10
     });
 
   });

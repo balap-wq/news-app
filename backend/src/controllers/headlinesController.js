@@ -2,13 +2,22 @@ import { findTopHeadlines, countArticles } from '../services/articleService.js';
 
 export async function getHeadlines(req, res) {
   try {
-    let { page = 1, limit = 9 } = req.query;
+    let { page = 1, limit = 9, category } = req.query;
 
     page = parseInt(page);
     limit = parseInt(limit);
 
-    if (page < 1) page = 1;
-    if (limit < 1) limit = 9;
+    // ✅ VALIDATION - PAGE
+    if (page < 1) {
+      return res.status(400).json({ error: "Invalid page" });
+    }
+
+    // ✅ VALIDATION - CATEGORY
+    const allowedCategories = ["business", "sports", "technology", "health"];
+
+    if (category && !allowedCategories.includes(category)) {
+      return res.status(400).json({ error: "Invalid category" });
+    }
 
     const offset = (page - 1) * limit;
 
@@ -19,15 +28,16 @@ export async function getHeadlines(req, res) {
 
     const totalPages = Math.ceil(total / limit);
 
-    res.json({
+    return res.status(200).json({
       data: articles,
       total,
       page,
       limit,
       totalPages,
     });
+
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server Error' });
+    return res.status(500).json({ error: 'Server Error' });
   }
 }
