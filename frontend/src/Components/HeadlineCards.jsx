@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -9,10 +9,8 @@ export default function Headlinecards({article}) {
 
   const placeholder = "https://picsum.photos/seed/picsum/200/300";
 
-  
-
   return (
-  <div className=" mx-auto">
+    <div className="mx-auto">
 
       <div
         role="button"
@@ -45,6 +43,6 @@ export default function Headlinecards({article}) {
 
       </div>
   
-</div>
+    </div>
   );
 }
