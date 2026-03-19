@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Articledetailpage from "./Articledetailpage";
-import EmptyState from "./Emptystate";
-import Errormessage from "./Errormessage";
 
 
 export default function Headlinecards({article}) {
