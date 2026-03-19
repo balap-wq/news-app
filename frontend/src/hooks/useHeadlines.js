@@ -4,8 +4,11 @@ import axiosInstance from "../api/axiosInstance";
 function useHeadlines({page = 1,category,country}){
 
     const[data,setData] = useState([]);
+
     const[loading,setLoading] = useState(false);
+
     const[error,setError]=useState(null);
+
     const[totalResults,setTotalResults]=useState(0);
 
     useEffect(()=>{
@@ -27,7 +30,7 @@ function useHeadlines({page = 1,category,country}){
 
                 }catch (err) {
                     if (err.name !=="CanceledError"){
-                        setError(err.message)
+                        setError(err.message);
                     }
                 } finally{
                     setLoading(false);
