@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Headlinecards from '../Components/Headlinecards'
+import Headlinecards from '../Components/HeadlineCards'
 import useHeadlines from '../hooks/useHeadlines';
 import { ArrowRight, ArrowLeft } from 'lucide-react'
 import Button from '../Components/Button';
