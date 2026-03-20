@@ -5,7 +5,7 @@ import EmptyState from "./Emptystate";
 import Errormessage from "./Errormessage";
 
 
-export default function Headlinecards({ title, source, publishedAt, urlToImage,article}) {
+export default function Headlinecards({ article}) {
 
   const navigate = useNavigate();
 
@@ -24,8 +24,8 @@ export default function Headlinecards({ title, source, publishedAt, urlToImage,a
         
         {/* Image */}
         <img
-          src={urlToImage || placeholder}
-          alt={title}
+          src={article.urlToImage || placeholder}
+          alt={article.title}
           className="w-full h-48 sm:h-44 md:h-48 object-cover"
         />
 
@@ -33,12 +33,12 @@ export default function Headlinecards({ title, source, publishedAt, urlToImage,a
         <div className="p-4 flex flex-col justify-between">
           
           <h2 className="text-base sm:text-lg font-semibold line-clamp-2 leading-snug">
-            {title}
+            {article.title}
           </h2>
 
           <div className="mt-3 text-sm text-gray-500">
-            <p className="truncate">Source: {source}</p>
-            <p>{publishedAt}</p>
+            <p className="truncate">Source: {article.source}</p>
+            <p>{article.publishedAt}</p>
           </div>
 
         </div>
