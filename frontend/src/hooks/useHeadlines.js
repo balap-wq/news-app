@@ -3,10 +3,13 @@ import axiosInstance from "../api/axiosInstance";
 
 function useHeadlines({ page = 1, category, country }) {
 
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [totalResults, setTotalResults] = useState(0);
+    const[ data, setData] = useState([]);
+
+    const[ loading, setLoading] = useState(false);
+
+    const[ error, setError]=useState(null);
+
+    const[ totalResults, setTotalResults]=useState(0);
 
   useEffect(() => {
 
@@ -27,21 +30,17 @@ function useHeadlines({ page = 1, category, country }) {
           signal: controller.signal
         });
 
-                setData(response.data.articles|| response.data.data || [])
-                setTotalResults(response.data.totalResults || response.data.total ||0);
+                setData(response.data.articles || [])
+                setTotalResults(response.data.totalResults || 0);
 
-      } catch (err) {
-
-        if (err.name !== "CanceledError") {
-          setError(err.message);
-        }
-
-      } finally {
-
-        setLoading(false);
-
-      }
-    };
+                }catch (err) {
+                    if (err.name !=="CanceledError"){
+                        setError(err.message);
+                    }
+                } finally{
+                    setLoading(false);
+                }
+            };
 
     fetchHeadlines();
 
