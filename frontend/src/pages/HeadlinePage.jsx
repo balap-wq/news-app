@@ -16,9 +16,6 @@ const HeadlinePage = () => {
   const pageSize = 9;
   const totalPages = Math.ceil(totalResults / pageSize);
 
-  // if(loading){
-  //   return<HeadlineCardSkeleton/>
-  // }
   return (
     <div>
       <div className="mx-auto w-full text-center mt-7">

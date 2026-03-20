@@ -3,11 +3,10 @@ import { useLocation } from "react-router-dom";
 import EmptyState from "./EmptyState";
 
 
-const Articledetailpage = () => {
+const ArticleDetailpage = () => {
 
   const location = useLocation();
   const article = location.state;
-  const error = location.state?.error;
   
 
     //  Handle no article (refresh / direct URL access)
@@ -37,4 +36,4 @@ const Articledetailpage = () => {
   );
 };
 
-export default Articledetailpage;
+export default ArticleDetailpage;

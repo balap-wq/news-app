@@ -1,13 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import placeholder from "../images/placeholder.png";
 
 
 export default function Headlinecards({article}) {
 
   const { title, urlToImage, source, publishedAt } = article;
   const navigate = useNavigate();
-
-  const placeholder = "https://picsum.photos/seed/picsum/200/300";
 
   return (
     <div className="mx-auto">
