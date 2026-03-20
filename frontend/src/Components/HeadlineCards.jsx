@@ -1,16 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import placeholder from "../images/placeholder.png";
 
-export default function Headlinecards({ title, source, publishedAt, urlToImage, article }) {
 
+export default function Headlinecards({article}) {
+
+  const { title, urlToImage, source, publishedAt } = article;
   const navigate = useNavigate();
-
-  const placeholder = "https://picsum.photos/seed/picsum/200/300";
 
   return (
     <div className="mx-auto">
 
       <div
+        role="button"
+        tabIndex={0}
+        key={article.id}
         onClick={() => navigate(`/article/${article.id}`, { state: article })}
         className="cursor-pointer bg-blue-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
       >
