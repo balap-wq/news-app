@@ -50,8 +50,8 @@ const HeadlinePage = () => {
           }}
           disabled={currentPage >= totalPages}
         >
+              Next
           <ArrowRight size={18} />
-          Next
         </Button>
       </div>
     </div>
