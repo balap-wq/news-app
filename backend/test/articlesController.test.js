@@ -1,0 +1,109 @@
+import { jest } from "@jest/globals";
+
+// ✅ Mock repository
+const mockFindArticleById = jest.fn();
+
+await jest.unstable_mockModule(
+  "../src/repositories/articlesRepository.js",
+  () => ({
+    findArticleById: mockFindArticleById,
+  })
+);
+
+// ✅ Import controller AFTER mock
+const { getArticleById } = await import(
+  "../src/controllers/articlesController.js"
+);
+
+describe("getArticleById Unit Tests", () => {
+
+  let req, res;
+
+  beforeEach(() => {
+    req = {
+      params: { id: "1" },
+    };
+
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    jest.clearAllMocks();
+  });
+
+  // ✅ SUCCESS CASE
+  it("should return 200 with article data", async () => {
+    mockFindArticleById.mockResolvedValue({
+      id: 1,
+      title: "Test Article",
+      description: "Test Desc",
+    });
+
+    await getArticleById(req, res);
+
+    expect(mockFindArticleById).toHaveBeenCalledWith("1");
+    expect(mockFindArticleById).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      id: 1,
+      title: "Test Article",
+      description: "Test Desc",
+    });
+  });
+
+  // ❌ NOT FOUND
+  it("should return 404 if article not found", async () => {
+    mockFindArticleById.mockResolvedValue(null);
+
+    await getArticleById(req, res);
+
+    expect(mockFindArticleById).toHaveBeenCalledWith("1");
+    expect(mockFindArticleById).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Article not found",
+    });
+  });
+
+  // ❌ MISSING ID
+  it("should return 400 if id is missing", async () => {
+    req.params = {};
+
+    await getArticleById(req, res);
+
+    expect(mockFindArticleById).not.toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Article ID is required",
+    });
+  });
+
+  // ❌ INVALID ID
+  it("should return 400 if id is not a valid number", async () => {
+    req.params = { id: "abc" };
+
+    await getArticleById(req, res);
+
+    expect(mockFindArticleById).not.toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Article ID is required",
+    });
+  });
+
+  // ❌ SERVER ERROR
+  it("should return 500 on unexpected error", async () => {
+    mockFindArticleById.mockRejectedValue(new Error("DB error"));
+
+    await getArticleById(req, res);
+
+    expect(mockFindArticleById).toHaveBeenCalledWith("1");
+    expect(mockFindArticleById).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Internal server error",
+    });
+  });
+
+});
