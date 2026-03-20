@@ -1,21 +1,23 @@
+import pool from '../config/db.js';
 
-import pkg from "pg";
-const { Pool } = pkg;
-
-const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "newsdb",
-  password: "your_password",
-  port: 5432,
-});
-
-export async function findArticleById(id) {
-  const result = await pool.query(
-    "SELECT * FROM articles WHERE id = $1",
-    [id]
-  );
-
-  return result.rows[0];
+async function findArticleById(id) {
+  const query = `
+    SELECT id,
+           title,
+           description,
+           content,
+           url,
+           url_to_image   AS "urlToImage",
+           author,
+           source_name    AS "sourceName",
+           category,
+           published_at   AS "publishedAt"
+    FROM articles
+    WHERE id = $1
+  `;
+  const { rows } = await pool.query(query, [id]);
+  return rows[0];
 }
+
+export { findArticleById };
 
