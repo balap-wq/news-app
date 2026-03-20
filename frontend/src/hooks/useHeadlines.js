@@ -26,7 +26,7 @@ function useHeadlines({page = 1,category,country}){
                 setTotalResults(response.data.totalResults || response.data.total ||0);
 
                 }catch (err) {
-                    if (err.name !=="CanceledError"){
+                    if (err!=="CanceledError"){
                         setError(err.message)
                     }
                 } finally{

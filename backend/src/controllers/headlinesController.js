@@ -1,33 +1,22 @@
-import { findTopHeadlines, countArticles } from '../services/articleService.js';
+import { findArticleById } from "../repositories/articlesRepository.js";
 
-export async function getHeadlines(req, res) {
+export async function getArticleById(req, res) {
   try {
-    let { page = 1, limit = 9 } = req.query;
+    const { id } = req.params;
 
-    page = parseInt(page);
-    limit = parseInt(limit);
+    if (!id) {
+      return res.status(400).json({ error: "Article ID is required" });
+    }
 
-    if (page < 1) page = 1;
-    if (limit < 1) limit = 9;
+    const article = await findArticleById(id);
 
-    const offset = (page - 1) * limit;
+    if (!article) {
+      return res.status(404).json({ error: "Article not found" });
+    }
 
-    const [articles, total] = await Promise.all([
-      findTopHeadlines({ limit, offset }),
-      countArticles(),
-    ]);
-
-    const totalPages = Math.ceil(total / limit);
-
-    res.json({
-      data: articles,
-      total,
-      page,
-      limit,
-      totalPages,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server Error' });
+    res.status(200).json(article);
+  } catch (error) {
+    console.error("Error fetching article:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 }

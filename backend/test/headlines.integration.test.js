@@ -1,34 +1,66 @@
-const request = require("supertest");
-const app = require("../src/app");
+import request from "supertest";
+import { jest } from "@jest/globals";
 
-describe("GET /api/headlines", () => {
+// ✅ Mock functions
+const mockFindTopHeadlines = jest.fn();
+const mockCountArticles = jest.fn();
 
-  test("should return 200 with paginated data", async () => {
+// ✅ Mock service BEFORE importing app
+await jest.unstable_mockModule("../src/services/articleService.js", () => ({
+  findTopHeadlines: mockFindTopHeadlines,
+  countArticles: mockCountArticles,
+}));
 
-    const res = await request(app)
-      .get("/api/headlines?page=1&limit=20");
+// ✅ Import app AFTER mock
+const { default: app } = await import("../src/app.js");
 
-    expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty("data");
+describe("GET /api/headlines Integration Tests", () => {
 
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  test("should return 400 for invalid category", async () => {
+  // ✅ SUCCESS CASE
+  it("should return 200 with paginated data", async () => {
+    mockFindTopHeadlines.mockResolvedValue([
+      {
+        id: 1,
+        title: "Test News",
+        description: "Desc",
+        urlToImage: "img.jpg",
+        sourceName: "BBC",
+        publishedAt: new Date(),
+      },
+    ]);
 
-    const res = await request(app)
+    mockCountArticles.mockResolvedValue(1);
+
+    const response = await request(app)
+      .get("/api/headlines?page=1&limit=5");
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.data.length).toBe(1);
+    expect(response.body).toHaveProperty("total");
+    expect(response.body).toHaveProperty("page");
+    expect(response.body).toHaveProperty("limit");
+  });
+
+  // ❌ INVALID CATEGORY
+  it("should return 400 for invalid category", async () => {
+    const response = await request(app)
       .get("/api/headlines?category=invalid");
 
-    expect(res.statusCode).toBe(400);
-
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty("error");
   });
 
-  test("should return 400 when page is 0", async () => {
-
-    const res = await request(app)
+  // ❌ INVALID PAGE
+  it("should return 400 when page is 0", async () => {
+    const response = await request(app)
       .get("/api/headlines?page=0");
 
-    expect(res.statusCode).toBe(400);
-
+    expect(response.statusCode).toBe(400);
+    expect(response.body).toHaveProperty("error");
   });
 
 });
