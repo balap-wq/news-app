@@ -2,7 +2,7 @@ import { fetchTopHeadlines } from "./newsApiService.js";
 import { upsertArticle } from "../repositories/articleRepository.js";
 
 export async function syncHeadlines() {
-  console.log("Starting sync...");
+  console.log("Starting Sync Headlines Service...");
 
   const articles = await fetchTopHeadlines({
     country: "us",
@@ -17,18 +17,23 @@ export async function syncHeadlines() {
   let inserted = 0;
   let updated = 0;
 
-  for (const article of articles) {
+    for (const article of articles) {
     try {
+     
+      const {
+        source,
+        urlToImage,
+        publishedAt,
+        ...rest
+      } = article;
+
+      
       const mappedArticle = {
-        title: article.title,
-        description: article.description,
-        content: article.content,
-        url: article.url,
-        urlToImage: article.urlToImage,
-        author: article.author,
-        sourceName: article.source?.name,
+        ...rest, 
+        source_name: source?.name || "",
+        url_to_image: urlToImage || "",
+        published_at: publishedAt,
         category: "general",
-        publishedAt: article.publishedAt,
       };
 
       const result = await upsertArticle(mappedArticle);
@@ -41,5 +46,7 @@ export async function syncHeadlines() {
     }
   }
 
-  console.log(`Sync completed → Inserted: ${inserted}, Updated: ${updated}`);
+  console.log(
+  `Sync Headlines Service completed  | Inserted: ${inserted} | Updated: ${updated}`
+);
 }
