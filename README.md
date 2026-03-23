@@ -87,3 +87,51 @@ npm run format
 cd backend && npm run lint
 cd frontend && npm run lint
 ```
+
+
+# Uses of Prettier and lint:
+
+### Summary
+- Added ESLint configuration using the latest flat config approach
+- Integrated Prettier for consistent code formatting
+- Configured React and React Hooks linting rules
+- Disabled prop-types rule as it is not used in the project
+- Applied formatting fixes across the codebase
+
+---
+
+### Commands to Check & Fix
+
+#### 🔍 Check lint issues
+npm run lint
+
+#### 🔧 Fix lint issues automatically
+npm run lint:fix
+
+#### 🔍 Check Prettier formatting
+npx prettier --check .
+
+#### 🔧 Fix Prettier formatting
+npx prettier --write .
+
+---
+
+### Why ESLint?
+- Helps identify code issues and potential bugs
+- Enforces coding standards across the project
+- Improves code quality and maintainability
+
+---
+
+### Why Prettier?
+- Ensures consistent code formatting
+- Reduces formatting-related review comments
+- Improves readability of the codebase
+
+---
+
+### Impact
+- Cleaner and more consistent code
+- Reduced manual effort during code reviews
+- Better developer experience and maintainability
+

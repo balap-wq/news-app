@@ -4,27 +4,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+  user: 'postgres',
+  host: 'localhost',
+  database: 'articles',
+  password: '1234',
+  port: 5432,
 });
-
-pool.on('error',(err)=>{
-  console.error('Unexpected error on idle client', err);
-  process.exit(-1);
-});
-
-export const testConnection = async () => {
-  try{
-  const client = await pool.connect();
-  console.log("DataBase Connected successfully!");
-  client.release();
-  }
-  catch(err){
-    console.error("Here,some issues:",err.message); 
-  }
-}
 
 export default pool;
