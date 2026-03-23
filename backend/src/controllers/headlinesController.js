@@ -9,14 +9,14 @@ export async function getHeadlines(req, res) {
 
     // ✅ VALIDATION - PAGE
     if (page < 1) {
-      return res.status(400).json({ error: "Invalid page" });
+      return res.status(400).json({ error: 'Invalid page' });
     }
 
     // ✅ VALIDATION - CATEGORY
-    const allowedCategories = ["business", "sports", "technology", "health"];
+    const allowedCategories = ['business', 'sports', 'technology', 'health'];
 
     if (category && !allowedCategories.includes(category)) {
-      return res.status(400).json({ error: "Invalid category" });
+      return res.status(400).json({ error: 'Invalid category' });
     }
 
     const offset = (page - 1) * limit;
@@ -35,7 +35,6 @@ export async function getHeadlines(req, res) {
       limit,
       totalPages,
     });
-
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: 'Server Error' });
