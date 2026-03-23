@@ -7,13 +7,13 @@ async function getArticleById(req, res) {
    
     const parsedId = parseInt(id, 10);
     if (!Number.isInteger(parsedId) || parsedId <= 0) {
-      return res.status(400).json({ error: 'ID must be a positive integer' });
+      return res.status(400).json({ error: 'Invalid article ID' });
     }
 
     const article = await findArticleById(parsedId);
 
     if (!article) {
-      return res.status(404).json({ error: 'Article not found' });
+      return res.status(404).json({ error: 'Article not found', articleId: parsedId });
     }
 
     res.status(200).json(article);
