@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://newsapi.org/v2";
+const BASE_URL = process.env.BASE_URL;
 const API_KEY = process.env.NEWS_API_KEY;
 
 export const fetchTopHeadlines = async ({
