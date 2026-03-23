@@ -32,5 +32,3 @@ export async function upsertArticle(article) {
 
   await pool.query(query, values);
 }
-await syncHeadlines();
-await syncHeadlines();
