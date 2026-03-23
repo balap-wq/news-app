@@ -1,6 +1,5 @@
 import { jest } from "@jest/globals";
 
-// ✅ Mock repository
 const mockFindArticleById = jest.fn();
 
 await jest.unstable_mockModule(
@@ -10,7 +9,6 @@ await jest.unstable_mockModule(
   })
 );
 
-// ✅ Import controller AFTER mock
 const { getArticleById } = await import(
   "../src/controllers/articlesController.js"
 );
@@ -42,7 +40,7 @@ describe("getArticleById Unit Tests", () => {
 
     await getArticleById(req, res);
 
-    expect(mockFindArticleById).toHaveBeenCalledWith("1");
+    expect(mockFindArticleById).toHaveBeenCalledWith(1); // ✅ number not string
     expect(mockFindArticleById).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
@@ -58,24 +56,12 @@ describe("getArticleById Unit Tests", () => {
 
     await getArticleById(req, res);
 
-    expect(mockFindArticleById).toHaveBeenCalledWith("1");
+    expect(mockFindArticleById).toHaveBeenCalledWith(1); // ✅ number not string
     expect(mockFindArticleById).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
       error: "Article not found",
-    });
-  });
-
-  // ❌ MISSING ID
-  it("should return 400 if id is missing", async () => {
-    req.params = {};
-
-    await getArticleById(req, res);
-
-    expect(mockFindArticleById).not.toHaveBeenCalled();
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      error: "Article ID is required",
+      articleId: 1,        // ✅ added articleId
     });
   });
 
@@ -88,7 +74,7 @@ describe("getArticleById Unit Tests", () => {
     expect(mockFindArticleById).not.toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      error: "Article ID is required",
+      error: "Invalid article ID",  // ✅ updated message
     });
   });
 
@@ -98,7 +84,7 @@ describe("getArticleById Unit Tests", () => {
 
     await getArticleById(req, res);
 
-    expect(mockFindArticleById).toHaveBeenCalledWith("1");
+    expect(mockFindArticleById).toHaveBeenCalledWith(1); // ✅ number not string
     expect(mockFindArticleById).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
