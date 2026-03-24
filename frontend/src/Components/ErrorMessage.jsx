@@ -1,18 +1,14 @@
-import React from "react";
-import useHeadlines from "../hooks/useHeadlines";
+import React from 'react';
+import useHeadlines from '../hooks/useHeadlines';
 
-
-function ErrorMessage({  onRetry }) {
+function ErrorMessage({ onRetry }) {
   const { error } = useHeadlines();
   return (
     <div className="flex flex-col items-center justify-center py-16">
-
-      <div className="text-red-500 text-4xl mb-4">
-        ❌
-      </div>
+      <div className="text-red-500 text-4xl mb-4">❌</div>
 
       <p className="text-lg text-gray-700 mb-4">
-        {error ||  "An unexpected error occurred. Please try again."}
+        {error || 'An unexpected error occurred. Please try again.'}
       </p>
 
       <button
@@ -21,7 +17,6 @@ function ErrorMessage({  onRetry }) {
       >
         Retry
       </button>
-
     </div>
   );
 }

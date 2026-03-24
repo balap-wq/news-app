@@ -1,15 +1,12 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
-import EmptyState from "./EmptyState";
-
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+import EmptyState from './EmptyState';
 
 const ArticleDetailpage = () => {
-
   const location = useLocation();
   const article = location.state;
-  
 
-    //  Handle no article (refresh / direct URL access)
+  //  Handle no article (refresh / direct URL access)
   if (!article) {
     return <EmptyState />;
   }
@@ -20,19 +17,17 @@ const ArticleDetailpage = () => {
   }
 
   return (
-   <div className="min-h-screen flex items-center justify-center bg-amber-50 px-4">
-  <div className="w-full max-w-3xl bg-amber-100 rounded-2xl shadow-lg p-6 sm:p-8 md:p-10">
-    
-    <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center leading-tight">
-      {article.title}
-    </h1>
+    <div className="min-h-screen flex items-center justify-center bg-amber-50 px-4">
+      <div className="w-full max-w-3xl bg-amber-100 rounded-2xl shadow-lg p-6 sm:p-8 md:p-10">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center leading-tight">
+          {article.title}
+        </h1>
 
-    <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-700 leading-relaxed text-justify">
-      {article.description}
-    </p>
-
-  </div>
-</div>
+        <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-700 leading-relaxed text-justify">
+          {article.description}
+        </p>
+      </div>
+    </div>
   );
 };
 
