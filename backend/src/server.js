@@ -1,5 +1,5 @@
-import app from "./app";
-import { testConnection } from "./config/db";
+import app from "./app.js";
+import {testConnection} from './config/db.js'
 
 const PORT = 5000;
 
