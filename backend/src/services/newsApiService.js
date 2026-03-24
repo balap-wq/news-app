@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = process.env.NEWS_API_BASE_URL;
 const API_KEY = process.env.NEWS_API_KEY;
 
 export const fetchTopHeadlines = async ({
@@ -8,7 +8,7 @@ export const fetchTopHeadlines = async ({
   category,
   pageSize = 100,
 }) => {
-    const response = await axios.get(`${BASE_URL}/top-headlines`, {
+    const response = await axios.get(`${BASE_URL}top-headlines`, {
       params: {
         apiKey: API_KEY,
         country,
@@ -22,7 +22,7 @@ export const fetchTopHeadlines = async ({
       throw new Error("Failed to fetch headlines");
     }
 
-    const articles = response.data.articles;
+    const articles = response.data.articles;    
 
     // ✅ Log count
     console.log(`Fetched ${articles.length} articles`);
