@@ -1,8 +1,9 @@
 import { fetchTopHeadlines } from "./newsApiService.js";
 import { upsertArticle } from "../repositories/articleRepository.js";
+import logger from "../config/logger.js";
 
 export async function syncHeadlines() {
-  console.log("Starting Sync Headlines Service...");
+  logger.info("Starting Sync Headlines Service...");
 
   const articles = await fetchTopHeadlines({
     country: "us",
@@ -10,16 +11,16 @@ export async function syncHeadlines() {
   });
 
   if (!articles || articles.length === 0) {
-    console.log("No articles fetched");
+    logger.warn("No articles fetched");
     return;
   }
 
   let inserted = 0;
   let updated = 0;
 
-    for (const article of articles) {
+  for (const article of articles) {
     try {
-     
+
       const {
         source,
         urlToImage,
@@ -27,9 +28,9 @@ export async function syncHeadlines() {
         ...rest
       } = article;
 
-      
+
       const mappedArticle = {
-        ...rest, 
+        ...rest,
         source_name: source?.name || "",
         url_to_image: urlToImage || "",
         published_at: publishedAt,
@@ -42,11 +43,12 @@ export async function syncHeadlines() {
       else if (result === "updated") updated++;
 
     } catch (error) {
-      console.error("Error processing article:", error);
+      logger.error("Error processing article:", error);
     }
   }
 
-  console.log(
-  `Sync Headlines Service completed  | Inserted: ${inserted} | Updated: ${updated}`
-);
+  logger.info("Sync Headlines Service completed", {
+    articlesInserted: inserted,
+    articlesUpdated: updated,
+  });
 }
