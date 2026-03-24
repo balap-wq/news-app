@@ -3,7 +3,7 @@ import { jest } from "@jest/globals";
 const mockFindArticleById = jest.fn();
 
 await jest.unstable_mockModule(
-  "../src/repositories/articlesRepository.js",
+  "../src/repositories/articleRepository.js",
   () => ({
     findArticleById: mockFindArticleById,
   })
