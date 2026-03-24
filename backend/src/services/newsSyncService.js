@@ -9,6 +9,8 @@ export async function syncHeadlines() {
     country: "us",
     category: "general",
   });
+  console.log("Articles received:", articles?.length);
+
 
   if (!articles || articles.length === 0) {
     logger.warn("No articles fetched");
