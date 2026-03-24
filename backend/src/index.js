@@ -1,10 +1,13 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { getArticleById } from '../controllers/articlesController';
 import logger from './config/logger.js';
+import { getArticleById } from './controllers/articlesController.js';
+import  startSyncJob  from './jobs/syncJob.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 const app = express();
+
 const PORT = process.env.PORT || 5000;
 
 app.use(
@@ -24,6 +27,10 @@ app.get('/health', (_req, res) => {
 app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
+
+app.use('/api/admin', adminRoutes);
+
+startSyncJob();
 
 app.listen(PORT, () => {
   logger.info(`Server running on http://localhost:${PORT}`);

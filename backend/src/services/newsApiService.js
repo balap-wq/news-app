@@ -1,5 +1,5 @@
 import axios from "axios";
-import logger from "../config/logger";
+import logger from "../config/logger.js";
 
 const BASE_URL = process.env.NEWS_API_BASE_URL;
 const API_KEY = process.env.NEWS_API_KEY;
@@ -9,7 +9,7 @@ export const fetchTopHeadlines = async ({
   category,
   pageSize = 100,
 }) => {
-    const response = await axios.get(`${BASE_URL}top-headlines`, {
+    const response = await axios.get(`${BASE_URL}/top-headlines`, {
       params: {
         apiKey: API_KEY,
         country,

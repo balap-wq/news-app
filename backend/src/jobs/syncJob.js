@@ -1,9 +1,8 @@
 import cron from "node-cron";
-import logger from "../config/logger";
-import syncHeadlines from "../services/newsSyncService"
+import logger from "../config/logger.js";
+import { syncHeadlines } from "../services/newsSyncService.js";
 
-
-export const startSyncJob = () => {
+ const startSyncJob = () => {
     cron.schedule("*/30 * * * *", async () => {
         logger.info("cron job started", {
             time: new Date().toISOString(),
@@ -18,3 +17,4 @@ export const startSyncJob = () => {
         }
     });
 };
+export default startSyncJob;
