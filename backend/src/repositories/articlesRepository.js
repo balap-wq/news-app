@@ -22,8 +22,8 @@ async function insertArticle(article) {
   ];
 
   try {
-    const { row } =await pool.query(query,values);
-    return row[0];
+    const { rows } =await pool.query(query,values);
+    return rows[0];
   } 
 
   catch (error) {

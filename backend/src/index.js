@@ -2,10 +2,8 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import logger from './config/logger.js';
-import { getArticleById } from './controllers/articlesController.js';
 import  startSyncJob  from './jobs/syncJob.js';
 import adminRoutes from './routes/adminRoutes.js';
-import { syncHeadlines } from './services/newsSyncService.js';
 
 const app = express();
 
@@ -28,8 +26,7 @@ app.get('/health', (_req, res) => {
 app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
-syncHeadlines()
-syncHeadlines()
+
 
 
 app.use('/api/admin', adminRoutes);
