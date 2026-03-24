@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import { findTopHeadlines, countArticles } from '../services/articleService.js';
 
 export async function getHeadlines(req, res) {
@@ -36,7 +37,7 @@ export async function getHeadlines(req, res) {
       totalPages,
     });
   } catch (err) {
-    console.error(err);
+    logger.error(err);
     return res.status(500).json({ error: 'Server Error' });
   }
 }
