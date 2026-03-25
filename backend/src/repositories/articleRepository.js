@@ -1,9 +1,7 @@
 import pool from "../config/db.js";
 import logger from "../config/logger.js";
 
-
- // Common query executor (removes duplication)
-
+// Common DB executor
 async function executeQuery(query, values = []) {
   try {
     const { rows } = await pool.query(query, values);
@@ -14,8 +12,10 @@ async function executeQuery(query, values = []) {
   }
 }
 
-// INSERT ARTICLES
+// INSERT
 async function insertArticle(article) {
+  if (!article) throw new Error("Article data is required");
+
   const query = `
     INSERT INTO articles (
       title, description, url_to_image, source_name,
@@ -39,11 +39,20 @@ async function insertArticle(article) {
   ];
 
   const rows = await executeQuery(query, values);
+
+  if (!rows || rows.length === 0) {
+    throw new Error("Insert failed");
+  }
+
   return rows[0];
 }
 
-// UPSERT
+// UPSERT (FIXED)
 async function upsertArticle(article) {
+  if (!article || !article.url) {
+    throw new Error("Invalid article data (url required)");
+  }
+
   const query = `
     INSERT INTO articles (
       title, description, url_to_image, source_name,
@@ -60,14 +69,13 @@ async function upsertArticle(article) {
       published_at = COALESCE(EXCLUDED.published_at, articles.published_at),
       created_at = COALESCE(EXCLUDED.created_at, articles.created_at),
       content = COALESCE(EXCLUDED.content, articles.content),
-      url = COALESCE(EXCLUDED.url, articles.url),
       author = COALESCE(EXCLUDED.author, articles.author),
       category = COALESCE(EXCLUDED.category, articles.category)
-      
-    RETURNING *;
+
+    RETURNING (xmax = 0) AS inserted;
   `;
 
-    const values = [
+  const values = [
     article.title,
     article.description,
     article.url_to_image,
@@ -81,21 +89,24 @@ async function upsertArticle(article) {
   ];
 
   const rows = await executeQuery(query, values);
-  return rows[0];
+
+  if (!rows || rows.length === 0) {
+    throw new Error("Upsert failed");
+  }
+
+  return rows[0].inserted ? "inserted" : "updated";
 }
 
-// FIND ARTICLE BY ID
+// FIND BY ID
 async function findArticleById(id) {
   const query = `SELECT * FROM articles WHERE id = $1;`;
 
   const rows = await executeQuery(query, [id]);
-  return rows[0] || null; // consistent return
+  return rows[0] || null;
 }
 
 // FIND HEADLINES
 async function findTopHeadlines({ limit = 10, offset = 0, category }) {
-
-  // limit protection
   limit = Math.min(limit, 100);
 
   let query = `SELECT * FROM articles `;
