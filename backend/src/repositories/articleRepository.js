@@ -1,4 +1,5 @@
 import pool from "../config/db.js";
+import logger from "../config/logger.js";
 
 //INSERTING QUERY 
 async function insertArticle(article) {
@@ -27,7 +28,7 @@ async function insertArticle(article) {
   }
 
   catch (error) {
-    console.error("Here some Inserting errors:", error.message);
+    logger.error("Here some Inserting errors:", error.message);
     throw error;
   }
 }
@@ -110,7 +111,7 @@ async function findArticleById(id) {
   }
 
   catch (error) {
-    console.error("Here some Find Article error:", error.message);
+    logger.error("Here some Find Article error:", error.message);
     throw error;
   }
 }
@@ -139,7 +140,7 @@ async function findTopHeadlines({ limit = 10, offset = 0, category }) {
     return rows;
   }
   catch (error) {
-    console.error("Here some Find Top Headline Error", error.message);
+    logger.error("Here some Find Top Headline Error", error.message);
   }
 }
 
@@ -159,7 +160,7 @@ async function countArticles({ category }) {
       return parseInt(rows[0].count, 10);
     }
     catch (error) {
-      console.error("Error counting articles:", error.message);
+      logger.error("Error counting articles:", error.message);
       throw error;
     }
   }
