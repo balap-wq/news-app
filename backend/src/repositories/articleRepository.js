@@ -36,46 +36,60 @@ async function insertArticle(article) {
  async function upsertArticle(article) {
 
   const query = `
-    INSERT INTO articles
-    (title,description,url_to_image,source_name,published_at,created_at,content,url,author,category)
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+  INSERT INTO articles (
+    title,
+    description,
+    content,
+    url,
+    url_to_image,
+    author,
+    source_name,
+    category,
+    published_at
+  )
+  VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
 
-    ON CONFLICT (url)
-    DO UPDATE SET
-      title = COALESCE(EXCLUDED.title, articles.title),
-      description = COALESCE(EXCLUDED.description, articles.description),
-      url_to_image = COALESCE(EXCLUDED.url_to_image,articles.url_to_image),
-      source_name = COALESCE(EXCLUDED.source_name, articles.source_name),
-      published_at = COALESCE(EXCLUDED.published_at, articles.published_at)
-      created_at = COALESCE(EXCLUDED.created_at, articles.created_at)
-      content = COALESCE(EXCLUDED.content, articles.content),
-      url = COALESCE(EXCLUDED.url, articles.url),
-      author = COALESCE(EXCLUDED.author, articles.author),
-      category = COALESCE(EXCLUDED.category, articles.category),
-  `;
+  ON CONFLICT (url)
+  DO UPDATE SET
+    title = COALESCE(EXCLUDED.title, articles.title),
+    description = COALESCE(EXCLUDED.description, articles.description),
+    content = COALESCE(EXCLUDED.content, articles.content),
+    url_to_image = COALESCE(EXCLUDED.url_to_image, articles.url_to_image),
+    author = COALESCE(EXCLUDED.author, articles.author),
+    source_name = COALESCE(EXCLUDED.source_name, articles.source_name),
+    category = COALESCE(EXCLUDED.category, articles.category),
+    published_at = COALESCE(EXCLUDED.published_at, articles.published_at),
+    updated_at = NOW()
 
-  const values =[
+  WHERE
+    articles.title IS DISTINCT FROM EXCLUDED.title OR
+    articles.description IS DISTINCT FROM EXCLUDED.description OR
+    articles.content IS DISTINCT FROM EXCLUDED.content OR
+    articles.url_to_image IS DISTINCT FROM EXCLUDED.url_to_image OR
+    articles.author IS DISTINCT FROM EXCLUDED.author OR
+    articles.source_name IS DISTINCT FROM EXCLUDED.source_name OR
+    articles.category IS DISTINCT FROM EXCLUDED.category OR
+    articles.published_at IS DISTINCT FROM EXCLUDED.published_at
+
+  RETURNING (xmax = 0) AS inserted;
+`;
+
+    const values = [
     article.title,
     article.description,
-    article.url_to_image,
-    article.source_name,
-    article.published_at,
-    article.created_at,
     article.content,
     article.url,
+    article.url_to_image,
     article.author,
+    article.source_name,
     article.category,
+    article.published_at,
   ];
 
-  try {
-    const { row } =await pool.query(query,values);
-    return row[0];
-  } 
+  const result = await pool.query(query, values);
 
-  catch (error) {
-    console.error("Here some upSerting errors:",error.message);
-    throw error;
-  }
+
+  return result.rows[0].inserted ? "inserted" : "updated";
 }
 
 //FIND ARTICLE_BY_ID QUERY
