@@ -41,7 +41,6 @@ async function insertArticle(article) {
   const rows = await executeQuery(query, values);
   return rows[0];
 }
-insertArticle();
 
 // UPSERT
 async function upsertArticle(article) {
