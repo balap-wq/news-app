@@ -1,6 +1,5 @@
 import axios from 'axios';
 import pool from '../config/db.js';
-// import {NEWS_API_KEY} from '../../.env.example';
 
 async function fetchAndStore() {
   try {

@@ -66,7 +66,7 @@ async function upsertArticle(article) {
     RETURNING *;
   `;
 
-  const values = [
+    const values = [
     article.title,
     article.description,
     article.url_to_image,
