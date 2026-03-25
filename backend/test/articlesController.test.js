@@ -30,7 +30,7 @@ describe("getArticleById Unit Tests", () => {
     jest.clearAllMocks();
   });
 
-  // ✅ SUCCESS CASE
+  
   it("should return 200 with article data", async () => {
     mockFindArticleById.mockResolvedValue({
       id: 1,
@@ -40,7 +40,7 @@ describe("getArticleById Unit Tests", () => {
 
     await getArticleById(req, res);
 
-    expect(mockFindArticleById).toHaveBeenCalledWith(1); // ✅ number not string
+    expect(mockFindArticleById).toHaveBeenCalledWith(1);
     expect(mockFindArticleById).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
@@ -50,22 +50,21 @@ describe("getArticleById Unit Tests", () => {
     });
   });
 
-  // ❌ NOT FOUND
   it("should return 404 if article not found", async () => {
     mockFindArticleById.mockResolvedValue(null);
 
     await getArticleById(req, res);
 
-    expect(mockFindArticleById).toHaveBeenCalledWith(1); // ✅ number not string
+    expect(mockFindArticleById).toHaveBeenCalledWith(1);
     expect(mockFindArticleById).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
       error: "Article not found",
-      articleId: 1,        // ✅ added articleId
+      articleId: 1,
     });
   });
 
-  // ❌ INVALID ID
+
   it("should return 400 if id is not a valid number", async () => {
     req.params = { id: "abc" };
 
@@ -74,22 +73,26 @@ describe("getArticleById Unit Tests", () => {
     expect(mockFindArticleById).not.toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
-      error: "Invalid article ID",  // ✅ updated message
+      error: "Invalid article ID",
     });
   });
 
-  // ❌ SERVER ERROR
+  
   it("should return 500 on unexpected error", async () => {
+    jest.spyOn(console, "error").mockImplementation(() => {}); 
+
     mockFindArticleById.mockRejectedValue(new Error("DB error"));
 
     await getArticleById(req, res);
 
-    expect(mockFindArticleById).toHaveBeenCalledWith(1); // ✅ number not string
+    expect(mockFindArticleById).toHaveBeenCalledWith(1);
     expect(mockFindArticleById).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
       error: "Internal server error",
     });
+
+    console.error.mockRestore(); 
   });
 
 });
