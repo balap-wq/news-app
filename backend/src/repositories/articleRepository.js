@@ -1,4 +1,5 @@
 import pool from "../config/db.js";
+import logger from "../config/logger.js";
 
 
  // Common query executor (removes duplication)
@@ -8,7 +9,7 @@ async function executeQuery(query, values = []) {
     const { rows } = await pool.query(query, values);
     return rows;
   } catch (error) {
-    console.error("Database error:", error.message);
+    logger.error("Database error:", error.message);
     throw error;
   }
 }
@@ -40,6 +41,7 @@ async function insertArticle(article) {
   const rows = await executeQuery(query, values);
   return rows[0];
 }
+insertArticle();
 
 // UPSERT
 async function upsertArticle(article) {
