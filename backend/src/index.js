@@ -1,8 +1,9 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { articlesRoutes } from "./routes/articles.js";
+import { articlesRoutes } from './routes/articles.js';
 import logger from './config/logger.js';
+import { syncHeadlines } from './services/newsSyncService.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,7 +16,6 @@ app.use(
 
 app.use(express.json());
 
-// ✅ Use routes (not controller directly)
 app.use("/api/articles", articlesRoutes);
 
 // ✅ Health check
@@ -27,6 +27,9 @@ app.get('/health', (_req, res) => {
 app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
+syncHeadlines()
+syncHeadlines()
+
 
 // ✅ Start server
 app.listen(PORT, () => {

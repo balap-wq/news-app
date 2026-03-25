@@ -1,6 +1,5 @@
 import axios from 'axios';
 import pool from '../config/db.js';
-import { NEWS_API_KEY } from '../../';
 
 async function fetchAndStore() {
   try {
@@ -10,7 +9,8 @@ async function fetchAndStore() {
 
     console.log('STATUS:', res.data.status);
     console.log('TOTAL ARTICLES:', res.data.articles.length);
-
+    
+    
     const articles = res.data.articles;
 
     for (const article of articles) {
