@@ -4,14 +4,18 @@ import { upsertArticle } from "../repositories/articleRepository.js";
 export async function syncHeadlines() {
   console.log("Starting Sync Headlines Service...");
 
-  const articles = await fetchTopHeadlines({
-    country: "us",
-    category: "general",
-  });
-  console.log("Articles received:", articles?.length);
+  let articles;
+  try {
+    articles = await fetchTopHeadlines({
+      country: "us",
+      category: "general",
+    });
+  } catch (error) {
+    console.error("Failed to fetch headlines:", error);
+    return;
+  }
 
-
-  if (!articles || articles.length === 0) {
+  if (!Array.isArray(articles) || articles.length === 0) {
     console.log("No articles fetched");
     return;
   }
@@ -19,36 +23,34 @@ export async function syncHeadlines() {
   let inserted = 0;
   let updated = 0;
 
-    for (const article of articles) {
+  for (const article of articles) {
     try {
-     
       const {
         source,
         urlToImage,
         publishedAt,
         ...rest
-      } = article;
+      } = article || {};
 
-      
       const mappedArticle = {
-        ...rest, 
+        ...rest,
         source_name: source?.name || "",
         url_to_image: urlToImage || "",
-        published_at: publishedAt,
+        published_at: publishedAt ? new Date(publishedAt) : null,
+        created_at: new Date(),
         category: "general",
       };
 
       const result = await upsertArticle(mappedArticle);
 
-      if (result === "inserted") inserted++;
-      else if (result === "updated") updated++;
-
+      if (result === "inserted") inserted += 1;
+      else if (result === "updated") updated += 1;
     } catch (error) {
       console.error("Error processing article:", error);
     }
   }
 
   console.log(
-  `Sync Headlines Service completed  | Inserted: ${inserted} | Updated: ${updated}`
-);
+    `Sync Headlines Service completed  | Inserted: ${inserted} | Updated: ${updated}`
+  );
 }
