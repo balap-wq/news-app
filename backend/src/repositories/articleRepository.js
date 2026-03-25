@@ -61,16 +61,26 @@ async function upsertArticle(article) {
     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
 
     ON CONFLICT (url)
-    DO UPDATE SET
-      title = COALESCE(EXCLUDED.title, articles.title),
-      description = COALESCE(EXCLUDED.description, articles.description),
-      url_to_image = COALESCE(EXCLUDED.url_to_image, articles.url_to_image),
-      source_name = COALESCE(EXCLUDED.source_name, articles.source_name),
-      published_at = COALESCE(EXCLUDED.published_at, articles.published_at),
-      created_at = COALESCE(EXCLUDED.created_at, articles.created_at),
-      content = COALESCE(EXCLUDED.content, articles.content),
-      author = COALESCE(EXCLUDED.author, articles.author),
-      category = COALESCE(EXCLUDED.category, articles.category)
+   DO UPDATE SET
+  title = COALESCE(EXCLUDED.title, articles.title),
+  description = COALESCE(EXCLUDED.description, articles.description),
+  url_to_image = COALESCE(EXCLUDED.url_to_image, articles.url_to_image),
+  source_name = COALESCE(EXCLUDED.source_name, articles.source_name),
+  published_at = COALESCE(EXCLUDED.published_at, articles.published_at),
+  content = COALESCE(EXCLUDED.content, articles.content),
+  author = COALESCE(EXCLUDED.author, articles.author),
+  category = COALESCE(EXCLUDED.category, articles.category),
+  updated_at = NOW()  
+
+      WHERE
+    articles.title IS DISTINCT FROM EXCLUDED.title OR
+    articles.description IS DISTINCT FROM EXCLUDED.description OR
+    articles.content IS DISTINCT FROM EXCLUDED.content OR
+    articles.url_to_image IS DISTINCT FROM EXCLUDED.url_to_image OR
+    articles.author IS DISTINCT FROM EXCLUDED.author OR
+    articles.source_name IS DISTINCT FROM EXCLUDED.source_name OR
+    articles.category IS DISTINCT FROM EXCLUDED.category OR
+    articles.published_at IS DISTINCT FROM EXCLUDED.published_at
 
     RETURNING (xmax = 0) AS inserted;
   `;
