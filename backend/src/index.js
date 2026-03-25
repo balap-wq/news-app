@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { getArticleById } from '../controllers/articlesController';
+import { getArticleById } from '../controllers/articlesController.js';
 import logger from './config/logger.js';
 
 const app = express();
@@ -24,6 +24,7 @@ app.get('/health', (_req, res) => {
 app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
+
 
 app.listen(PORT, () => {
   logger.info(`Server running on http://localhost:${PORT}`);

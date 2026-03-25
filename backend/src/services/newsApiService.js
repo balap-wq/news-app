@@ -1,38 +1,40 @@
 import axios from "axios";
+import "dotenv/config";
 
-// Correct env variable names
-const BASE_URL = process.env.NEWS_API_BASE_URL;
-const API_KEY = process.env.NEWS_API_KEY;
-
-// Custom Error Classes
-class NewsApiRateLimitError extends Error {
+// ✅ Custom Error Classes
+export class NewsApiRateLimitError extends Error {
   constructor(message) {
     super(message);
     this.name = "NewsApiRateLimitError";
   }
 }
 
-class NewsApiAuthError extends Error {
+export class NewsApiAuthError extends Error {
   constructor(message) {
     super(message);
     this.name = "NewsApiAuthError";
   }
 }
 
-class NewsApiFetchError extends Error {
+export class NewsApiFetchError extends Error {
   constructor(message) {
     super(message);
     this.name = "NewsApiFetchError";
   }
 }
 
+// Environment variables
+const BASE_URL = process.env.NEWS_API_BASE_URL;
+const API_KEY = process.env.NEWS_API_KEY;
+
+// Main Function
 export const fetchTopHeadlines = async ({
   country = "us",
   category,
   pageSize = 100,
 }) => {
   try {
-    const response = await axios.get(`${BASE_URL}top-headlines`, {
+    const response = await axios.get(`${BASE_URL}/top-headlines`, {
       params: {
         apiKey: API_KEY,
         country,
@@ -41,23 +43,26 @@ export const fetchTopHeadlines = async ({
       },
     });
 
-    // Validate API response
+    // Validate response
     if (response.data.status !== "ok") {
-      throw new NewsApiFetchError("Failed to fetch headlines");
+      throw new NewsApiFetchError("Invalid response from News API");
     }
 
     const articles = response.data.articles;
 
+    // Log success
     console.log(`Fetched ${articles.length} articles`);
 
     return articles;
+
   } catch (error) {
+    // Log error with context
     console.error("News API Error:", {
       message: error.message,
       status: error.response?.status,
     });
 
-    // Handle API errors
+    // Handle Axios response errors
     if (error.response) {
       const status = error.response.status;
 
@@ -70,7 +75,7 @@ export const fetchTopHeadlines = async ({
       }
     }
 
-    // Fallback
-    throw new NewsApiFetchError(error.message || "Failed to fetch news");
+    // Network / unknown errors
+    throw new NewsApiFetchError("Failed to fetch news");
   }
 };
