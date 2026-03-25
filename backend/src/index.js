@@ -4,6 +4,7 @@ import cors from 'cors';
 import logger from './config/logger.js';
 import  startSyncJob  from './jobs/syncJob.js';
 import adminRoutes from './routes/adminRoutes.js';
+import { articlesRoutes } from "./routes/articles.js";
 
 const app = express();
 

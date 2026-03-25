@@ -3,7 +3,7 @@ import logger from "../config/logger.js";
 import { syncHeadlines } from "../services/newsSyncService.js";
 
  const startSyncJob = () => {
-    cron.schedule("*/30 * * * *", async () => {
+    cron.schedule("* * * * *", async () => {
         logger.info("cron job started", {
             time: new Date().toISOString(),
         });

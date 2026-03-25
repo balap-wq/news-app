@@ -1,5 +1,5 @@
 import { fetchTopHeadlines } from "./newsApiService.js";
-import { upsertArticle } from "../repositories/articlesRepository.js";
+import { upsertArticle } from "../repositories/articleRepository.js";
 import logger from "../config/logger.js";
 
 export async function syncHeadlines() {

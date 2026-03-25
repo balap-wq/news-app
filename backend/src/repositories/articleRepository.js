@@ -3,12 +3,12 @@ import pool from "../config/db.js";
 //INSERTING QUERY 
 async function insertArticle(article) {
 
-  const query =` INSERT INTO articles(title,description,url_to_image,source_name,published_at,created_at,content,url,author,category)
+  const query = ` INSERT INTO articles(title,description,url_to_image,source_name,published_at,created_at,content,url,author,category)
   VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
   RETURNING *;
   `;
 
-  const values =[
+  const values = [
     article.title,
     article.description,
     article.url_to_image,
@@ -22,18 +22,18 @@ async function insertArticle(article) {
   ];
 
   try {
-    const { rows } =await pool.query(query,values);
+    const { rows } = await pool.query(query, values);
     return rows[0];
-  } 
+  }
 
   catch (error) {
-    console.error("Here some Inserting errors:",error.message);
+    console.error("Here some Inserting errors:", error.message);
     throw error;
   }
 }
 
 //UPSERTING QUERY 
- async function upsertArticle(article) {
+async function upsertArticle(article) {
 
   const query = `
   INSERT INTO articles (
@@ -74,7 +74,7 @@ async function insertArticle(article) {
   RETURNING (xmax = 0) AS inserted;
 `;
 
-    const values = [
+  const values = [
     article.title,
     article.description,
     article.content,
@@ -85,11 +85,15 @@ async function insertArticle(article) {
     article.category,
     article.published_at,
   ];
-
   const result = await pool.query(query, values);
 
+  const row = result.rows?.[0];
 
-  return result.rows[0].inserted ? "inserted" : "updated";
+  if (!row) {
+    return "no-change";
+  }
+
+  return row.inserted ? "inserted" : "updated";
 }
 
 //FIND ARTICLE_BY_ID QUERY
@@ -100,32 +104,32 @@ async function findArticleById(id) {
   WHERE id = $1;
   `;
 
-try {
-  const { rows } = await pool.query(query,[id])
-  return rows[0] || "There is no data Available.";
-} 
+  try {
+    const { rows } = await pool.query(query, [id])
+    return rows[0] || "There is no data Available.";
+  }
 
-catch (error) {
-  console.error("Here some Find Article error:",error.message);
-  throw error;
-}
+  catch (error) {
+    console.error("Here some Find Article error:", error.message);
+    throw error;
+  }
 }
 
 // FIND TOP_HEADLINES
 
-async function findTopHeadlines({ limit = 10, offset = 0, category}) {
+async function findTopHeadlines({ limit = 10, offset = 0, category }) {
 
   let query = `SELECT * FROM articles`;
   const values = [];
 
   if (category) {
-    query +=`WHERE category = $1`;
+    query += `WHERE category = $1`;
     values.push(category);
   }
 
   query += `ORDER BY published_at DESC
   LIMIT $${values.length + 1}
-  OFFSET $${values.length +2};
+  OFFSET $${values.length + 2};
   `;
 
   values.push(limit, offset);
@@ -133,31 +137,31 @@ async function findTopHeadlines({ limit = 10, offset = 0, category}) {
   try {
     const { rows } = await pool.query(query, values);
     return rows;
-  } 
+  }
   catch (error) {
-    console.error("Here some Find Top Headline Error",error.message);
+    console.error("Here some Find Top Headline Error", error.message);
   }
 }
 
 //COUNT ARTICLES
 
-async function countArticles({category}) {
+async function countArticles({ category }) {
   let query = `SELECT COUNT(*) FROM articles`;
   const values = [];
 
   if (category) {
-    query +=`WHERE category=$1
+    query += `WHERE category=$1
     `;
     values.push(category);
 
-  try {
-    const { rows } = await pool.query(query, values);
-    return parseInt(rows[0].count, 10);
-  } 
-  catch (error) {
-    console.error("Error counting articles:", error.message);
-    throw error;
-  }
+    try {
+      const { rows } = await pool.query(query, values);
+      return parseInt(rows[0].count, 10);
+    }
+    catch (error) {
+      console.error("Error counting articles:", error.message);
+      throw error;
+    }
   }
 
 }
