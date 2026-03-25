@@ -28,7 +28,6 @@ app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
 syncHeadlines()
-syncHeadlines()
 
 
 // ✅ Start server
