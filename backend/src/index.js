@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { getArticleById } from '../controllers/articlesController';
+import { articlesRoutes } from "./routes/articles.js";
 import logger from './config/logger.js';
 
 const app = express();
@@ -15,16 +15,20 @@ app.use(
 
 app.use(express.json());
 
-app.get("/api/articles/:id", getArticleById);
+// ✅ Use routes (not controller directly)
+app.use("/api/articles", articlesRoutes);
 
+// ✅ Health check
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// ✅ Sample endpoint
 app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
 
+// ✅ Start server
 app.listen(PORT, () => {
   logger.info(`Server running on http://localhost:${PORT}`);
 });

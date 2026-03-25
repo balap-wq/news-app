@@ -1,4 +1,4 @@
-import { findArticleById } from '../repositories/articlesRepository.js';
+import { findArticleById } from '../repositories/articleRepository.js';
 
 async function getArticleById(req, res) {
   try {

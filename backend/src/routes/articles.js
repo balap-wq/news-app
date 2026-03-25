@@ -5,4 +5,4 @@ const router = express.Router();
 
 router.get("/:id", getArticleById);
 
-export { router as articlesRoutes };
+export { router as articlesRoutes }; 
