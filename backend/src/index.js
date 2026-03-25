@@ -18,10 +18,12 @@ app.use(express.json());
 
 app.use("/api/articles", articlesRoutes);
 
+// ✅ Health check
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// ✅ Sample endpoint
 app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
@@ -29,6 +31,7 @@ syncHeadlines()
 syncHeadlines()
 
 
+// ✅ Start server
 app.listen(PORT, () => {
   logger.info(`Server running on http://localhost:${PORT}`);
 });

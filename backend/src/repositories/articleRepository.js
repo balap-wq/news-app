@@ -88,6 +88,17 @@ async function insertArticle(article) {
 
   const result = await pool.query(query, values);
 
+      ON CONFLICT (url)
+      DO UPDATE SET
+        title = COALESCE(EXCLUDED.title, articles.title),
+        description = COALESCE(EXCLUDED.description, articles.description),
+        content = COALESCE(EXCLUDED.content, articles.content),
+        url_to_image = COALESCE(EXCLUDED.url_to_image, articles.url_to_image),
+        author = COALESCE(EXCLUDED.author, articles.author),
+        source_name = COALESCE(EXCLUDED.source_name, articles.source_name),
+        category = COALESCE(EXCLUDED.category, articles.category),
+        published_at = COALESCE(EXCLUDED.published_at, articles.published_at)
+    `;
 
   return result.rows[0].inserted ? "inserted" : "updated";
 }
