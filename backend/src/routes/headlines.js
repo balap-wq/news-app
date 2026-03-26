@@ -1,10 +1,10 @@
 import express from 'express';
-import {getHeadlines} from '../controllers/headlinesController.js'
+import { getHeadlines } from '../controllers/headlinesController.js';
 
 const router = express.Router();
 
 // get /api/headlines
 
-router.get("/",getHeadlines);
+router.get('/', getHeadlines);
 
 export default router;

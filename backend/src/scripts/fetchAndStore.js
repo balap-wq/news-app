@@ -10,8 +10,7 @@ async function fetchAndStore() {
 
     logger.info('STATUS:', res.data.status);
     logger.info('TOTAL ARTICLES:', res.data.articles.length);
-    
-    
+
     const articles = res.data.articles;
 
     for (const article of articles) {
