@@ -59,7 +59,7 @@ export const fetchTopHeadlines = async ({
 
   } catch (error) {
     // Log error with context
-    console.error("News API Error:", {
+    logger.error("News API Error:", {
       message: error.message,
       status: error.response?.status,
     });
