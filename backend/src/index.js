@@ -2,9 +2,9 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import logger from './config/logger.js';
-import  startSyncJob  from './jobs/syncJob.js';
 import adminRoutes from './routes/adminRoutes.js';
 import { articlesRoutes } from "./routes/articles.js";
+import syncArticles from './jobs/syncJob.js';
 
 const app = express();
 
@@ -34,7 +34,7 @@ app.get('/api/news', (_req, res) => {
 
 app.use('/api/admin', adminRoutes);
 
-startSyncJob();
+syncArticles();
 
 app.listen(PORT, () => {
   logger.info(`Server running on http://localhost:${PORT}`);

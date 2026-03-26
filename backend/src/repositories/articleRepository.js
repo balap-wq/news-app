@@ -1,8 +1,21 @@
 import pool from "../config/db.js";
 import logger from "../config/logger.js";
 
+// Common DB executor
+async function executeQuery(query, values = []) {
+  try {
+    const { rows } = await pool.query(query, values);
+    return rows;
+  } catch (error) {
+    logger.error("Database error:", error.message);
+    throw error;
+  }
+}
+
 // INSERT
 async function insertArticle(article) {
+  if (!article) throw new Error("Article data is required");
+
   const query = `
     INSERT INTO articles (
       title, description, url_to_image, source_name,
@@ -25,45 +38,49 @@ async function insertArticle(article) {
     article.category,
   ];
 
-  try {
-    const { rows } = await pool.query(query, values);
-    return rows[0];
-  } catch (error) {
-    logger.error("Insert article failed", { error: error.message });
-    throw error;
+  const rows = await executeQuery(query, values);
+
+  if (!rows || rows.length === 0) {
+    throw new Error("Insert failed");
   }
+
+  return rows[0];
 }
 
-// UPSERT
+// UPSERT (FIXED)
 async function upsertArticle(article) {
+  if (!article || !article.url) {
+    throw new Error("Invalid article data (url required)");
+  }
+
   const query = `
     INSERT INTO articles (
-      title, description, content, url, url_to_image,
-      author, source_name, category, published_at
+      title, description, url_to_image, source_name,
+      published_at, created_at, content, url, author, category
     )
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
 
     ON CONFLICT (url)
-    DO UPDATE SET
-      title = COALESCE(EXCLUDED.title, articles.title),
-      description = COALESCE(EXCLUDED.description, articles.description),
-      content = COALESCE(EXCLUDED.content, articles.content),
-      url_to_image = COALESCE(EXCLUDED.url_to_image, articles.url_to_image),
-      author = COALESCE(EXCLUDED.author, articles.author),
-      source_name = COALESCE(EXCLUDED.source_name, articles.source_name),
-      category = COALESCE(EXCLUDED.category, articles.category),
-      published_at = COALESCE(EXCLUDED.published_at, articles.published_at),
-      updated_at = NOW()
+   DO UPDATE SET
+  title = COALESCE(EXCLUDED.title, articles.title),
+  description = COALESCE(EXCLUDED.description, articles.description),
+  url_to_image = COALESCE(EXCLUDED.url_to_image, articles.url_to_image),
+  source_name = COALESCE(EXCLUDED.source_name, articles.source_name),
+  published_at = COALESCE(EXCLUDED.published_at, articles.published_at),
+  content = COALESCE(EXCLUDED.content, articles.content),
+  author = COALESCE(EXCLUDED.author, articles.author),
+  category = COALESCE(EXCLUDED.category, articles.category),
+  updated_at = NOW()  
 
-    WHERE
-      articles.title IS DISTINCT FROM EXCLUDED.title OR
-      articles.description IS DISTINCT FROM EXCLUDED.description OR
-      articles.content IS DISTINCT FROM EXCLUDED.content OR
-      articles.url_to_image IS DISTINCT FROM EXCLUDED.url_to_image OR
-      articles.author IS DISTINCT FROM EXCLUDED.author OR
-      articles.source_name IS DISTINCT FROM EXCLUDED.source_name OR
-      articles.category IS DISTINCT FROM EXCLUDED.category OR
-      articles.published_at IS DISTINCT FROM EXCLUDED.published_at
+      WHERE
+    articles.title IS DISTINCT FROM EXCLUDED.title OR
+    articles.description IS DISTINCT FROM EXCLUDED.description OR
+    articles.content IS DISTINCT FROM EXCLUDED.content OR
+    articles.url_to_image IS DISTINCT FROM EXCLUDED.url_to_image OR
+    articles.author IS DISTINCT FROM EXCLUDED.author OR
+    articles.source_name IS DISTINCT FROM EXCLUDED.source_name OR
+    articles.category IS DISTINCT FROM EXCLUDED.category OR
+    articles.published_at IS DISTINCT FROM EXCLUDED.published_at
 
     RETURNING (xmax = 0) AS inserted;
   `;
@@ -71,45 +88,37 @@ async function upsertArticle(article) {
   const values = [
     article.title,
     article.description,
+    article.url_to_image,
+    article.source_name,
+    article.published_at,
+    article.created_at,
     article.content,
     article.url,
-    article.url_to_image,
     article.author,
-    article.source_name,
     article.category,
-    article.published_at,
   ];
 
-  try {
-    const result = await pool.query(query, values);
+  const rows = await executeQuery(query, values);
 
-    const row = result.rows?.[0];
-
-    if (!row) return "no-change";
-
-    return row.inserted ? "inserted" : "updated";
-
-  } catch (error) {
-    logger.error("Upsert article failed", { error: error.message });
-    throw error;
+  if (!rows || rows.length === 0) {
+    throw new Error("Upsert failed");
   }
+
+  return rows[0].inserted ? "inserted" : "updated";
 }
 
 // FIND BY ID
 async function findArticleById(id) {
   const query = `SELECT * FROM articles WHERE id = $1;`;
 
-  try {
-    const { rows } = await pool.query(query, [id]);
-    return rows[0] || null;
-  } catch (error) {
-    logger.error("Find article failed", { error: error.message });
-    throw error;
-  }
+  const rows = await executeQuery(query, [id]);
+  return rows[0] || null;
 }
 
 // FIND HEADLINES
 async function findTopHeadlines({ limit = 10, offset = 0, category }) {
+  limit = Math.min(limit, 100);
+
   let query = `SELECT * FROM articles `;
   const values = [];
 
@@ -126,13 +135,7 @@ async function findTopHeadlines({ limit = 10, offset = 0, category }) {
 
   values.push(limit, offset);
 
-  try {
-    const { rows } = await pool.query(query, values);
-    return rows;
-  } catch (error) {
-    logger.error("Find headlines failed", { error: error.message });
-    throw error;
-  }
+  return await executeQuery(query, values);
 }
 
 // COUNT
@@ -141,17 +144,12 @@ async function countArticles({ category }) {
   const values = [];
 
   if (category) {
-    query += `WHERE category = $1 `;
+    query += `WHERE category = $1`;
     values.push(category);
   }
 
-  try {
-    const { rows } = await pool.query(query, values);
-    return parseInt(rows[0].count, 10);
-  } catch (error) {
-    logger.error("Count articles failed", { error: error.message });
-    throw error;
-  }
+  const rows = await executeQuery(query, values);
+  return parseInt(rows[0].count, 10);
 }
 
 export {

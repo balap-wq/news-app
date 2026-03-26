@@ -5,14 +5,18 @@ import logger from "../config/logger.js";
 export async function syncHeadlines() {
   logger.info("Starting Sync Headlines Service...");
 
-  const articles = await fetchTopHeadlines({
-    country: "us",
-    category: "general",
-  });
-  logger.info("Articles received:", articles?.length);
+  let articles;
+  try {
+    articles = await fetchTopHeadlines({
+      country: "us",
+      category: "general",
+    });
+  } catch (error) {
+    logger.error("Failed to fetch headlines:", error);
+    return;
+  }
 
-
-  if (!articles || articles.length === 0) {
+  if (!Array.isArray(articles) || articles.length === 0) {
     logger.warn("No articles fetched");
     return;
   }
@@ -22,7 +26,6 @@ export async function syncHeadlines() {
 
   for (const article of articles) {
     try {
-
       const {
         source,
         urlToImage,
@@ -35,15 +38,15 @@ export async function syncHeadlines() {
         ...rest,
         source_name: source?.name || "",
         url_to_image: urlToImage || "",
-        published_at: publishedAt,
+        published_at: publishedAt ? new Date(publishedAt) : null,
+        created_at: new Date(),
         category: "general",
       };
 
       const result = await upsertArticle(mappedArticle);
 
-      if (result === "inserted") inserted++;
-      else if (result === "updated") updated++;
-
+      if (result === "inserted") inserted += 1;
+      else if (result === "updated") updated += 1;
     } catch (error) {
       logger.error("Error processing article:", error);
     }
