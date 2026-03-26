@@ -85,13 +85,13 @@ async function insertArticle(article) {
     article.category,
     article.published_at,
   ];
-
-  const result = await pool.query(query, values);
-
+const result = await pool.query(query, values);
+  if (result.rows.length === 0) {
+    return "no-change";
+  }
 
   return result.rows[0].inserted ? "inserted" : "updated";
 }
-
 //FIND ARTICLE_BY_ID QUERY
 
 async function findArticleById(id) {
@@ -106,7 +106,7 @@ try {
 } 
 
 catch (error) {
-  console.error("Here some Find Article error:",error.message);
+  logger.error("Here some Find Article error:",error.message);
   throw error;
 }
 }
