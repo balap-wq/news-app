@@ -39,15 +39,15 @@ describe("GET /api/articles/:id Integration Tests", () => {
     const response = await request(app).get("/api/articles/9999");
 
     expect(response.statusCode).toBe(404);
-    expect(response.body).toHaveProperty("error", "Article not found"); // ✅ exact message
-    expect(response.body).toHaveProperty("articleId", 9999);            // ✅ added articleId
+    expect(response.body).toHaveProperty("error", "Article not found"); 
+    expect(response.body).toHaveProperty("articleId", 9999);            
   });
 
   it("should return 400 if id is not a valid number", async () => {
     const response = await request(app).get("/api/articles/abc");
 
     expect(response.statusCode).toBe(400);
-    expect(response.body).toHaveProperty("error", "Invalid article ID"); // ✅ exact message
+    expect(response.body).toHaveProperty("error", "Invalid article ID"); 
   });
 
   it("should return 404 if no id segment in path", async () => {
