@@ -1,8 +1,9 @@
 import { fetchTopHeadlines } from "./newsApiService.js";
 import { upsertArticle } from "../repositories/articleRepository.js";
+import logger from "../config/logger.js";
 
 export async function syncHeadlines() {
-  console.log("Starting Sync Headlines Service...");
+  logger.info("Starting Sync Headlines Service...");
 
   let articles;
   try {
@@ -11,12 +12,12 @@ export async function syncHeadlines() {
       category: "general",
     });
   } catch (error) {
-    console.error("Failed to fetch headlines:", error);
+    logger.error("Failed to fetch headlines:", error);
     return;
   }
 
   if (!Array.isArray(articles) || articles.length === 0) {
-    console.log("No articles fetched");
+    logger.warn("No articles fetched");
     return;
   }
 
@@ -30,7 +31,8 @@ export async function syncHeadlines() {
         urlToImage,
         publishedAt,
         ...rest
-      } = article || {};
+      } = article;
+
 
       const mappedArticle = {
         ...rest,
@@ -46,11 +48,12 @@ export async function syncHeadlines() {
       if (result === "inserted") inserted += 1;
       else if (result === "updated") updated += 1;
     } catch (error) {
-      console.error("Error processing article:", error);
+      logger.error("Error processing article:", error);
     }
   }
 
-  console.log(
-    `Sync Headlines Service completed  | Inserted: ${inserted} | Updated: ${updated}`
-  );
+  logger.info("Sync Headlines Service completed", {
+    articlesInserted: inserted,
+    articlesUpdated: updated,
+  });
 }
