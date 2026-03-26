@@ -1,4 +1,5 @@
 import axios from "axios";
+import logger from "../config/logger.js";
 import "dotenv/config";
 
 // ✅ Custom Error Classes
@@ -50,9 +51,10 @@ export const fetchTopHeadlines = async ({
 
     const articles = response.data.articles;
 
-    // Log success
-    console.log(`Fetched ${articles.length} articles`);
-
+    // ✅ Log count
+    logger.info(`Fetched ${articles.length} articles`);
+    
+    // Returns articles only
     return articles;
 
   } catch (error) {

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import pool from '../config/db.js';
+import logger from '../config/logger.js';
 
 async function fetchAndStore() {
   try {
@@ -7,8 +8,8 @@ async function fetchAndStore() {
       `https://newsapi.org/v2/top-headlines?country=us&apiKey=72565d6cc6cb4140ac1631d3f2dcf401`
     );
 
-    console.log('STATUS:', res.data.status);
-    console.log('TOTAL ARTICLES:', res.data.articles.length);
+    logger.info('STATUS:', res.data.status);
+    logger.info('TOTAL ARTICLES:', res.data.articles.length);
     
     
     const articles = res.data.articles;
@@ -28,9 +29,9 @@ async function fetchAndStore() {
       );
     }
 
-    console.log('Articles stored');
+    logger.info('Articles stored');
   } catch (err) {
-    console.error('Error fetching/storing articles:', err);
+    logger.error('Error fetching/storing articles:', err);
   }
 }
 
