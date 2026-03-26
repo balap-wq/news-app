@@ -88,7 +88,7 @@ async function insertArticle(article) {
 
   const result = await pool.query(query, values);
 
-      ON CONFLICT (url)
+     ` ON CONFLICT (url)
       DO UPDATE SET
         title = COALESCE(EXCLUDED.title, articles.title),
         description = COALESCE(EXCLUDED.description, articles.description),
