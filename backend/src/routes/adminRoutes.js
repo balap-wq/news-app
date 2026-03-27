@@ -1,22 +1,21 @@
 import express from 'express';
-import { syncHeadlines } from '../services/newsSyncService.js';
-import logger from '../config/logger.js';
+import  { syncHeadlines} from '../services/newsSyncService.js';
 
 const router = express.Router();
 
-router.post('/sync', async (req, res) => {
-  try {
-    logger.info('Manual  sync trigggred');
+router.post('/sync', async (req , res) => {
+    try{
+        logger.info('Manual sync started');
 
-    await syncHeadlines();
+        await syncHeadlines();
 
-    res.json({ message: 'Sync completed successfully' });
-  } catch (error) {
-    logger.error('manual sync failed', {
-      error: error.message,
-    });
-    res.status(500).json({ error: 'sync failed' });
-  }
+        res.json ({ message: 'Manual sync completed successfully' });
+    }  catch (error){
+        logger.error('Manual sync failed', {
+            error: error.message,
+        });
+        res.status(500).json({ message: 'Manual sync failed' });    
+    }
 });
 
-export default router;
+export default router;  
