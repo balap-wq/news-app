@@ -1,5 +1,28 @@
 import { findArticleById } from '../repositories/articleRepository.js';
+import { findTopHeadlines } from '../repositories/articleRepository.js';
 import logger from '../config/logger.js';
+
+ async function getHeadlines(req, res) {
+  try {
+    const { limit, offset, category } = req.query;
+
+    const headlines = await findTopHeadlines({
+      limit: limit ? parseInt(limit) : 10,
+      offset: offset ? parseInt(offset) : 0,
+      category,
+    });
+
+    res.status(200).json({
+      success: true,
+      data: headlines,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'failed to fetch data',
+    });
+  }
+}
 
 async function getArticleById(req, res) {
   try {
@@ -23,4 +46,4 @@ async function getArticleById(req, res) {
   }
 }
 
-export { getArticleById };
+export { getArticleById, getHeadlines };

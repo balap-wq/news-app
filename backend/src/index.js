@@ -5,7 +5,7 @@ import logger from './config/logger.js';
 import adminRoutes from './routes/adminRoutes.js';
 import { articlesRoutes } from './routes/articles.js';
 import syncArticles from './jobs/syncJob.js';
-import headlinesRouter from './routes/headlines.js';
+import { getHeadlines } from './controllers/articlesController.js';
 const app = express();
 
 const PORT = process.env.PORT || 5000;
@@ -21,7 +21,7 @@ app.use(express.json());
 app.use('/api/articles', articlesRoutes);
 
 // ✅ Headlines route for fetching new headlines;
-app.use('/api/headlines', headlinesRouter);
+app.use('/api/headlines', getHeadlines);
 
 // ✅ Health check
 app.get('/health', (_req, res) => {
