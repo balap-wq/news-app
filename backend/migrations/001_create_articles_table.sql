@@ -7,7 +7,7 @@ CREATE TABLE articles (
     content TEXT,
     url VARCHAR(1000) UNIQUE NOT NULL,
     url_to_image VARCHAR(1000),
-    source VARCHAR(255),
+    source_name VARCHAR(255),
     author VARCHAR(255),
     category VARCHAR(100),
     published_at TIMESTAMP,
