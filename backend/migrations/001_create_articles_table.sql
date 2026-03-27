@@ -1,7 +1,7 @@
 -- Create articles table
 
 CREATE TABLE articles (
-    id ADD GENERATED ALWAYS AS IDENTITY,
+    id GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     title VARCHAR(500) NOT NULL,
     description TEXT,
     content TEXT,
@@ -11,7 +11,7 @@ CREATE TABLE articles (
     author VARCHAR(255),
     category VARCHAR(100),
     published_at TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOW(),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Indexes for performance 
@@ -24,5 +24,4 @@ ON articles (published_at);
 CREATE INDEX articles_category 
 ON articles (category);
 
--- Rollback: Drop Articles Table
-DROP TABLE IF EXISTS articles;
+-- Note: To rollback, run: DROP TABLE IF EXISTS articles CASCADE;

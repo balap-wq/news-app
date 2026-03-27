@@ -2,26 +2,14 @@ import { findArticleById } from '../repositories/articleRepository.js';
 import { findTopHeadlines } from '../repositories/articleRepository.js';
 import logger from '../config/logger.js';
 
- async function getHeadlines(req, res) {
-  try {
-    const { limit, offset, category } = req.query;
-
-    const headlines = await findTopHeadlines({
-      limit: limit ? parseInt(limit) : 10,
-      offset: offset ? parseInt(offset) : 0,
-      category,
-    });
-
-    res.status(200).json({
-      success: true,
-      data: headlines,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'failed to fetch data',
-    });
+// Helper function to convert snake_case to camelCase
+function snakeToCamel(obj) {
+  const camelObj = {};
+  for (const key in obj) {
+    const camelKey = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+    camelObj[camelKey] = obj[key];
   }
+  return camelObj;
 }
 
 async function getArticleById(req, res) {
@@ -39,7 +27,10 @@ async function getArticleById(req, res) {
       return res.status(404).json({ error: 'Article not found', articleId: parsedId });
     }
 
-    res.status(200).json(article);
+    // Convert snake_case to camelCase for frontend
+    const transformedArticle = snakeToCamel(article);
+
+    res.status(200).json(transformedArticle);
   } catch (error) {
     logger.error('Error fetching article:', error);
     res.status(500).json({ error: 'Internal server error' });
