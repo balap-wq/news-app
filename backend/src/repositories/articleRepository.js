@@ -70,7 +70,7 @@ async function upsertArticle(article) {
   content = COALESCE(EXCLUDED.content, articles.content),
   author = COALESCE(EXCLUDED.author, articles.author),
   category = COALESCE(EXCLUDED.category, articles.category),
-  updated_at = NOW()  
+  created_at = NOW()  
 
       WHERE
     articles.title IS DISTINCT FROM EXCLUDED.title OR

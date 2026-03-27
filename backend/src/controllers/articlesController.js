@@ -1,5 +1,6 @@
 import { findArticleById } from '../repositories/articleRepository.js';
 import logger from '../config/logger.js';
+
 async function getArticleById(req, res) {
   try {
     const { id } = req.params;
