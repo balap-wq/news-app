@@ -1,25 +1,19 @@
-import { jest } from "@jest/globals";
+import { jest } from '@jest/globals';
 
 const mockFindArticleById = jest.fn();
 
-await jest.unstable_mockModule(
-  "../src/repositories/articleRepository.js",
-  () => ({
-    findArticleById: mockFindArticleById,
-  })
-);
+await jest.unstable_mockModule('../src/repositories/articleRepository.js', () => ({
+  findArticleById: mockFindArticleById,
+}));
 
-const { getArticleById } = await import(
-  "../src/controllers/articlesController.js"
-);
+const { getArticleById } = await import('../src/controllers/articlesController.js');
 
-describe("getArticleById Unit Tests", () => {
-
+describe('getArticleById Unit Tests', () => {
   let req, res;
 
   beforeEach(() => {
     req = {
-      params: { id: "1" },
+      params: { id: '1' },
     };
 
     res = {
@@ -30,12 +24,13 @@ describe("getArticleById Unit Tests", () => {
     jest.clearAllMocks();
   });
 
+  it('should return 200 with article data', async () => {
   // ✅ SUCCESS CASE
   it("should return 200 with article data", async () => {
     mockFindArticleById.mockResolvedValue({
       id: 1,
-      title: "Test Article",
-      description: "Test Desc",
+      title: 'Test Article',
+      description: 'Test Desc',
     });
 
     await getArticleById(req, res);
@@ -45,8 +40,8 @@ describe("getArticleById Unit Tests", () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       id: 1,
-      title: "Test Article",
-      description: "Test Desc",
+      title: 'Test Article',
+      description: 'Test Desc',
     });
   });
 
@@ -60,7 +55,7 @@ describe("getArticleById Unit Tests", () => {
     expect(mockFindArticleById).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
-      error: "Article not found",
+      error: 'Article not found',
       articleId: 1,
     });
   });
@@ -77,10 +72,9 @@ describe("getArticleById Unit Tests", () => {
     expect(mockFindArticleById).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
-      error: "Internal server error",
+      error: 'Internal server error',
     });
 
     console.error.mockRestore();
   });
-
 });

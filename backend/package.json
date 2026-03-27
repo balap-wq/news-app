@@ -6,6 +6,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
+    "seed": "node src/seeds/sampleArticles.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src --ext .js",
     "lint:fix": "eslint src --ext .js --fix",
@@ -17,6 +18,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.22.1",
+    "node-cron": "^4.2.1",
     "pg": "^8.20.0",
     "winston": "^3.19.0",
     "zod": "^4.3.6"

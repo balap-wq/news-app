@@ -1,4 +1,5 @@
 import pool from '../config/db.js';
+import logger from '../config/logger.js';
 
 // Get headlines with pagination
 export const findTopHeadlines = async ({ limit, offset }) => {
@@ -25,7 +26,7 @@ export const findTopHeadlines = async ({ limit, offset }) => {
 
     return rows;
   } catch (error) {
-    console.error('Error in findTopHeadlines:', error);
+    logger.error('Error in findTopHeadlines:', error);
     throw new Error('Failed to fetch headlines');
   }
 };
@@ -44,7 +45,7 @@ export const countArticles = async () => {
 
     return parseInt(rows[0].count, 10);
   } catch (error) {
-    console.error('Error in countArticles:', error);
+    logger.error('Error in countArticles:', error);
     throw new Error('Failed to count articles');
   }
 };

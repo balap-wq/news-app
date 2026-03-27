@@ -1,4 +1,5 @@
 import { findArticleById } from '../repositories/articleRepository.js';
+import logger from '../config/logger.js';
 
 async function getArticleById(req, res) {
   try {
@@ -11,9 +12,8 @@ async function getArticleById(req, res) {
     }
 
     res.status(200).json(article);
-
   } catch (error) {
-    console.error('Error fetching article:', error);
+    logger.error('Error fetching article:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 }

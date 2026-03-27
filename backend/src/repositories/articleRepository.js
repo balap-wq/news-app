@@ -1,14 +1,31 @@
-import pool from "../config/db.js";
+import pool from '../config/db.js';
+import logger from '../config/logger.js';
 
-//INSERTING QUERY 
+// Common DB executor
+async function executeQuery(query, values = []) {
+  try {
+    const { rows } = await pool.query(query, values);
+    return rows;
+  } catch (error) {
+    logger.error('Database error:', error.message);
+    throw error;
+  }
+}
+
+// INSERT
 async function insertArticle(article) {
+  if (!article) throw new Error('Article data is required');
 
-  const query =` INSERT INTO articles(title,description,url_to_image,source_name,published_at,created_at,content,url,author,category)
-  VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
-  RETURNING *;
+  const query = `
+    INSERT INTO articles (
+      title, description, url_to_image, source_name,
+      published_at, created_at, content, url, author, category
+    )
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+    RETURNING *;
   `;
 
-  const values =[
+  const values = [
     article.title,
     article.description,
     article.url_to_image,
@@ -21,47 +38,41 @@ async function insertArticle(article) {
     article.category,
   ];
 
-  try {
-    const { row } =await pool.query(query,values);
-    return row[0];
-  } 
+  const rows = await executeQuery(query, values);
 
-  catch (error) {
-    console.error("Here some Inserting errors:",error.message);
-    throw error;
+  if (!rows || rows.length === 0) {
+    throw new Error('Insert failed');
   }
+
+  return rows[0];
 }
 
-//UPSERTING QUERY 
- async function upsertArticle(article) {
+// UPSERT (FIXED)
+async function upsertArticle(article) {
+  if (!article || !article.url) {
+    throw new Error('Invalid article data (url required)');
+  }
 
   const query = `
-  INSERT INTO articles (
-    title,
-    description,
-    content,
-    url,
-    url_to_image,
-    author,
-    source_name,
-    category,
-    published_at
-  )
-  VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+    INSERT INTO articles (
+      title, description, url_to_image, source_name,
+      published_at, created_at, content, url, author, category
+    )
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
 
-  ON CONFLICT (url)
-  DO UPDATE SET
-    title = COALESCE(EXCLUDED.title, articles.title),
-    description = COALESCE(EXCLUDED.description, articles.description),
-    content = COALESCE(EXCLUDED.content, articles.content),
-    url_to_image = COALESCE(EXCLUDED.url_to_image, articles.url_to_image),
-    author = COALESCE(EXCLUDED.author, articles.author),
-    source_name = COALESCE(EXCLUDED.source_name, articles.source_name),
-    category = COALESCE(EXCLUDED.category, articles.category),
-    published_at = COALESCE(EXCLUDED.published_at, articles.published_at),
-    updated_at = NOW()
+    ON CONFLICT (url)
+   DO UPDATE SET
+  title = COALESCE(EXCLUDED.title, articles.title),
+  description = COALESCE(EXCLUDED.description, articles.description),
+  url_to_image = COALESCE(EXCLUDED.url_to_image, articles.url_to_image),
+  source_name = COALESCE(EXCLUDED.source_name, articles.source_name),
+  published_at = COALESCE(EXCLUDED.published_at, articles.published_at),
+  content = COALESCE(EXCLUDED.content, articles.content),
+  author = COALESCE(EXCLUDED.author, articles.author),
+  category = COALESCE(EXCLUDED.category, articles.category),
+  created_at = NOW()  
 
-  WHERE
+      WHERE
     articles.title IS DISTINCT FROM EXCLUDED.title OR
     articles.description IS DISTINCT FROM EXCLUDED.description OR
     articles.content IS DISTINCT FROM EXCLUDED.content OR
@@ -71,95 +82,74 @@ async function insertArticle(article) {
     articles.category IS DISTINCT FROM EXCLUDED.category OR
     articles.published_at IS DISTINCT FROM EXCLUDED.published_at
 
-  RETURNING (xmax = 0) AS inserted;
-`;
-
-    const values = [
-    article.title,
-    article.description,
-    article.content,
-    article.url,
-    article.url_to_image,
-    article.author,
-    article.source_name,
-    article.category,
-    article.published_at,
-  ];
-
-    const result = await pool.query(query, values);
-
-
-  return result.rows[0].inserted ? "inserted" : "updated";
-}
-
-//FIND ARTICLE_BY_ID QUERY
-
-async function findArticleById(id) {
-
-  const query = `SELECT * FROM articles
-  WHERE id = $1;
+    RETURNING (xmax = 0) AS inserted;
   `;
 
-try {
-  const { rows } = await pool.query(query,[id])
-  return rows[0] || "There is no data Available.";
-} 
+  const values = [
+    article.title,
+    article.description,
+    article.url_to_image,
+    article.source_name,
+    article.published_at,
+    article.created_at,
+    article.content,
+    article.url,
+    article.author,
+    article.category,
+  ];
 
-catch (error) {
-  console.error("Here some Find Article error:",error.message);
-  throw error;
+  const rows = await executeQuery(query, values);
+
+  if (!rows || rows.length === 0) {
+    throw new Error('Upsert failed');
+  }
+
+  return rows[0].inserted ? 'inserted' : 'updated';
 }
+
+// FIND BY ID
+async function findArticleById(id) {
+  const query = `SELECT * FROM articles WHERE id = $1;`;
+
+  const rows = await executeQuery(query, [id]);
+  return rows[0] || null;
 }
 
-// FIND TOP_HEADLINES
+// FIND HEADLINES
+async function findTopHeadlines({ limit = 10, offset = 0, category }) {
+  limit = Math.min(limit, 100);
 
-async function findTopHeadlines({ limit = 10, offset = 0, category}) {
-
-  let query = `SELECT * FROM articles`;
+  let query = `SELECT * FROM articles `;
   const values = [];
 
   if (category) {
-    query +=`WHERE category = $1`;
+    query += `WHERE category = $1 `;
     values.push(category);
   }
 
-  query += `ORDER BY published_at DESC
-  LIMIT $${values.length + 1}
-  OFFSET $${values.length +2};
+  query += `
+    ORDER BY published_at DESC
+    LIMIT $${values.length + 1}
+    OFFSET $${values.length + 2};
   `;
 
   values.push(limit, offset);
 
-  try {
-    const { rows } = await pool.query(query, values);
-    return rows;
-  } 
-  catch (error) {
-    console.error("Here some Find Top Headline Error",error.message);
-  }
+  return await executeQuery(query, values);
 }
 
-//COUNT ARTICLES
-
-async function countArticles({category}) {
-  let query = `SELECT COUNT(*) FROM articles`;
+// COUNT
+async function countArticles({ category }) {
+  let query = `SELECT COUNT(*) FROM articles `;
   const values = [];
 
   if (category) {
-    query +=`WHERE category=$1
-    `;
+    query += `WHERE category = $1`;
     values.push(category);
-
-  try {
-    const { rows } = await pool.query(query, values);
-    return parseInt(rows[0].count, 10);
-  } 
-  catch (error) {
-    console.error("Error counting articles:", error.message);
-    throw error;
-  }
   }
 
+  const rows = await executeQuery(query, values);
+  return parseInt(rows[0].count, 10);
 }
 
 export { insertArticle, upsertArticle, findArticleById, findTopHeadlines, countArticles };
