@@ -5,7 +5,6 @@ async function getArticleById(req, res) {
   try {
     const { id } = req.params;
 
-   
     const parsedId = parseInt(id, 10);
     if (!Number.isInteger(parsedId) || parsedId <= 0) {
       return res.status(400).json({ error: 'Invalid article ID' });
@@ -18,7 +17,6 @@ async function getArticleById(req, res) {
     }
 
     res.status(200).json(article);
-
   } catch (error) {
     logger.error('Error fetching article:', error);
     res.status(500).json({ error: 'Internal server error' });
