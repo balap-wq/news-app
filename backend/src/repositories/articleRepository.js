@@ -1,5 +1,5 @@
-import pool from "../config/db.js";
-import logger from "../config/logger.js";
+import pool from '../config/db.js';
+import logger from '../config/logger.js';
 
 // Common DB executor
 async function executeQuery(query, values = []) {
@@ -7,14 +7,14 @@ async function executeQuery(query, values = []) {
     const { rows } = await pool.query(query, values);
     return rows;
   } catch (error) {
-    logger.error("Database error:", error.message);
+    logger.error('Database error:', error.message);
     throw error;
   }
 }
 
 // INSERT
 async function insertArticle(article) {
-  if (!article) throw new Error("Article data is required");
+  if (!article) throw new Error('Article data is required');
 
   const query = `
     INSERT INTO articles (
@@ -41,7 +41,7 @@ async function insertArticle(article) {
   const rows = await executeQuery(query, values);
 
   if (!rows || rows.length === 0) {
-    throw new Error("Insert failed");
+    throw new Error('Insert failed');
   }
 
   return rows[0];
@@ -50,7 +50,7 @@ async function insertArticle(article) {
 // UPSERT (FIXED)
 async function upsertArticle(article) {
   if (!article || !article.url) {
-    throw new Error("Invalid article data (url required)");
+    throw new Error('Invalid article data (url required)');
   }
 
   const query = `
@@ -70,7 +70,7 @@ async function upsertArticle(article) {
   content = COALESCE(EXCLUDED.content, articles.content),
   author = COALESCE(EXCLUDED.author, articles.author),
   category = COALESCE(EXCLUDED.category, articles.category),
-  updated_at = NOW()  
+  created_at = NOW()  
 
       WHERE
     articles.title IS DISTINCT FROM EXCLUDED.title OR
@@ -101,10 +101,10 @@ async function upsertArticle(article) {
   const rows = await executeQuery(query, values);
 
   if (!rows || rows.length === 0) {
-    throw new Error("Upsert failed");
+    throw new Error('Upsert failed');
   }
 
-  return rows[0].inserted ? "inserted" : "updated";
+  return rows[0].inserted ? 'inserted' : 'updated';
 }
 
 // FIND BY ID
@@ -152,10 +152,4 @@ async function countArticles({ category }) {
   return parseInt(rows[0].count, 10);
 }
 
-export {
-  insertArticle,
-  upsertArticle,
-  findArticleById,
-  findTopHeadlines,
-  countArticles,
-};
+export { insertArticle, upsertArticle, findArticleById, findTopHeadlines, countArticles };
