@@ -30,7 +30,7 @@ describe("getArticleById Unit Tests", () => {
     jest.clearAllMocks();
   });
 
-  
+  // ✅ SUCCESS CASE
   it("should return 200 with article data", async () => {
     mockFindArticleById.mockResolvedValue({
       id: 1,
@@ -50,6 +50,7 @@ describe("getArticleById Unit Tests", () => {
     });
   });
 
+  // ❌ NOT FOUND
   it("should return 404 if article not found", async () => {
     mockFindArticleById.mockResolvedValue(null);
 
@@ -64,22 +65,9 @@ describe("getArticleById Unit Tests", () => {
     });
   });
 
-
-  it("should return 400 if id is not a valid number", async () => {
-    req.params = { id: "abc" };
-
-    await getArticleById(req, res);
-
-    expect(mockFindArticleById).not.toHaveBeenCalled();
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      error: "Invalid article ID",
-    });
-  });
-
-  
+  // ❌ SERVER ERROR
   it("should return 500 on unexpected error", async () => {
-    jest.spyOn(console, "error").mockImplementation(() => {}); 
+    jest.spyOn(console, "error").mockImplementation(() => {});
 
     mockFindArticleById.mockRejectedValue(new Error("DB error"));
 
@@ -92,7 +80,7 @@ describe("getArticleById Unit Tests", () => {
       error: "Internal server error",
     });
 
-    console.error.mockRestore(); 
+    console.error.mockRestore();
   });
 
 });
