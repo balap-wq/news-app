@@ -3,7 +3,7 @@ import logger from '../config/logger.js';
 import { syncHeadlines } from '../services/newsSyncService.js';
 
 // ✅ Extract schedule into constant (nit improvement)
-const EVERY_30_MINS = '*/30 * * * *';
+const EVERY_30_MINS = '*/ * * * *';
 
 const syncArticles = () => {
   cron.schedule(EVERY_30_MINS, async () => {
