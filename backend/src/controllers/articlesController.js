@@ -12,27 +12,6 @@ function snakeToCamel(obj) {
   return camelObj;
 }
 
-async function getHeadlines(req, res) {
-  try {
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.pageSize, 10) || 9;
-    const category = req.query.category || null;
-
-    if (page < 1 || limit < 1) {
-      return res.status(400).json({ error: 'Invalid pagination values' });
-    }
-
-    const offset = (page - 1) * limit;
-    const articles = await findTopHeadlines({ limit, offset, category });
-    const totalResults = await countArticles({ category });
-
-    return res.status(200).json({ articles, totalResults });
-  } catch (error) {
-    logger.error('Error fetching headlines:', error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
-}
-
 async function getArticleById(req, res) {
   try {
     const { id } = req.params;
@@ -58,4 +37,4 @@ async function getArticleById(req, res) {
   }
 }
 
-export { getHeadlines, getArticleById };
+export { getArticleById };
