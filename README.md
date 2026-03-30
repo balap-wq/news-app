@@ -135,3 +135,108 @@ npx prettier --write .
 - Reduced manual effort during code reviews
 - Better developer experience and maintainability
 
+-------------------------------------------> ## 🐶 Husky Setup (Git Hooks)  <--------------------------------------------------------------------
+
+
+## 🐶 Husky Setup (Git Hooks)
+
+### 📌 What is Husky?
+
+Husky is a tool that enables us to run scripts automatically during Git lifecycle events such as commit and push.
+
+---
+
+### 🎯 Why we use Husky
+
+* Prevents committing code with errors
+* Ensures consistent code formatting
+* Runs tests before pushing code
+* Improves code quality and team collaboration
+
+---
+
+### ⚙️ How it is used in this project
+
+#### ✅ Pre-commit Hook
+
+Runs ESLint before every commit:
+
+```bash
+npm run --prefix backend lint
+```
+
+👉 If lint fails:
+
+* ❌ Commit is blocked
+
+---
+
+#### ✅ Pre-push Hook
+
+Runs test cases before pushing code:
+
+```bash
+npm run --prefix backend test
+```
+
+👉 If tests fail:
+
+* ❌ Push is blocked
+
+---
+
+### 📂 Folder Structure
+
+```
+.husky/
+  pre-commit
+  pre-push
+```
+
+---
+
+### 🚀 How to use
+
+#### 1. Install dependencies
+
+```bash
+npm install
+```
+
+#### 2. Make changes and commit
+
+```bash
+git add .
+git commit -m "your message"
+```
+
+👉 Lint will run automatically
+
+---
+
+#### 3. Push code
+
+```bash
+git push
+```
+
+👉 Tests will run automatically
+
+---
+
+### ⚠️ Important Notes
+
+* Husky is configured at the project root
+* Backend scripts are executed using `--prefix backend`
+* If hooks fail, fix errors before retrying
+
+---
+
+### 🧠 Summary
+
+Husky ensures that:
+
+* Only clean code is committed
+* Only tested code is pushed
+
+This helps maintain a stable and high-quality codebase.
