@@ -1,5 +1,4 @@
 import { findArticleById } from '../repositories/articleRepository.js';
-import { findTopHeadlines, countArticles } from '../services/articleService.js';
 import logger from '../config/logger.js';
 
 // Helper function to convert snake_case to camelCase
