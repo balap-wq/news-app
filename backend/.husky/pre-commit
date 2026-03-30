@@ -3,3 +3,5 @@
 
 echo "Husky pre-commit running"
 npm run lint
+
+let a = ;
