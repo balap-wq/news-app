@@ -17,12 +17,13 @@ function useHeadlines({ page = 1, category, country }) {
       setError(null);
 
       try {
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        const offset = (page - 1) * LIMIT;
+        // Calculate limit and offset from page number
+        const itemsPerPage = 9;
+        const limit = itemsPerPage;
+        const offset = (page - 1) * itemsPerPage;
 
         const response = await axiosInstance.get('/api/headlines', {
-          params: { limit: LIMIT, offset, category },
+          params: { limit, offset, category },
           signal: controller.signal,
         });
 
@@ -42,7 +43,7 @@ function useHeadlines({ page = 1, category, country }) {
     return () => {
       controller.abort();
     };
-  }, [page, category, country]);
+  }, [page, category]);
 
   return { data, loading, error, totalResults };
 }
