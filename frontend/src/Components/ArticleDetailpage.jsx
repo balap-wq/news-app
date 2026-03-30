@@ -1,12 +1,60 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
+import axiosInstance from '../api/axiosInstance';
 import EmptyState from './EmptyState';
 
 const ArticleDetailpage = () => {
+  const { id } = useParams();
   const location = useLocation();
-  const article = location.state;
+  const routeArticle = location.state;
+  
+  const [article, setArticle] = useState(routeArticle || null);
+  const [loading, setLoading] = useState(!routeArticle);
+  const [error, setError] = useState(null);
 
-  //  Handle no article (refresh / direct URL access)
+  useEffect(() => {
+    // If article data passed via routing, skip API call
+    if (routeArticle) {
+      setArticle(routeArticle);
+      setLoading(false);
+      return;
+    }
+
+    // Fetch article from API if not available from routing
+    const fetchArticle = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axiosInstance.get(`/api/articles/${id}`);
+        setArticle(response.data);
+      } catch (err) {
+        setError('Failed to load article');
+        console.error('Error fetching article:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticle();
+  }, [id, routeArticle]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-amber-50">
+        <p className="text-lg text-gray-600">Loading article...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-amber-50">
+        <p className="text-lg text-red-600">{error}</p>
+      </div>
+    );
+  }
+
+  //  Handle no article
   if (!article) {
     return <EmptyState />;
   }
