@@ -18,10 +18,7 @@ function useHeadlines({ page = 1, category, country }) {
       setError(null);
 
       try {
-        // ADDED DELAY HERE
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-
-        const response = await axiosInstance.get('/api/headlines', {
+        const response = await axiosInstance.get('/api/articles', {
           params: { page, category, country },
           signal: controller.signal,
         });

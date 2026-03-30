@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import placeholder from '../images/placeholder.png';
 
 export default function Headlinecards({ article }) {
-  const { title, urlToImage, source, publishedAt } = article;
+  const { title, url_to_image, source_name, published_at,author } = article;
   const navigate = useNavigate();
 
   return (
@@ -17,7 +17,7 @@ export default function Headlinecards({ article }) {
       >
         {/* Image */}
         <img
-          src={urlToImage || placeholder}
+          src={url_to_image || placeholder}
           alt={title}
           className="w-full h-48 sm:h-44 md:h-48 object-cover"
         />
@@ -27,8 +27,9 @@ export default function Headlinecards({ article }) {
           <h2 className="text-base sm:text-lg font-semibold line-clamp-2 leading-snug">{title}</h2>
 
           <div className="mt-3 text-sm text-gray-500">
-            <p className="truncate">Source: {source}</p>
-            <p>{publishedAt}</p>
+            <p className="truncate">Source: {source_name}</p>
+             <p className="truncate">Author: {author}</p>
+            <p>{published_at}</p>
           </div>
         </div>
       </div>

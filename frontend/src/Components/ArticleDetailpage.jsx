@@ -26,6 +26,9 @@ const ArticleDetailpage = () => {
         <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-700 leading-relaxed text-justify">
           {article.description}
         </p>
+         <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-700 leading-relaxed text-justify">
+          {article.content}
+        </p>
       </div>
     </div>
   );
