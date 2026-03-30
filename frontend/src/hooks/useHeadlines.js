@@ -3,11 +3,8 @@ import axiosInstance from '../api/axiosInstance';
 
 function useHeadlines({ page = 1, category, country }) {
   const [data, setData] = useState([]);
-
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState(null);
-
   const [totalResults, setTotalResults] = useState(0);
 
   useEffect(() => {
@@ -18,11 +15,13 @@ function useHeadlines({ page = 1, category, country }) {
       setError(null);
 
       try {
-        // ADDED DELAY HERE
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        // Calculate limit and offset from page number
+        const itemsPerPage = 9;
+        const limit = itemsPerPage;
+        const offset = (page - 1) * itemsPerPage;
 
         const response = await axiosInstance.get('/api/headlines', {
-          params: { page, category, country },
+          params: { limit, offset, category },
           signal: controller.signal,
         });
 
@@ -42,7 +41,7 @@ function useHeadlines({ page = 1, category, country }) {
     return () => {
       controller.abort();
     };
-  }, [page, category, country]);
+  }, [page, category]);
 
   return { data, loading, error, totalResults };
 }

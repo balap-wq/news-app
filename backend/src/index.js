@@ -3,10 +3,9 @@ import express from 'express';
 import cors from 'cors';
 import logger from './config/logger.js';
 import adminRoutes from './routes/adminRoutes.js';
-import { articlesRoutes } from "./routes/articles.js";
-import { getHeadlines } from './controllers/articlesController.js';
+import { articlesRoutes } from './routes/articles.js';
 import syncArticles from './jobs/syncJob.js';
-
+import headlinesRouter from './routes/headlines.js';
 const app = express();
 
 const PORT = process.env.PORT || 5000;
@@ -31,8 +30,6 @@ app.get('/health', (_req, res) => {
 app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
-
-
 
 app.use('/api/admin', adminRoutes);
 
