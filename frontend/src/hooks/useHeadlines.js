@@ -41,7 +41,7 @@ function useHeadlines({ page = 1, category, country }) {
     return () => {
       controller.abort();
     };
-  }, [page, category]);
+  }, [page, category, country]);
 
   return { data, loading, error, totalResults };
 }
