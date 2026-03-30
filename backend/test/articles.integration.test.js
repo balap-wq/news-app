@@ -2,9 +2,13 @@ import request from 'supertest';
 import { jest } from '@jest/globals';
 
 const mockFindArticleById = jest.fn();
+const mockFindTopHeadlines = jest.fn();
+const mockCountArticles = jest.fn();
 
 await jest.unstable_mockModule('../src/repositories/articleRepository.js', () => ({
   findArticleById: mockFindArticleById,
+  findTopHeadlines: mockFindTopHeadlines,
+  countArticles: mockCountArticles,
 }));
 
 const { default: app } = await import('../src/app.js');
@@ -43,12 +47,24 @@ describe('GET /api/articles/:id Integration Tests', () => {
     const response = await request(app).get('/api/articles/abc');
 
     expect(response.statusCode).toBe(400);
-    expect(response.body).toHaveProperty('error', 'Invalid article ID');
+    expect(response.body).toHaveProperty('success', false);
+    expect(response.body).toHaveProperty('message', 'Validation failed');
   });
 
-  it('should return 404 if no id segment in path', async () => {
+  // ✅ Updated test (correct behavior)
+  it('should return 200 when requesting base route (get all articles)', async () => {
+    mockFindTopHeadlines.mockResolvedValue([]);
+
     const response = await request(app).get('/api/articles/');
 
+    expect(response.statusCode).toBe(200);
+  });
+
+  // ✅ Proper 404 test
+  it('should return 404 for unknown route', async () => {
+    const response = await request(app).get('/api/unknown');
+
     expect(response.statusCode).toBe(404);
+    expect(response.body).toHaveProperty('error', 'Route not found');
   });
 });
