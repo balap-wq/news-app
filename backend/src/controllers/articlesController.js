@@ -11,6 +11,7 @@ function snakeToCamel(obj) {
   return camelObj;
 }
 
+
 async function getHeadlines(req, res) {
   try {
     const { page = 1, category, country } = req.query;
@@ -22,8 +23,10 @@ async function getHeadlines(req, res) {
       return res.status(400).json({ error: 'Invalid page number' });
     }
 
-    const articles = await findTopHeadlines({ limit, offset, category });
+    const rawArticles = await findTopHeadlines({ limit, offset, category });
     const totalCount = await countArticles({ category });
+
+    const articles = rawArticles.map((item) => snakeToCamel(item));
 
     res.status(200).json({
       articles,
@@ -51,7 +54,6 @@ async function getArticleById(req, res) {
       return res.status(404).json({ error: 'Article not found', articleId: parsedId });
     }
 
-    // Convert snake_case to camelCase for frontend
     const transformedArticle = snakeToCamel(article);
 
     res.status(200).json(transformedArticle);
