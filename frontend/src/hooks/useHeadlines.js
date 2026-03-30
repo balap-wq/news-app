@@ -3,7 +3,7 @@ import axiosInstance from '../api/axiosInstance';
 
 function useHeadlines({ page = 1, category, country }) {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [totalResults, setTotalResults] = useState(0);
 
@@ -25,14 +25,25 @@ function useHeadlines({ page = 1, category, country }) {
           signal: controller.signal,
         });
 
-        setData(response.data.articles || []);
-        setTotalResults(response.data.totalResults || 0);
+        const payload = response.data;
+        console.log(payload);
+        
+        const articles = Array.isArray(payload)
+          ? payload
+          : payload?.articles || [];
+
+        const total = Array.isArray(payload)
+          ? payload.length
+          : payload?.totalResults || 0;
+
+        setData(articles);
+        setTotalResults(total);
       } catch (err) {
         if (err.name !== 'CanceledError') {
           setError(err.message);
         }
       } finally {
-        setLoading(false);
+        setTimeout(() => setLoading(false), 100); // Simulate delay
       }
     };
 
