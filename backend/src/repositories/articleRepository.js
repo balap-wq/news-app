@@ -106,7 +106,6 @@ async function upsertArticle(article) {
 
   return rows[0].inserted ? 'inserted' : 'updated';
 }
-
 // FIND BY ID
 async function findArticleById(id) {
   const query = `SELECT * FROM articles WHERE id = $1;`;

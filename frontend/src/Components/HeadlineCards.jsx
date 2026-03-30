@@ -2,9 +2,23 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import placeholder from '../images/placeholder.png';
 
+function formatDate(dateString) {
+  if (!dateString) return 'Unknown date';
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return dateString;
+  return date.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
 export default function Headlinecards({ article }) {
-  const { title, urlToImage, source, publishedAt } = article;
+  const { title, urlToImage, sourceName, publishedAt,author } = article;
   const navigate = useNavigate();
+  const displayDate = formatDate(publishedAt);
 
   return (
     <div className="mx-auto">
@@ -27,8 +41,9 @@ export default function Headlinecards({ article }) {
           <h2 className="text-base sm:text-lg font-semibold line-clamp-2 leading-snug">{title}</h2>
 
           <div className="mt-3 text-sm text-gray-500">
-            <p className="truncate">Source: {source}</p>
-            <p>{publishedAt}</p>
+            <p className="truncate">Source: {sourceName}</p>
+            <p className="truncate">Author: {author}</p>
+            <p>{displayDate}</p>
           </div>
         </div>
       </div>

@@ -1,10 +1,12 @@
 import 'dotenv/config';
 import express from 'express';
+import cors from 'cors';
 import { articlesRoutes } from './routes/articles.js';
 import logger from './config/logger.js';
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.get('/health', (req, res) => {
