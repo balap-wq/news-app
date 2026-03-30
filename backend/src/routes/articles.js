@@ -1,12 +1,18 @@
-import express from 'express';
-import { getArticleById, getHeadlines } from '../controllers/articlesController.js';
-import { validate } from '../middleware/validate.js';
-import { articleIdSchema, headlinesQuerySchema } from '../validators/articleValidator.js';
+import express from "express";
+
+import { getArticleById } from "../controllers/articlesController.js";
+import { getHeadlines } from "../controllers/headlineController.js";
+
+import { validate } from "../middleware/validate.js";
+import {
+  articleIdSchema,
+  headlinesQuerySchema,
+} from "../validators/articleValidator.js";
 
 const router = express.Router();
 
-router.get('/:id', validate(articleIdSchema), getArticleById);
+router.get("/:id", validate(articleIdSchema, "params"), getArticleById);
 
-router.get('/', validate(headlinesQuerySchema, 'query'), getHeadlines);
+router.get("/", validate(headlinesQuerySchema, "query"), getHeadlines);
 
-export { router as articlesRoutes };
+export default router;
