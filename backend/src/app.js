@@ -13,11 +13,9 @@ app.get('/health', (req, res) => {
 
 app.use('/api/articles', articlesRoutes);
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   logger.error('Global Error:', err);
   res.status(500).json({ error: 'Something went wrong' });
 });
-
-let a = ;
 
 export default app;
