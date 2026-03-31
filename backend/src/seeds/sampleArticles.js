@@ -250,8 +250,8 @@ const seedArticles = async () => {
     for (let article of articles) {
       await pool.query(
         `INSERT INTO articles 
-        (title, description, url_to_image, source_name, published_at, created_at, content, url, author, category)
-        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+        (title, description, url_to_image, source_name, published_at, created_at, content, url, author, category, country)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
         [
           article.title,
           article.description,
@@ -262,7 +262,8 @@ const seedArticles = async () => {
           article.content,
           article.url,
           article.author,
-          article.category
+          article.category,
+          article.country || 'us'
         ]
       );
     }
