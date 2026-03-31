@@ -1,6 +1,6 @@
 import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
+import logger from '../config/logger.js';
 
-// Helper function to convert snake_case to camelCase
 function snakeToCamel(obj) {
   const camelObj = {};
   for (const key in obj) {
@@ -12,32 +12,26 @@ function snakeToCamel(obj) {
 
 export async function getHeadlines(req, res) {
   try {
-    const { limit, offset, category } = req.query;
-    const pageLimit = limit ? parseInt(limit) : 10;
-    const pageOffset = offset ? parseInt(offset) : 0;
+    const { page, category } = req.query; // ✅ use page from Zod schema
+    const limit = 9;
+    const offset = (page - 1) * limit; // ✅ Zod coerced page to number already
 
-    const headlines = await findTopHeadlines({
-      limit: pageLimit,
-      offset: pageOffset,
-      category,
-    });
-
-    // Get total count for pagination
+    const headlines = await findTopHeadlines({ limit, offset, category });
     const totalResults = await countArticles({ category });
-
-    // Convert snake_case to camelCase for frontend
     const transformedArticles = headlines.map(snakeToCamel);
 
     res.status(200).json({
       success: true,
       articles: transformedArticles,
-      totalResults: totalResults,
+      totalResults,
       count: transformedArticles.length,
+      page, // ✅ send page back to frontend
     });
   } catch (error) {
+    logger.error('Error fetching headlines:', error); // ✅ log the error
     res.status(500).json({
       success: false,
-      message: 'failed to fetch data',
+      message: 'Failed to fetch data',
     });
   }
 }
