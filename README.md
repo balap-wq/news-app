@@ -116,44 +116,9 @@ npx prettier --write .
 
 ---
 
-### Why ESLint?
-- Helps identify code issues and potential bugs
-- Enforces coding standards across the project
-- Improves code quality and maintainability
 
----
-
-### Why Prettier?
-- Ensures consistent code formatting
-- Reduces formatting-related review comments
-- Improves readability of the codebase
-
----
-
-### Impact
-- Cleaner and more consistent code
-- Reduced manual effort during code reviews
-- Better developer experience and maintainability
 
 -------------------------------------------> ## 🐶 Husky Setup (Git Hooks)  <--------------------------------------------------------------------
-
-
-## 🐶 Husky Setup (Git Hooks)
-
-### 📌 What is Husky?
-
-Husky is a tool that enables us to run scripts automatically during Git lifecycle events such as commit and push.
-
----
-
-### 🎯 Why we use Husky
-
-* Prevents committing code with errors
-* Ensures consistent code formatting
-* Runs tests before pushing code
-* Improves code quality and team collaboration
-
----
 
 ### ⚙️ How it is used in this project
 
@@ -231,12 +196,3 @@ git push
 * If hooks fail, fix errors before retrying
 
 ---
-
-### 🧠 Summary
-
-Husky ensures that:
-
-* Only clean code is committed
-* Only tested code is pushed
-
-This helps maintain a stable and high-quality codebase.
