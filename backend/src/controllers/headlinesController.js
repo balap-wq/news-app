@@ -1,4 +1,4 @@
-// import { error } from 'winston';
+import logger from '../config/logger.js';
 import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
 import logger from '../config/logger.js';
 
@@ -81,7 +81,8 @@ export async function getHeadlines(req, res) {
       count: transformedArticles.length,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
+
     res.status(500).json({
       success: false,
       message: 'failed to fetch data',
