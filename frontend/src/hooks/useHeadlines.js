@@ -15,13 +15,8 @@ function useHeadlines({ page = 1, category, country }) {
       setError(null);
 
       try {
-        // Calculate limit and offset from page number
-        const itemsPerPage = 9;
-        const limit = itemsPerPage;
-        const offset = (page - 1) * itemsPerPage;
-
         const response = await axiosInstance.get('/api/headlines', {
-          params: { limit, offset, category },
+          params: { page, category }, // ✅ send page directly
           signal: controller.signal,
         });
 
@@ -41,7 +36,7 @@ function useHeadlines({ page = 1, category, country }) {
     return () => {
       controller.abort();
     };
-  }, [page, category]);
+  }, [page, category]); // ✅ page in dependency array
 
   return { data, loading, error, totalResults };
 }
