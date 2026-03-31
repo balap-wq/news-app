@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
 
 // Helper function to convert snake_case to camelCase
@@ -35,6 +36,8 @@ export async function getHeadlines(req, res) {
       count: transformedArticles.length,
     });
   } catch (error) {
+    logger.error(error);
+
     res.status(500).json({
       success: false,
       message: 'failed to fetch data',
