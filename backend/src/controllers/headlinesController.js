@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
 import logger from '../config/logger.js';
 
@@ -28,7 +29,8 @@ export async function getHeadlines(req, res) {
       page, // ✅ send page back to frontend
     });
   } catch (error) {
-    logger.error('Error fetching headlines:', error); // ✅ log the error
+    logger.error(error);
+
     res.status(500).json({
       success: false,
       message: 'Failed to fetch data',

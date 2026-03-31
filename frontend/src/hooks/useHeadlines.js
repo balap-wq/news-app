@@ -15,8 +15,13 @@ function useHeadlines({ page = 1, category, country }) {
       setError(null);
 
       try {
-        const response = await axiosInstance.get('/api/headlines', {
-          params: { page, category }, // ✅ send page directly
+        // Calculate limit and offset from page number
+        const itemsPerPage = 9;
+        const limit = itemsPerPage;
+        const offset = (page - 1) * itemsPerPage;
+// “Axios instance is used to centralize API configuration like base URL and headers, avoiding repetition and making the code cleaner and easier to maintain.”
+        const response = await axiosInstance.get('/api/headlines', { 
+          params: { limit, offset, category },
           signal: controller.signal,
         });
 
