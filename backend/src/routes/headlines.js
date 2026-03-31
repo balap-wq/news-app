@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /:
+ * /api/headlines:
  *  get:
  *   summary: Get latest headlines
  *   description: Fetches the latest news headlines from the database.

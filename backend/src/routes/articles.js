@@ -5,7 +5,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /articles/{id}:
+ * /api/articles/{id}:
  *   get:
  *     summary: Get article by ID
  *     description: Fetches a news article by its unique ID.
