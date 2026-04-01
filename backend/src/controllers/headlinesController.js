@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
 import logger from '../config/logger.js';
 

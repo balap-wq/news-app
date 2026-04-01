@@ -1,4 +1,5 @@
 import pool from "../config/db.js";
+import logger from "../config/logger.js";
 
 const articles = [
   {
@@ -245,9 +246,9 @@ const articles = [
 
 const seedArticles = async () => {
   try {
-    console.log("Seeding articles data...");
+    logger.info("Seeding articles data...");
 
-    for (let article of articles) {
+    for (const article of articles) {
       await pool.query(
         `INSERT INTO articles 
         (title, description, url_to_image, source_name, published_at, created_at, content, url, author, category)
@@ -267,10 +268,10 @@ const seedArticles = async () => {
       );
     }
 
-    console.log("Articles Seeded Successfully!");
+    logger.info("Articles Seeded Successfully!");
     process.exit();
   } catch (error) {
-    console.error("Here some Seeding Error:", error);
+    logger.error("Here some Seeding Error:", error);
     process.exit(1);
   }
 };

@@ -15,9 +15,16 @@ app.get('/health', (req, res) => {
 
 app.use('/api/articles', articlesRoutes);
 
-app.use((err, req, res, next) => {
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Route not found',
+  });
+});
+
+app.use((err, req, res, _next) => {
   logger.error('Global Error:', err);
   res.status(500).json({ error: 'Something went wrong' });
 });
+
 
 export default app;
