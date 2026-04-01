@@ -16,7 +16,7 @@ function useHeadlines({ page = 1, category, country }) {
 
       try {
         const response = await axiosInstance.get('/api/headlines', {
-          params: { page, category }, // ✅ send page directly
+          params: { page, category }, 
           signal: controller.signal,
         });
 
@@ -36,8 +36,7 @@ function useHeadlines({ page = 1, category, country }) {
     return () => {
       controller.abort();
     };
-  }, [page, category]); // ✅ page in dependency array
-
+  }, [page, category]); 
   return { data, loading, error, totalResults };
 }
 
