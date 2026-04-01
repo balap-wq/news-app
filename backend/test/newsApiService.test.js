@@ -6,15 +6,24 @@ let NewsApiRateLimitError;
 let NewsApiAuthError;
 let NewsApiFetchError;
 
-// ✅ Mock first
+// ✅ Mock axios first
 jest.unstable_mockModule("axios", () => ({
   default: {
     get: jest.fn(),
   },
 }));
 
+// ✅ Mock logger to suppress Winston logs during tests
+jest.unstable_mockModule("../src/config/logger.js", () => ({
+  default: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+  },
+}));
+
 beforeAll(async () => {
-  // ✅ Import after mock
+  // ✅ Import after mocks
   axios = (await import("axios")).default;
 
   const service = await import("../src/services/newsApiService.js");

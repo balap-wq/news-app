@@ -7,6 +7,15 @@ await jest.unstable_mockModule('../src/repositories/articleRepository.js', () =>
   findArticleById: mockFindArticleById,
 }));
 
+// ✅ Mock logger to suppress Winston logs during tests
+await jest.unstable_mockModule('../src/config/logger.js', () => ({
+  default: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+  },
+}));
+
 const { default: app } = await import('../src/app.js');
 
 describe('GET /api/articles/:id Integration Tests', () => {
@@ -35,17 +44,17 @@ describe('GET /api/articles/:id Integration Tests', () => {
     mockFindArticleById.mockResolvedValue({
       id: 1,
       title: 'Test Article',
-      url_to_image: 'https://example.com/image.jpg', // ← snake_case
-      source_name: 'BBC News',                        // ← snake_case
-      published_at: '2026-01-01',                     // ← snake_case
+      url_to_image: 'https://example.com/image.jpg',
+      source_name: 'BBC News',
+      published_at: '2026-01-01',
     });
 
     const response = await request(app).get('/api/articles/1');
 
     expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty('urlToImage', 'https://example.com/image.jpg'); // ✅ camelCase
-    expect(response.body).toHaveProperty('sourceName', 'BBC News');                       // ✅ camelCase
-    expect(response.body).toHaveProperty('publishedAt', '2026-01-01');                    // ✅ camelCase
+    expect(response.body).toHaveProperty('urlToImage', 'https://example.com/image.jpg');
+    expect(response.body).toHaveProperty('sourceName', 'BBC News');
+    expect(response.body).toHaveProperty('publishedAt', '2026-01-01');
   });
 
   // ✅ Test 3 — Not found
@@ -56,18 +65,17 @@ describe('GET /api/articles/:id Integration Tests', () => {
 
     expect(response.statusCode).toBe(404);
     expect(response.body).toHaveProperty('error', 'Article not found');
-    expect(response.body).toHaveProperty('articleId', 9999); // ✅ Zod coerced to number
+    expect(response.body).toHaveProperty('articleId', 9999);
   });
 
-  // ✅ Test 4 — Invalid ID now handled by Zod middleware
+  // ✅ Test 4 — Invalid ID handled by Zod middleware
   it('should return 400 if id is not a valid number', async () => {
     const response = await request(app).get('/api/articles/abc');
 
     expect(response.statusCode).toBe(400);
-    // ✅ Zod middleware returns this format now:
     expect(response.body).toHaveProperty('success', false);
-    expect(response.body).toHaveProperty('message', 'Invalid route parameters');
-    expect(response.body.errors).toHaveProperty('id'); // ✅ id field has error
+    expect(response.body).toHaveProperty('message', 'Invalid request');
+    expect(response.body.errors).toHaveProperty('id');
   });
 
   // ✅ Test 5 — No id segment

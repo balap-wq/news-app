@@ -6,6 +6,15 @@ await jest.unstable_mockModule('../src/repositories/articleRepository.js', () =>
   findArticleById: mockFindArticleById,
 }));
 
+// ✅ Mock logger to suppress Winston logs during tests
+await jest.unstable_mockModule('../src/config/logger.js', () => ({
+  default: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+  },
+}));
+
 const { getArticleById } = await import('../src/controllers/articlesController.js');
 
 describe('getArticleById Unit Tests', () => {
@@ -13,7 +22,7 @@ describe('getArticleById Unit Tests', () => {
 
   beforeEach(() => {
     req = {
-      params: { id: 1 }, // ✅ number not string — Zod already coerced it
+      params: { id: 1 },
     };
 
     res = {
@@ -41,7 +50,6 @@ describe('getArticleById Unit Tests', () => {
       id: 1,
       title: 'Test Article',
       description: 'Test Desc',
-      // ✅ snakeToCamel won't change these since no underscores
     });
   });
 
@@ -60,17 +68,15 @@ describe('getArticleById Unit Tests', () => {
     });
   });
 
-  // ✅ Test 3 — Invalid ID now handled by Zod middleware
-  // Controller never receives invalid id anymore
-  // So we test that controller trusts Zod's coerced number
+  // ✅ Test 3 — Zod already coerced id to number
   it('should call findArticleById with coerced number id', async () => {
     mockFindArticleById.mockResolvedValue(null);
 
-    req.params = { id: 1 }; // ✅ Zod already coerced to number
+    req.params = { id: 1 };
 
     await getArticleById(req, res);
 
-    expect(mockFindArticleById).toHaveBeenCalledWith(1); // ✅ number not string
+    expect(mockFindArticleById).toHaveBeenCalledWith(1);
   });
 
   // ✅ Test 4 — DB error
@@ -92,9 +98,9 @@ describe('getArticleById Unit Tests', () => {
     mockFindArticleById.mockResolvedValue({
       id: 1,
       title: 'Test Article',
-      url_to_image: 'https://example.com/image.jpg', // ← snake_case
-      source_name: 'BBC News',                        // ← snake_case
-      published_at: '2026-01-01',                     // ← snake_case
+      url_to_image: 'https://example.com/image.jpg',
+      source_name: 'BBC News',
+      published_at: '2026-01-01',
     });
 
     await getArticleById(req, res);
@@ -103,9 +109,9 @@ describe('getArticleById Unit Tests', () => {
     expect(res.json).toHaveBeenCalledWith({
       id: 1,
       title: 'Test Article',
-      urlToImage: 'https://example.com/image.jpg', // ✅ camelCase
-      sourceName: 'BBC News',                       // ✅ camelCase
-      publishedAt: '2026-01-01',                    // ✅ camelCase
+      urlToImage: 'https://example.com/image.jpg',
+      sourceName: 'BBC News',
+      publishedAt: '2026-01-01',
     });
   });
 });
