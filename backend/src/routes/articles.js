@@ -5,10 +5,9 @@ import { articleParamSchema } from '../schemas/articleSchema.js';
 
 const router = express.Router();
 
-// GET /api/articles/:id
 router.get(
   '/:id',
-  validateRequest({ params: articleParamSchema }),
+  validateRequest({ schema: articleParamSchema }), 
   getArticleById
 );
 

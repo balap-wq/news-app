@@ -12,7 +12,7 @@ function snakeToCamel(obj) {
 
 async function getArticleById(req, res) {
   try {
-    const { id } = req.params; // ✅ Zod already validated & coerced to number
+    const { id } = req.params; 
 
     const article = await findArticleById(id);
 

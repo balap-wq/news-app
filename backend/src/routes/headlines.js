@@ -5,10 +5,9 @@ import { headlineQuerySchema } from '../schemas/articleSchema.js';
 
 const router = express.Router();
 
-// GET /api/headlines
 router.get(
   '/',
-  validateRequest({ query: headlineQuerySchema }),
+  validateRequest({ schema: headlineQuerySchema }), // ✅ schema not query
   getHeadlines
 );
 

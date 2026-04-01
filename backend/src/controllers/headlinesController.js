@@ -12,9 +12,9 @@ function snakeToCamel(obj) {
 
 export async function getHeadlines(req, res) {
   try {
-    const { page, category } = req.query; // ✅ use page from Zod schema
+    const { page, category } = req.query; 
     const limit = 9;
-    const offset = (page - 1) * limit; // ✅ Zod coerced page to number already
+    const offset = (page - 1) * limit; 
 
     const headlines = await findTopHeadlines({ limit, offset, category });
     const totalResults = await countArticles({ category });
@@ -28,7 +28,7 @@ export async function getHeadlines(req, res) {
       page, // ✅ send page back to frontend
     });
   } catch (error) {
-    logger.error('Error fetching headlines:', error); // ✅ log the error
+    logger.error('Error fetching headlines:', error); 
     res.status(500).json({
       success: false,
       message: 'Failed to fetch data',
