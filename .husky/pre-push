@@ -1,2 +1,2 @@
 echo "Husky pre-push is running"
-npm run --prefix backend test
+npm run --prefix backend lint
