@@ -1,5 +1,6 @@
 import pool from "../config/db.js";
 import logger from "../config/logger.js";
+import { DEFAULT_COUNTRY } from '../config/constants.js';
 
 const articles = [
   {
@@ -264,7 +265,7 @@ const seedArticles = async () => {
           article.url,
           article.author,
           article.category,
-          article.country || 'us'
+         article.country || DEFAULT_COUNTRY
         ]
       );
     }

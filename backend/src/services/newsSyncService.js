@@ -1,28 +1,20 @@
 import { fetchTopHeadlines } from './newsApiService.js';
 import { upsertArticle } from '../repositories/articleRepository.js';
+import { ALLOWED_CATEGORIES, DEFAULT_COUNTRY } from '../config/constant.js';
 import logger from '../config/logger.js';
 
 export async function syncHeadlines() {
   logger.info('Starting Sync Headlines Service...');
 
-  const categories = [
-    'business',
-    'entertainment',
-    'general',
-    'health',
-    'science',
-    'sports',
-    'technology',
-  ];
-
+  
   let inserted = 0;
   let updated = 0;
 
-  for (const category of categories) {
+  for (const category of ALLOWED_CATEGORIES) {
     let articles;
     try {
       articles = await fetchTopHeadlines({
-        country: 'us',
+        country: DEFAULT_COUNTRY,
         category,
       });
     } catch (error) {
@@ -46,7 +38,7 @@ export async function syncHeadlines() {
           published_at: publishedAt ? new Date(publishedAt) : null,
           created_at: new Date(),
           category: article.category || category || 'general',
-          country: 'us',
+          country: DEFAULT_COUNTRY,
         };
 
         const result = await upsertArticle(mappedArticle);

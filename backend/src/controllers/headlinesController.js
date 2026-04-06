@@ -1,19 +1,21 @@
 import logger from '../config/logger.js';
 import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
+import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constants.js';
 
-const ALLOWED_CATEGORIES = [
-  'business',
-  'entertainment',
-  'general',
-  'health',
-  'science',
-  'sports',
-  'technology',
-];
 
-const ALLOWED_COUNTRIES = [
-  'ae','ar','at','au','be','bg','br','ca','ch','cn','co','cu','cz','de','eg','fr','gb','gr','hk','hu','id','ie','il','in','it','jp','kr','lt','lv','ma','mx','my','ng','nl','no','nz','ph','pl','pt','ro','rs','ru','sa','se','sg','si','sk','th','tr','tw','ua','us','ve','za',
-];
+function validateAndNormalize(value, allowedValues, fieldName) {
+  if (!value) return undefined;
+
+  const normalized = value.trim().toLowerCase();
+
+  if (!allowedValues.includes(normalized)) {
+    throw new Error(
+      `Invalid ${fieldName}. Allowed values: ${allowedValues.join(', ')}`
+    );
+  }
+
+  return normalized;
+}
 
 // Helper function to convert snake_case to camelCase
 function snakeToCamel(obj) {
@@ -28,32 +30,22 @@ function snakeToCamel(obj) {
 export async function getHeadlines(req, res) {
   try {
     const { limit, offset, category, country } = req.query;
+
     const pageLimit = limit ? parseInt(limit, 10) : 10;
     const pageOffset = offset ? parseInt(offset, 10) : 0;
 
-    if (category) {
-      const normalizedCategory = category.toLowerCase();
-      if (!ALLOWED_CATEGORIES.includes(normalizedCategory)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid category. Allowed values: business, entertainment, general, health, science, sports, technology.',
-        });
-      }
-    }
+    // ✅ declare here so accessible everywhere
+    const normalizedCategory = validateAndNormalize(
+      category,
+      ALLOWED_CATEGORIES,
+      'category'
+    );
 
-    if (country) {
-      const normalizedCountry = country.toLowerCase();
-      if (!ALLOWED_COUNTRIES.includes(normalizedCountry)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid country. Use a valid 2-letter country code.',
-        });
-      }
-        
-    }
-
-    const normalizedCategory = category ? category.toLowerCase() : undefined;
-    const normalizedCountry = country ? country.toLowerCase() : undefined;
+    const normalizedCountry = validateAndNormalize(
+      country,
+      ALLOWED_COUNTRIES,
+      'country'
+    );
 
     const headlines = await findTopHeadlines({
       limit: pageLimit,
@@ -62,25 +54,30 @@ export async function getHeadlines(req, res) {
       country: normalizedCountry,
     });
 
-    
-
-    // Get total count for pagination
     const totalResults = await countArticles({
       category: normalizedCategory,
       country: normalizedCountry,
     });
 
-    // Convert snake_case to camelCase for frontend
     const transformedArticles = headlines.map(snakeToCamel);
 
     res.status(200).json({
       success: true,
       articles: transformedArticles,
-      totalResults: totalResults,
+      totalResults,
       count: transformedArticles.length,
     });
+
   } catch (error) {
     logger.error(error);
+
+    // ✅ differentiate validation vs server error
+    if (error.message.startsWith('Invalid')) {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
 
     res.status(500).json({
       success: false,
