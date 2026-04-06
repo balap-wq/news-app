@@ -7,7 +7,8 @@ async function executeQuery(query, values = []) {
     const { rows } = await pool.query(query, values);
     return rows;
   } catch (error) {
-    logger.error('Database error:', error.message);
+    // ✅ FULL ERROR LOGGING
+    logger.error('Database error:', error);
     throw error;
   }
 }
@@ -19,9 +20,9 @@ async function insertArticle(article) {
   const query = `
     INSERT INTO articles (
       title, description, url_to_image, source_name,
-      published_at, created_at, content, url, author, category
+      published_at, created_at, content, url, author, category, country
     )
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
     RETURNING *;
   `;
 
@@ -36,6 +37,7 @@ async function insertArticle(article) {
     article.url,
     article.author,
     article.category,
+    article.country || null,
   ];
 
   const rows = await executeQuery(query, values);
@@ -47,7 +49,7 @@ async function insertArticle(article) {
   return rows[0];
 }
 
-// UPSERT (FIXED)
+// UPSERT
 async function upsertArticle(article) {
   if (!article || !article.url) {
     throw new Error('Invalid article data (url required)');
@@ -56,9 +58,9 @@ async function upsertArticle(article) {
   const query = `
     INSERT INTO articles (
       title, description, url_to_image, source_name,
-      published_at, created_at, content, url, author, category
+      published_at, created_at, content, url, author, category, country
     )
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
 
     ON CONFLICT (url)
    DO UPDATE SET
@@ -70,6 +72,7 @@ async function upsertArticle(article) {
   content = COALESCE(EXCLUDED.content, articles.content),
   author = COALESCE(EXCLUDED.author, articles.author),
   category = COALESCE(EXCLUDED.category, articles.category),
+  country = COALESCE(EXCLUDED.country, articles.country),
   created_at = NOW()  
 
       WHERE
@@ -80,6 +83,7 @@ async function upsertArticle(article) {
     articles.author IS DISTINCT FROM EXCLUDED.author OR
     articles.source_name IS DISTINCT FROM EXCLUDED.source_name OR
     articles.category IS DISTINCT FROM EXCLUDED.category OR
+    articles.country IS DISTINCT FROM EXCLUDED.country OR
     articles.published_at IS DISTINCT FROM EXCLUDED.published_at
 
     RETURNING (xmax = 0) AS inserted;
@@ -96,6 +100,7 @@ async function upsertArticle(article) {
     article.url,
     article.author,
     article.category,
+    article.country || null,
   ];
 
   const rows = await executeQuery(query, values);
@@ -106,24 +111,34 @@ async function upsertArticle(article) {
 
   return rows[0].inserted ? 'inserted' : 'updated';
 }
+
 // FIND BY ID
 async function findArticleById(id) {
   const query = `SELECT * FROM articles WHERE id = $1;`;
-
   const rows = await executeQuery(query, [id]);
   return rows[0] || null;
 }
 
 // FIND HEADLINES
-async function findTopHeadlines({ limit = 10, offset = 0, category }) {
+async function findTopHeadlines({ limit = 10, offset = 0, category, country }) {
   limit = Math.min(limit, 100);
 
   let query = `SELECT * FROM articles `;
   const values = [];
+  const conditions = [];
 
   if (category) {
-    query += `WHERE category = $1 `;
+    conditions.push(`category = $${values.length + 1}`);
     values.push(category);
+  }
+
+  if (country) {
+    conditions.push(`country = $${values.length + 1}`);
+    values.push(country);
+  }
+
+  if (conditions.length > 0) {
+    query += `WHERE ${conditions.join(' AND ')} `;
   }
 
   query += `
@@ -134,21 +149,32 @@ async function findTopHeadlines({ limit = 10, offset = 0, category }) {
 
   values.push(limit, offset);
 
+  logger.info(`Category: ${category}`);
+
   return await executeQuery(query, values);
 }
 
 // COUNT
-async function countArticles({ category }) {
+async function countArticles({ category, country }) {
   let query = `SELECT COUNT(*) FROM articles `;
   const values = [];
+  const conditions = [];
 
   if (category) {
-    query += `WHERE category = $1`;
+    conditions.push(`category = $${values.length + 1}`);
     values.push(category);
+  }
+
+  if (country) {
+    conditions.push(`country = $${values.length + 1}`);
+    values.push(country);
+  }
+
+  if (conditions.length > 0) {
+    query += `WHERE ${conditions.join(' AND ')}`;
   }
 
   const rows = await executeQuery(query, values);
   return parseInt(rows[0].count, 10);
 }
-
 export { insertArticle, upsertArticle, findArticleById, findTopHeadlines, countArticles };

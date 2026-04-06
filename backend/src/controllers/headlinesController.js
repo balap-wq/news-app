@@ -1,7 +1,22 @@
 import logger from '../config/logger.js';
 import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
+import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constants.js';
 
-// Helper function to convert snake_case to camelCase
+
+function validateAndNormalize(value, allowedValues, fieldName) {
+  if (!value) return undefined;
+
+  const normalized = value.trim().toLowerCase();
+
+  if (!allowedValues.includes(normalized)) {
+    throw new Error(
+      `Invalid ${fieldName}. Allowed values: ${allowedValues.join(', ')}`
+    );
+  }
+
+  return normalized;
+}
+
 function snakeToCamel(obj) {
   const camelObj = {};
   for (const key in obj) {
@@ -13,34 +28,60 @@ function snakeToCamel(obj) {
 
 export async function getHeadlines(req, res) {
   try {
-    const { limit, offset, category } = req.query;
-    const pageLimit = limit ? parseInt(limit) : 10;
-    const pageOffset = offset ? parseInt(offset) : 0;
+    const { limit, offset, category, country,page  } = req.query;
+
+    const pageLimit = limit ? parseInt(limit, 10) : 10;
+    const pageOffset = offset ? parseInt(offset, 10) : 0;
+
+    // ✅ declare here so accessible everywhere
+    const normalizedCategory = validateAndNormalize(
+      category,
+      ALLOWED_CATEGORIES,
+      'category'
+    );
+
+    const normalizedCountry = validateAndNormalize(
+      country,
+      ALLOWED_COUNTRIES,
+      'country'
+    );
 
     const headlines = await findTopHeadlines({
       limit: pageLimit,
       offset: pageOffset,
-      category,
+      category: normalizedCategory,
+      country: normalizedCountry,
     });
 
-    // Get total count for pagination
-    const totalResults = await countArticles({ category });
+    const totalResults = await countArticles({
+      category: normalizedCategory,
+      country: normalizedCountry,
+    });
 
-    // Convert snake_case to camelCase for frontend
     const transformedArticles = headlines.map(snakeToCamel);
 
     res.status(200).json({
       success: true,
       articles: transformedArticles,
-      totalResults: totalResults,
+      totalResults,
       count: transformedArticles.length,
+      page, // ✅ send page back to frontend
     });
+
   } catch (error) {
     logger.error(error);
 
+    // ✅ differentiate validation vs server error
+    if (error.message.startsWith('Invalid')) {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
     res.status(500).json({
       success: false,
-      message: 'failed to fetch data',
+      message: 'Failed to fetch data',
     });
   }
 }
