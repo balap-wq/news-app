@@ -16,7 +16,7 @@ const HeadlinePage = () => {
   const totalPages = Math.ceil(totalResults / pageSize);
 
   return (
-    <div>
+    <div className='bg-blue-50'>
       <div className="mx-auto w-full text-center mt-7">
         <h1 className="text-3xl font-bold">Top Headlines</h1>
       </div>
@@ -24,7 +24,7 @@ const HeadlinePage = () => {
       {loading && <p className="text-center text-blue-300 mt-4">Loading....</p>}
       {error && <p className="text-center text-red-500">{error}</p>}
 
-      <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 ">
         {loading
           ? Array.from({ length: 9 }).map((_, index) => <HeadlineCardSkeleton key={index} />)
           : data?.map((article) => <Headlinecards key={article.id} article={article} />)}

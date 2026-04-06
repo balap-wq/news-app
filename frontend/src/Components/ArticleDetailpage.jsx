@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
 import EmptyState from './EmptyState';
+import LoadingSpinner from './LoadingSpinner';
 
 const ArticleDetailpage = () => {
   const { id } = useParams();
@@ -25,6 +26,8 @@ const ArticleDetailpage = () => {
       setLoading(true);
       setError(null);
       try {
+        // Simulate network delay for better loading state visualization
+        // await new Promise((resolve) => setTimeout(resolve, 2000));
         const response = await axiosInstance.get(`/api/articles/${id}`);
         setArticle(response.data);
       } catch (err) {
@@ -38,17 +41,18 @@ const ArticleDetailpage = () => {
     fetchArticle();
   }, [id, routeArticle]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-amber-50">
-        <p className="text-lg text-gray-600">Loading article...</p>
+if (loading) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
+      <div className="w-full max-w-3xl bg-blue-100 rounded-2xl shadow-lg p-10 flex items-center justify-center">
+        <LoadingSpinner />
       </div>
-    );
-  }
-
+    </div>
+  );
+}
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-amber-50">
+      <div className="min-h-screen flex items-center justify-center bg-blue-50">
         <p className="text-lg text-red-600">{error}</p>
       </div>
     );
@@ -65,8 +69,8 @@ const ArticleDetailpage = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-amber-50 px-4">
-      <div className="w-full max-w-3xl bg-amber-100 rounded-2xl shadow-lg p-6 sm:p-8 md:p-10">
+    <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
+      <div className="w-full max-w-3xl bg-blue-100 rounded-2xl shadow-lg p-6 sm:p-8 md:p-10">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center leading-tight">
           {article.title}
         </h1>
