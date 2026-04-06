@@ -17,7 +17,6 @@ function validateAndNormalize(value, allowedValues, fieldName) {
   return normalized;
 }
 
-// Helper function to convert snake_case to camelCase
 function snakeToCamel(obj) {
   const camelObj = {};
   for (const key in obj) {
@@ -29,7 +28,7 @@ function snakeToCamel(obj) {
 
 export async function getHeadlines(req, res) {
   try {
-    const { limit, offset, category, country } = req.query;
+    const { limit, offset, category, country,page  } = req.query;
 
     const pageLimit = limit ? parseInt(limit, 10) : 10;
     const pageOffset = offset ? parseInt(offset, 10) : 0;
@@ -66,6 +65,7 @@ export async function getHeadlines(req, res) {
       articles: transformedArticles,
       totalResults,
       count: transformedArticles.length,
+      page, // ✅ send page back to frontend
     });
 
   } catch (error) {
@@ -81,7 +81,7 @@ export async function getHeadlines(req, res) {
 
     res.status(500).json({
       success: false,
-      message: 'failed to fetch data',
+      message: 'Failed to fetch data',
     });
   }
 }

@@ -1,7 +1,6 @@
-import { findArticleById, findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
+import { findArticleById,   findTopHeadlines, countArticles } from '../repositories/articleRepository.js'; 
 import logger from '../config/logger.js';
 
-// Helper function to convert snake_case to camelCase
 function snakeToCamel(obj) {
   const camelObj = {};
   for (const key in obj) {
@@ -38,22 +37,15 @@ async function getHeadlines(req, res) {
 
 async function getArticleById(req, res) {
   try {
-    const { id } = req.params;
+    const { id } = req.params; 
 
-    const parsedId = parseInt(id, 10);
-    if (!Number.isInteger(parsedId) || parsedId <= 0) {
-      return res.status(400).json({ error: 'Invalid article ID' });
-    }
-
-    const article = await findArticleById(parsedId);
+    const article = await findArticleById(id);
 
     if (!article) {
-      return res.status(404).json({ error: 'Article not found', articleId: parsedId });
+      return res.status(404).json({ error: 'Article not found', articleId: id });
     }
 
-    // Convert snake_case to camelCase for frontend
     const transformedArticle = snakeToCamel(article);
-
     res.status(200).json(transformedArticle);
   } catch (error) {
     logger.error('Error fetching article:', error);
@@ -61,4 +53,4 @@ async function getArticleById(req, res) {
   }
 }
 
-export { getHeadlines, getArticleById };
+export { getArticleById,getHeadlines  };

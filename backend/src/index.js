@@ -1,3 +1,4 @@
+import './config/env.js';
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
@@ -6,6 +7,9 @@ import adminRoutes from './routes/adminRoutes.js';
 import { articlesRoutes } from './routes/articles.js';
 import syncArticles from './jobs/syncJob.js';
 import headlinesRouter from './routes/headlines.js';
+import { testConnection } from './config/db.js';
+
+await testConnection();
 const app = express();
 
 const PORT = process.env.PORT || 5000;

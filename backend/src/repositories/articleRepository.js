@@ -7,7 +7,8 @@ async function executeQuery(query, values = []) {
     const { rows } = await pool.query(query, values);
     return rows;
   } catch (error) {
-    logger.error('Database error:', error.message);
+    // ✅ FULL ERROR LOGGING
+    logger.error('Database error:', error);
     throw error;
   }
 }
@@ -48,7 +49,7 @@ async function insertArticle(article) {
   return rows[0];
 }
 
-// UPSERT (FIXED)
+// UPSERT
 async function upsertArticle(article) {
   if (!article || !article.url) {
     throw new Error('Invalid article data (url required)');
@@ -110,10 +111,10 @@ async function upsertArticle(article) {
 
   return rows[0].inserted ? 'inserted' : 'updated';
 }
+
 // FIND BY ID
 async function findArticleById(id) {
   const query = `SELECT * FROM articles WHERE id = $1;`;
-
   const rows = await executeQuery(query, [id]);
   return rows[0] || null;
 }

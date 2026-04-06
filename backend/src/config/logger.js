@@ -1,13 +1,15 @@
-import { createLogger, format, transports } from 'winston';
+import winston from 'winston';
 
-const logger = createLogger({
+const logger = winston.createLogger({
   level: 'info',
-  format: format.combine(format.timestamp(), format.errors({ stack: true }), format.json()),
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.errors({ stack: true }), // ✅ IMPORTANT
+    winston.format.json()
+  ),
   transports: [
-    new transports.Console(),
-    new transports.File({
-      filename: 'logs/app.log',
-    }),
+    new winston.transports.Console(), // ✅ ensure console logging
+    new winston.transports.File({ filename: 'logs/app.log' }),
   ],
 });
 
