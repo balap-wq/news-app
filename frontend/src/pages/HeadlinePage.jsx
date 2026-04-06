@@ -16,7 +16,7 @@ const HeadlinePage = () => {
   const totalPages = Math.ceil(totalResults / pageSize);
 
   return (
-    <div>
+    <>
       <div className="mx-auto w-full text-center mt-7">
         <h1 className="text-3xl font-bold">Top Headlines</h1>
       </div>
@@ -54,7 +54,7 @@ const HeadlinePage = () => {
           <ArrowRight size={18} />
         </Button>
       </div>
-    </div>
+    </>
   );
 };
 
