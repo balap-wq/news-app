@@ -33,16 +33,16 @@ export default function Headlinecards({ article }) {
         <img
           src={urlToImage || placeholder}
           alt={title}
-          className="w-full h-48 sm:h-44 md:h-48 object-cover"
+          className="w-full h-44 md:h-48 object-fit-cover object-center"
         />
 
         {/* Content */}
         <div className="p-4 flex flex-col justify-between">
-          <h2 className="text-base sm:text-lg font-semibold line-clamp-2 leading-snug">{title}</h2>
+          <h2 className="text-base sm:text-lg font-semibold line-clamp-2 leading-snug text-wrap">{title}</h2>
 
           <div className="mt-3 text-sm text-gray-500">
-            <p className="truncate">Source: {sourceName}</p>
-            <p className="truncate">Author: {author}</p>
+            <p className="truncate text-wrap">Source: {sourceName}</p>
+            <p className="h-10 truncate text-wrap overflow-y-hidden">Author: {author}</p>
             <p>{displayDate}</p>
           </div>
         </div>
