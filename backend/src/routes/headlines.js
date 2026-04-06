@@ -1,5 +1,7 @@
 import express from 'express';
 import { getHeadlines } from '../controllers/headlinesController.js';
+import { validateRequest } from '../middleware/validateRequest.js';
+import { headlineQuerySchema } from '../schemas/articleSchema.js';
 
 const router = express.Router();
 
@@ -16,5 +18,10 @@ const router = express.Router();
  */
 
 router.get('/', getHeadlines);
+router.get(
+  '/',
+  validateRequest({ schema: headlineQuerySchema }), // ✅ schema not query
+  getHeadlines
+);
 
 export default router;

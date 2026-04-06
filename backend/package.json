@@ -23,7 +23,8 @@
     "pg": "^8.20.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "winston": "^3.19.0"
+    "winston": "^3.19.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
@@ -31,7 +32,7 @@
     "globals": "^15.9.0",
     "husky": "^9.1.7",
     "jest": "^30.3.0",
-    "nodemon": "^3.1.4",
+    "nodemon": "^3.1.14",
     "prettier": "^3.3.3",
     "supertest": "^7.2.2",
     "test": "3.3.0"

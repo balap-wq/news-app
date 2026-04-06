@@ -6,6 +6,15 @@ await jest.unstable_mockModule('../src/repositories/articleRepository.js', () =>
   findArticleById: mockFindArticleById,
 }));
 
+// ✅ Mock logger to suppress Winston logs during tests
+await jest.unstable_mockModule('../src/config/logger.js', () => ({
+  default: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+  },
+}));
+
 const { getArticleById } = await import('../src/controllers/articlesController.js');
 
 describe('getArticleById Unit Tests', () => {
@@ -13,7 +22,7 @@ describe('getArticleById Unit Tests', () => {
 
   beforeEach(() => {
     req = {
-      params: { id: '1' },
+      params: { id: 1 },
     };
 
     res = {
@@ -24,6 +33,7 @@ describe('getArticleById Unit Tests', () => {
     jest.clearAllMocks();
   });
 
+  // ✅ Test 1 — Success
   it('should return 200 with article data', async () => {
     mockFindArticleById.mockResolvedValue({
       id: 1,
@@ -43,6 +53,7 @@ describe('getArticleById Unit Tests', () => {
     });
   });
 
+  // ✅ Test 2 — Not found
   it('should return 404 if article not found', async () => {
     mockFindArticleById.mockResolvedValue(null);
 
@@ -57,21 +68,19 @@ describe('getArticleById Unit Tests', () => {
     });
   });
 
-  it('should return 400 if id is not a valid number', async () => {
-    req.params = { id: 'abc' };
+  // ✅ Test 3 — Zod already coerced id to number
+  it('should call findArticleById with coerced number id', async () => {
+    mockFindArticleById.mockResolvedValue(null);
+
+    req.params = { id: 1 };
 
     await getArticleById(req, res);
 
-    expect(mockFindArticleById).not.toHaveBeenCalled();
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({
-      error: 'Invalid article ID',
-    });
+    expect(mockFindArticleById).toHaveBeenCalledWith(1);
   });
 
+  // ✅ Test 4 — DB error
   it('should return 500 on unexpected error', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
-
     mockFindArticleById.mockRejectedValue(new Error('DB error'));
 
     await getArticleById(req, res);
@@ -82,7 +91,27 @@ describe('getArticleById Unit Tests', () => {
     expect(res.json).toHaveBeenCalledWith({
       error: 'Internal server error',
     });
+  });
 
-    console.error.mockRestore();
+  // ✅ Test 5 — snake_case to camelCase transformation
+  it('should transform snake_case keys to camelCase', async () => {
+    mockFindArticleById.mockResolvedValue({
+      id: 1,
+      title: 'Test Article',
+      url_to_image: 'https://example.com/image.jpg',
+      source_name: 'BBC News',
+      published_at: '2026-01-01',
+    });
+
+    await getArticleById(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      id: 1,
+      title: 'Test Article',
+      urlToImage: 'https://example.com/image.jpg',
+      sourceName: 'BBC News',
+      publishedAt: '2026-01-01',
+    });
   });
 });

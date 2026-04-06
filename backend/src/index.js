@@ -1,3 +1,4 @@
+import './config/env.js';
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
@@ -10,6 +11,9 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 
 
+import { testConnection } from './config/db.js';
+
+await testConnection();
 const app = express();
 
 const PORT = process.env.PORT || 5000;
