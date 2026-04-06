@@ -19,7 +19,6 @@ app.use(
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
   })
 );
-
 app.use(express.json());
 
 app.use('/api/articles', articlesRoutes);
