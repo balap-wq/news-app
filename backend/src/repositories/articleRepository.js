@@ -20,9 +20,9 @@ async function insertArticle(article) {
   const query = `
     INSERT INTO articles (
       title, description, url_to_image, source_name,
-      published_at, created_at, content, url, author, category
+      published_at, created_at, content, url, author, category, country
     )
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
     RETURNING *;
   `;
 
@@ -37,6 +37,7 @@ async function insertArticle(article) {
     article.url,
     article.author,
     article.category,
+    article.country || null,
   ];
 
   const rows = await executeQuery(query, values);
@@ -57,31 +58,33 @@ async function upsertArticle(article) {
   const query = `
     INSERT INTO articles (
       title, description, url_to_image, source_name,
-      published_at, created_at, content, url, author, category
+      published_at, created_at, content, url, author, category, country
     )
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
 
     ON CONFLICT (url)
-    DO UPDATE SET
-      title = COALESCE(EXCLUDED.title, articles.title),
-      description = COALESCE(EXCLUDED.description, articles.description),
-      url_to_image = COALESCE(EXCLUDED.url_to_image, articles.url_to_image),
-      source_name = COALESCE(EXCLUDED.source_name, articles.source_name),
-      published_at = COALESCE(EXCLUDED.published_at, articles.published_at),
-      content = COALESCE(EXCLUDED.content, articles.content),
-      author = COALESCE(EXCLUDED.author, articles.author),
-      category = COALESCE(EXCLUDED.category, articles.category),
-      created_at = NOW()
+   DO UPDATE SET
+  title = COALESCE(EXCLUDED.title, articles.title),
+  description = COALESCE(EXCLUDED.description, articles.description),
+  url_to_image = COALESCE(EXCLUDED.url_to_image, articles.url_to_image),
+  source_name = COALESCE(EXCLUDED.source_name, articles.source_name),
+  published_at = COALESCE(EXCLUDED.published_at, articles.published_at),
+  content = COALESCE(EXCLUDED.content, articles.content),
+  author = COALESCE(EXCLUDED.author, articles.author),
+  category = COALESCE(EXCLUDED.category, articles.category),
+  country = COALESCE(EXCLUDED.country, articles.country),
+  created_at = NOW()  
 
-    WHERE
-      articles.title IS DISTINCT FROM EXCLUDED.title OR
-      articles.description IS DISTINCT FROM EXCLUDED.description OR
-      articles.content IS DISTINCT FROM EXCLUDED.content OR
-      articles.url_to_image IS DISTINCT FROM EXCLUDED.url_to_image OR
-      articles.author IS DISTINCT FROM EXCLUDED.author OR
-      articles.source_name IS DISTINCT FROM EXCLUDED.source_name OR
-      articles.category IS DISTINCT FROM EXCLUDED.category OR
-      articles.published_at IS DISTINCT FROM EXCLUDED.published_at
+      WHERE
+    articles.title IS DISTINCT FROM EXCLUDED.title OR
+    articles.description IS DISTINCT FROM EXCLUDED.description OR
+    articles.content IS DISTINCT FROM EXCLUDED.content OR
+    articles.url_to_image IS DISTINCT FROM EXCLUDED.url_to_image OR
+    articles.author IS DISTINCT FROM EXCLUDED.author OR
+    articles.source_name IS DISTINCT FROM EXCLUDED.source_name OR
+    articles.category IS DISTINCT FROM EXCLUDED.category OR
+    articles.country IS DISTINCT FROM EXCLUDED.country OR
+    articles.published_at IS DISTINCT FROM EXCLUDED.published_at
 
     RETURNING (xmax = 0) AS inserted;
   `;
@@ -97,6 +100,7 @@ async function upsertArticle(article) {
     article.url,
     article.author,
     article.category,
+    article.country || null,
   ];
 
   const rows = await executeQuery(query, values);
@@ -116,15 +120,25 @@ async function findArticleById(id) {
 }
 
 // FIND HEADLINES
-async function findTopHeadlines({ limit = 10, offset = 0, category }) {
+async function findTopHeadlines({ limit = 10, offset = 0, category, country }) {
   limit = Math.min(limit, 100);
 
   let query = `SELECT * FROM articles `;
   const values = [];
+  const conditions = [];
 
   if (category) {
-    query += `WHERE category = $1 `;
+    conditions.push(`category = $${values.length + 1}`);
     values.push(category);
+  }
+
+  if (country) {
+    conditions.push(`country = $${values.length + 1}`);
+    values.push(country);
+  }
+
+  if (conditions.length > 0) {
+    query += `WHERE ${conditions.join(' AND ')} `;
   }
 
   query += `
@@ -135,27 +149,32 @@ async function findTopHeadlines({ limit = 10, offset = 0, category }) {
 
   values.push(limit, offset);
 
+  logger.info(`Category: ${category}`);
+
   return await executeQuery(query, values);
 }
 
 // COUNT
-async function countArticles({ category }) {
+async function countArticles({ category, country }) {
   let query = `SELECT COUNT(*) FROM articles `;
   const values = [];
+  const conditions = [];
 
   if (category) {
-    query += `WHERE category = $1`;
+    conditions.push(`category = $${values.length + 1}`);
     values.push(category);
+  }
+
+  if (country) {
+    conditions.push(`country = $${values.length + 1}`);
+    values.push(country);
+  }
+
+  if (conditions.length > 0) {
+    query += `WHERE ${conditions.join(' AND ')}`;
   }
 
   const rows = await executeQuery(query, values);
   return parseInt(rows[0].count, 10);
 }
-
-export {
-  insertArticle,
-  upsertArticle,
-  findArticleById,
-  findTopHeadlines,
-  countArticles,
-};
+export { insertArticle, upsertArticle, findArticleById, findTopHeadlines, countArticles };
