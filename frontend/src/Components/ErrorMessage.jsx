@@ -1,17 +1,23 @@
+import React from 'react';
+
 function ErrorMessage({ message, onRetry }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16">
+    <div className="flex flex-col items-center justify-center text-center space-y-2">
       
-      <div className="text-red-500 text-4xl mb-4">❌</div>
+      <div className="text-red-500 text-4xl py-5">❌</div>
 
-      <p className="text-lg text-gray-700 mb-4">
-        {message || 'An unexpected error occurred. Please try again.'}
+      <h2 className="text-xl font-semibold text-gray-800">
+        Something went wrong
+      </h2>
+
+      <p className="text-gray-600 max-w-md">
+        {message || 'We couldn’t load the article. Please try again.'}
       </p>
 
       {onRetry && (
         <button
           onClick={onRetry}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="mt-3 px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition hover:cursor-pointer"
         >
           Retry
         </button>
