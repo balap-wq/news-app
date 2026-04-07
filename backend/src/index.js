@@ -10,61 +10,66 @@ import headlinesRouter from './routes/headlines.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 
-
 import { testConnection } from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 await testConnection();
-const app = express();
 
+const app = express();
 const PORT = process.env.PORT || 5000;
 
+
+// ✅ DEBUG (very important)
+console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+
+
+// ✅ CORS FIX (safe + production ready)
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
-    methods: ["GET", "POST", "OPTIONS"],
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
   })
 );
+
 app.use(express.json());
 
-app.use('/api/articles', articlesRoutes);
 
-// ✅ Headlines route for fetching new headlines;
+// ✅ Routes
+app.use('/api/articles', articlesRoutes);
 app.use('/api/headlines', headlinesRouter);
+app.use('/api/admin', adminRoutes);
 
 
 // ✅ Health check
-
-/**
- * @swagger
- * /health:
- *   get:
- *     summary: Health check
- *     description: Checks the health of the API.
- *     responses:
- *       200:
- *         description: API is healthy
- */
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
 
 // ✅ Sample endpoint
 app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
 
-app.use('/api/admin', adminRoutes);
 
+// ✅ Swagger (only in prod)
 if (process.env.NODE_ENV === 'production') {
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 }
 
+
+// ✅ Cron job
 syncArticles();
 
+
+// ✅ Error handler (ALWAYS last)
+app.use(errorHandler);
+
+
+// ✅ Start server
 app.listen(PORT, () => {
   logger.info(`Server running on http://localhost:${PORT}`);
 });
-app.use(errorHandler);
 
 export default app;
