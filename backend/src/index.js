@@ -8,6 +8,7 @@ import { articlesRoutes } from './routes/articles.js';
 import syncArticles from './jobs/syncJob.js';
 import headlinesRouter from './routes/headlines.js';
 import { testConnection } from './config/db.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 await testConnection();
 const app = express();
@@ -43,5 +44,6 @@ syncArticles();
 app.listen(PORT, () => {
   logger.info(`Server running on http://localhost:${PORT}`);
 });
+app.use(errorHandler);
 
 export default app;
