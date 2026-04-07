@@ -247,7 +247,7 @@ const seedArticles = async () => {
   try {
     console.log("Seeding articles data...");
 
-    for (let article of articles) {
+    for (const article of articles) {
       await pool.query(
         `INSERT INTO articles 
         (title, description, url_to_image, source_name, published_at, created_at, content, url, author, category)
