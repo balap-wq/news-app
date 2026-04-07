@@ -7,8 +7,8 @@ const router = express.Router();
 
 router.get(
   '/',
-  validateRequest({ schema: headlineQuerySchema }), // ✅ schema not query
+  validateRequest({ schema: headlineQuerySchema }), 
   getHeadlines
 );
 
-export default router;
+export { router as headlinesRoutes };

@@ -7,4 +7,4 @@ const router = express.Router();
 
 router.get('/', getHeadlines);
 
-export { router as headlinesRoutes };
+export default router;

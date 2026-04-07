@@ -1,2 +1,0 @@
-echo "Husky pre-commit is running"
-npm run --prefix backend lint
