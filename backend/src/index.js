@@ -24,7 +24,6 @@ app.use(
     methods: ["GET", "POST", "OPTIONS"],
   })
 );
-
 app.use(express.json());
 
 app.use('/api/articles', articlesRoutes);
