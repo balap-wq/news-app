@@ -30,7 +30,7 @@ export async function getHeadlines(req, res) {
   try {
     const { limit, category, country, page } = req.query;
     const pageNumber = page ? parseInt(page, 10) : 1;
-    const pageLimit = limit ? parseInt(limit, 10) : 10;
+    const pageLimit = limit ? parseInt(limit, 10) : 9;
     const pageOffset = (pageNumber - 1) * pageLimit;
 
     // ✅ declare here so accessible everywhere

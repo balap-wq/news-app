@@ -4,6 +4,7 @@ import axiosInstance from '../api/axiosInstance';
 import EmptyState from './EmptyState';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
+import logger from '../../../backend/src/config/logger';
 
 const ArticleDetailPage = () => {
   const { id } = useParams();
@@ -20,11 +21,14 @@ const ArticleDetailPage = () => {
       setLoading(true);
       setError(null);
 
+   // ✅ Simulate network delay for better UX testing
+    //await new Promise((resolve) => setTimeout(resolve, 2000));
+
       const response = await axiosInstance.get(`/api/articles/${id}`);
       setArticle(response.data);
     } catch (err) {
       setError('Failed to load article');
-      console.error('Error fetching article:', err);
+      logger.error('Error fetching article:', err);
     } finally {
       setLoading(false);
     }
