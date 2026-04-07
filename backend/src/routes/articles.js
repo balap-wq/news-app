@@ -13,4 +13,4 @@ router.get(
   getArticleById
 );
 
-export { router as articlesRoutes };
+export default router; // ✅ FIXED
