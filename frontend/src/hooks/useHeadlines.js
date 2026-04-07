@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import axiosInstance from '../api/axiosInstance';
 
-const LIMIT = 9;
-
-function useHeadlines({ page = 1, category, country }) {
+function useHeadlines({ page = 1, category }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -17,17 +15,12 @@ function useHeadlines({ page = 1, category, country }) {
       setError(null);
 
       try {
-        // Calculate limit and offset from page number
-        const itemsPerPage = 9;
-        const limit = itemsPerPage;
-        const offset = (page - 1) * itemsPerPage;
-
         const response = await axiosInstance.get('/api/headlines', {
-          params: { limit, offset, category },
+          params: { page, category },
           signal: controller.signal,
         });
 
-        setData(response.data.data || []);
+        setData(response.data.articles || []);
         setTotalResults(response.data.totalResults || 0);
       } catch (err) {
         if (err.name !== 'CanceledError') {
