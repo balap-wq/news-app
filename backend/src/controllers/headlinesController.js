@@ -1,6 +1,6 @@
 import logger from '../config/logger.js';
 import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
-import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constants.js';
+import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constant.js';
 
 
 function validateAndNormalize(value, allowedValues, fieldName) {
@@ -28,10 +28,10 @@ function snakeToCamel(obj) {
 
 export async function getHeadlines(req, res) {
   try {
-    const { limit, offset, category, country,page  } = req.query;
-
+    const { limit, category, country, page } = req.query;
+    const pageNumber = page ? parseInt(page, 10) : 1;
     const pageLimit = limit ? parseInt(limit, 10) : 10;
-    const pageOffset = offset ? parseInt(offset, 10) : 0;
+    const pageOffset = (pageNumber - 1) * pageLimit;
 
     // ✅ declare here so accessible everywhere
     const normalizedCategory = validateAndNormalize(
