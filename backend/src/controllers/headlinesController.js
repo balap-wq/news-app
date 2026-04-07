@@ -1,15 +1,23 @@
+import logger from '../config/logger.js';
+import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
+
+function snakeToCamel(obj) {
+  const camelObj = {};
+  for (const key in obj) {
+    const camelKey = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+    camelObj[camelKey] = obj[key];
+  }
+  return camelObj;
+}
+
 export async function getHeadlines(req, res) {
   try {
-    const { limit, offset, category } = req.query; 
+    const { page = 1, category } = req.query;
+    const limit = 9;
+    const offset = (page - 1) * limit;
 
-    const headlines = await findTopHeadlines({
-      limit,
-      offset,
-      category,
-    });
-
+    const headlines = await findTopHeadlines({ limit, offset, category });
     const totalResults = await countArticles({ category });
-
     const transformedArticles = headlines.map(snakeToCamel);
 
     res.status(200).json({
@@ -17,11 +25,13 @@ export async function getHeadlines(req, res) {
       articles: transformedArticles,
       totalResults,
       count: transformedArticles.length,
+      page,
     });
-  } catch (error) {
+  } catch (_error) {
+    logger.error('Error fetching headlines:', _error);
     res.status(500).json({
       success: false,
-      message: 'failed to fetch data',
+      message: 'Failed to fetch data',
     });
   }
 }
