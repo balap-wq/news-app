@@ -14,35 +14,15 @@ function useArticle(id) {
     const fetchArticle = async () => {
       setLoading(true);
       setError(null);
+      setArticle(null); // optional: clear old data
 
       try {
         const response = await axiosInstance.get(`/api/articles/${id}`, {
           signal: controller.signal,
         });
 
-        const {
-          id,
-          title,
-          author,
-          source,
-          publishedAt,
-          urlToImage,
-          url,
-          content,
-          description,
-        } = response.data;
-
-        setArticle({
-          id,
-          title,
-          author,
-          source,
-          publishedAt,
-          urlToImage,
-          url,
-          content,
-          description,
-        });
+        // simplified as per reviewer
+        setArticle(response.data);
 
       } catch (err) {
         if (err.name === 'CanceledError') return;
