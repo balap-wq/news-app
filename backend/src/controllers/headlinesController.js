@@ -1,7 +1,7 @@
 import logger from '../config/logger.js';
 import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
-import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constants.js';
-
+import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constant.js';
+import { ValidationError } from '../utils/error.js';
 
 function validateAndNormalize(value, allowedValues, fieldName) {
   if (!value) return undefined;
@@ -9,7 +9,7 @@ function validateAndNormalize(value, allowedValues, fieldName) {
   const normalized = value.trim().toLowerCase();
 
   if (!allowedValues.includes(normalized)) {
-    throw new Error(
+    throw new ValidationError(
       `Invalid ${fieldName}. Allowed values: ${allowedValues.join(', ')}`
     );
   }
@@ -26,12 +26,13 @@ function snakeToCamel(obj) {
   return camelObj;
 }
 
-export async function getHeadlines(req, res) {
+export async function getHeadlines(req, res, next) {
   try {
-    const { limit, offset, category, country,page  } = req.query;
+    const { limit, category, country,page  } = req.query;
 
-    const pageLimit = limit ? parseInt(limit, 10) : 10;
-    const pageOffset = offset ? parseInt(offset, 10) : 0;
+    const pageNumber = page ? parseInt(page, 10) : 1;
+    const pageLimit = limit ? parseInt(limit, 10) : 9;
+    const pageOffset = (pageNumber - 1) * pageLimit;
 
     // ✅ declare here so accessible everywhere
     const normalizedCategory = validateAndNormalize(
@@ -71,17 +72,6 @@ export async function getHeadlines(req, res) {
   } catch (error) {
     logger.error(error);
 
-    // ✅ differentiate validation vs server error
-    if (error.message.startsWith('Invalid')) {
-      return res.status(400).json({
-        success: false,
-        message: error.message,
-      });
-    }
-
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch data',
-    });
+    next(error);
   }
 }
