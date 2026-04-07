@@ -7,6 +7,10 @@ import adminRoutes from './routes/adminRoutes.js';
 import { articlesRoutes } from './routes/articles.js';
 import syncArticles from './jobs/syncJob.js';
 import headlinesRouter from './routes/headlines.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.js';
+
+
 import { testConnection } from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -17,7 +21,8 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: process.env.FRONTEND_URL,
+    methods: ["GET", "POST", "OPTIONS"],
   })
 );
 app.use(express.json());
@@ -27,7 +32,19 @@ app.use('/api/articles', articlesRoutes);
 // ✅ Headlines route for fetching new headlines;
 app.use('/api/headlines', headlinesRouter);
 
+
 // ✅ Health check
+
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check
+ *     description: Checks the health of the API.
+ *     responses:
+ *       200:
+ *         description: API is healthy
+ */
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
@@ -38,6 +55,10 @@ app.get('/api/news', (_req, res) => {
 });
 
 app.use('/api/admin', adminRoutes);
+
+if (process.env.NODE_ENV === 'production') {
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}
 
 syncArticles();
 
