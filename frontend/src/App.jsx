@@ -1,7 +1,7 @@
 import React from 'react';
 import HeadlinePage from './pages/HeadlinePage';
 import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
-import Articledetailpage from './Components/ArticleDetailpage';
+import ArticleDetailPage from './Components/ArticleDetailPage';
 import Header from './Components/Header';
 
 const App = () => {
@@ -12,7 +12,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/headlines" />} />
           <Route path="/headlines" element={<HeadlinePage />} />
-          <Route path="/article/:id" element={<Articledetailpage />} />
+          <Route path="/article/:id" element={<ArticleDetailPage />} />
         </Routes>
       </BrowserRouter>
     </>
