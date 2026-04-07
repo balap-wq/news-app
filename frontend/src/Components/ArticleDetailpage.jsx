@@ -7,20 +7,18 @@ const ArticleDetailpage = () => {
   const { id } = useParams();
   const location = useLocation();
   const routeArticle = location.state;
-  
+
   const [article, setArticle] = useState(routeArticle || null);
   const [loading, setLoading] = useState(!routeArticle);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // If article data passed via routing, skip API call
     if (routeArticle) {
       setArticle(routeArticle);
       setLoading(false);
       return;
     }
 
-    // Fetch article from API if not available from routing
     const fetchArticle = async () => {
       setLoading(true);
       setError(null);
@@ -54,12 +52,10 @@ const ArticleDetailpage = () => {
     );
   }
 
-  //  Handle no article
   if (!article) {
     return <EmptyState />;
   }
 
-  //  Handle missing data
   if (!article.title || !article.description) {
     return <EmptyState />;
   }
