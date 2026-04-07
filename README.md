@@ -196,3 +196,85 @@ git push
 * If hooks fail, fix errors before retrying
 
 ---
+
+Got it 👍 — here’s the **minimal important part only** for your README:
+
+---
+
+## 📘 API Documentation (Swagger)
+
+Swagger UI is integrated to provide interactive API documentation.
+
+### 🔗 Access Docs
+
+```
+http://localhost:5000/api/docs
+```
+
+### Endpoints
+
+* **GET /api/headlines** → Fetch headlines (supports `page`, `limit`)
+* **GET /api/articles/{id}** → Get article by ID
+* **GET /health** → Health check
+
+### Setup
+
+```
+npm install swagger-ui-express swagger-jsdoc
+
+```
+
+### ⚠️ Notes
+
+* Backend runs on `http://localhost:5000`
+* Ensure CORS is enabled in server
+
+---
+
+## Database Seeding
+
+Sample data is added to the database for development and testing.
+
+### Run Seeder
+
+```
+npm run seed
+```
+
+### Details
+
+* Inserts sample articles into the database
+* Helps frontend development without real API data
+* Can be re-run to refresh data
+
+### File
+
+* Seeder script: `src/seeds/sampleArticles.js`
+
+### Notes
+
+* Ensure database is connected before running
+* Existing data may be overwritten (based on implementation)
+
+## CORS Configuration
+
+To allow communication between frontend and backend during development, CORS is configured.
+
+### Setup
+
+1. Install cors package:
+   npm install cors
+
+2. Add frontend URL in `.env`:
+   FRONTEND_URL=http://localhost:5173
+
+3. Configure in backend:
+
+   app.use(cors({
+     origin: process.env.FRONTEND_URL,
+     methods: ["GET", "POST", "OPTIONS"],
+   }));
+
+### Purpose
+
+This ensures that the React development server can access backend APIs without CORS errors.

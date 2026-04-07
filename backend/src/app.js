@@ -4,6 +4,7 @@ import cors from 'cors';
 import { articlesRoutes } from './routes/articles.js';
 import logger from './config/logger.js';
 
+
 const app = express();
 
 app.use(cors());
