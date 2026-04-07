@@ -12,6 +12,7 @@ import swaggerSpec from './config/swagger.js';
 
 
 import { testConnection } from './config/db.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 await testConnection();
 const app = express();
@@ -64,5 +65,6 @@ syncArticles();
 app.listen(PORT, () => {
   logger.info(`Server running on http://localhost:${PORT}`);
 });
+app.use(errorHandler);
 
 export default app;

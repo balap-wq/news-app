@@ -9,6 +9,7 @@ export const validateRequest = ({ schema } = {}) => {
     let data;
     let source;
 
+    
     if (req.body && Object.keys(req.body).length > 0) {
       data = req.body;
       source = 'body';

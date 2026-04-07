@@ -1,11 +1,14 @@
 import { jest } from '@jest/globals';
 
 const mockFindArticleById = jest.fn();
-const mockFindTopHeadlines = jest.fn();
 const mockCountArticles = jest.fn();
+const mockFindTopHeadlines = jest.fn(); 
+
 
 await jest.unstable_mockModule('../src/repositories/articleRepository.js', () => ({
   findArticleById: mockFindArticleById,
+  countArticles: mockCountArticles, 
+  findTopHeadlines: mockFindTopHeadlines, 
   findTopHeadlines: mockFindTopHeadlines,
   countArticles: mockCountArticles,
 }));

@@ -1,4 +1,4 @@
-    export const ALLOWED_CATEGORIES = [
+export const ALLOWED_CATEGORIES = [
   'business',
   'entertainment',
   'general',
