@@ -4,7 +4,6 @@ import axiosInstance from '../api/axiosInstance';
 import EmptyState from './EmptyState';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
-import logger from '../../../backend/src/config/logger';
 
 const ArticleDetailPage = () => {
   const { id } = useParams();
@@ -28,7 +27,7 @@ const ArticleDetailPage = () => {
       setArticle(response.data);
     } catch (err) {
       setError('Failed to load article');
-      logger.error('Error fetching article:', err);
+      console.error('Error fetching article:', err);
     } finally {
       setLoading(false);
     }
