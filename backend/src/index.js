@@ -56,7 +56,9 @@ app.get('/api/news', (_req, res) => {
 
 app.use('/api/admin', adminRoutes);
 
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+if (process.env.NODE_ENV === 'production') {
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+}
 
 syncArticles();
 
