@@ -5,7 +5,7 @@ import EmptyState from './EmptyState';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 
-const ArticleDetailpage = () => {
+const ArticleDetailPage = () => {
   const { id } = useParams();
   const location = useLocation();
   const routeArticle = location.state?.article; // safer
@@ -86,4 +86,4 @@ const ArticleDetailpage = () => {
   );
 };
 
-export default ArticleDetailpage;
+export default ArticleDetailPage;

@@ -11,6 +11,7 @@ const HeadlinePage = () => {
 
   const { data, loading, error, totalResults } = useHeadlines({
     page: currentPage,
+    limit: 9, // ✅ set limit to 9 for pagination
   });
 
   const pageSize = 9;
