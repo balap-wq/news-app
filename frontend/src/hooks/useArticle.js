@@ -21,7 +21,7 @@ function useArticle(id) {
           signal: controller.signal,
         });
 
-        // simplified as per reviewer
+        
         setArticle(response.data);
 
       } catch (err) {
