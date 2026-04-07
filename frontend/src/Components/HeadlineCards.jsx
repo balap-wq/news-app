@@ -27,7 +27,7 @@ export default function Headlinecards({ article }) {
         tabIndex={0}
         key={article.id}
         onClick={() => navigate(`/article/${article.id}`, { state: article })}
-        className="cursor-pointer bg-blue-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
+        className="cursor-pointer bg-blue-50 rounded-2xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden flex flex-col"
       >
         {/* Image */}
         <img
@@ -38,11 +38,11 @@ export default function Headlinecards({ article }) {
 
         {/* Content */}
         <div className="p-4 flex flex-col justify-between">
-          <h2 className="text-base sm:text-lg font-semibold line-clamp-2 leading-snug">{title}</h2>
+          <h2 className="text-lg font-semibold line-clamp-2 leading-snug">{title}</h2>
 
           <div className="mt-3 text-sm text-gray-500 text-wrap ">
-            <p className="truncate ">Source: {sourceName}</p>
-            <p className="h-6 truncate text-wrap overflow-hidden">Author: {author}</p>
+            <p className="">Source: {sourceName}</p>
+            <p className="h-6 text-wrap overflow-hidden">Author: {author}</p>
             <p>{displayDate}</p>
           </div>
         </div>

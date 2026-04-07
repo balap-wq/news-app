@@ -1,6 +1,6 @@
 import logger from '../config/logger.js';
 import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
-import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constants.js';
+import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constant.js';
 
 
 function validateAndNormalize(value, allowedValues, fieldName) {
@@ -30,7 +30,7 @@ export async function getHeadlines(req, res) {
   try {
     const { limit, offset, category, country,page  } = req.query;
 
-    const pageLimit = limit ? parseInt(limit, 10) : 10;
+    const pageLimit = limit ? parseInt(limit, 10) : 9;
     const pageOffset = offset ? parseInt(offset, 10) : 0;
 
     // ✅ declare here so accessible everywhere
