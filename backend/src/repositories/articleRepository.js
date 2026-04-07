@@ -149,7 +149,7 @@ async function findTopHeadlines({ limit = 10, offset = 0, category, country }) {
 
   values.push(limit, offset);
 
-  logger.info(`Category: ${category}`);
+  logger.info(`Category: ${category || 'ALL'}`);
 
   return await executeQuery(query, values);
 }

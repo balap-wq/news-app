@@ -28,8 +28,7 @@ function snakeToCamel(obj) {
 
 export async function getHeadlines(req, res, next) {
   try {
-    const { limit, category, country,page  } = req.query;
-
+    const { limit, category, country, page } = req.query;
     const pageNumber = page ? parseInt(page, 10) : 1;
     const pageLimit = limit ? parseInt(limit, 10) : 9;
     const pageOffset = (pageNumber - 1) * pageLimit;

@@ -27,7 +27,7 @@ export default function Headlinecards({ article }) {
         tabIndex={0}
         key={article.id}
         onClick={() => navigate(`/article/${article.id}`, { state: article })}
-        className="cursor-pointer bg-blue-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
+        className="cursor-pointer bg-blue-100 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
       >
         {/* Image */}
         <img
