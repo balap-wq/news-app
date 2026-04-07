@@ -6,7 +6,7 @@ async function executeQuery(query, values = []) {
     const { rows } = await pool.query(query, values);
     return rows;
   } catch (error) {
-    logger.error('Database error:', error.message);
+    logger.error('Database error:', error);
     throw error;
   }
 }
@@ -110,6 +110,15 @@ async function findArticleById(id) {
   return rows[0] || null;
 }
 
+async function findAllArticles({ limit = 10, offset = 0 }) {
+  const query = `
+    SELECT * FROM articles
+    ORDER BY published_at DESC
+    LIMIT $1 OFFSET $2;
+  `;
+  return await executeQuery(query, [limit, offset]);
+}
+
 async function findTopHeadlines({ limit = 10, offset = 0, category }) {
   limit = Math.min(limit, 100);
 
@@ -145,4 +154,11 @@ async function countArticles({ category }) {
   return parseInt(rows[0].count, 10);
 }
 
-export { insertArticle, upsertArticle, findArticleById, findTopHeadlines, countArticles };
+export {
+  insertArticle,
+  upsertArticle,
+  findArticleById,
+  findTopHeadlines,
+  countArticles,
+  findAllArticles,
+};

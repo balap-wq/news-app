@@ -9,6 +9,7 @@ await jest.unstable_mockModule('../src/repositories/articleRepository.js', () =>
   findArticleById: mockFindArticleById,
   findTopHeadlines: mockFindTopHeadlines,
   countArticles: mockCountArticles,
+  findAllArticles: jest.fn().mockResolvedValue([]),
 }));
 
 const { default: app } = await import('../src/app.js');

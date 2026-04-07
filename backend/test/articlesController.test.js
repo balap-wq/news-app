@@ -8,6 +8,7 @@ const mockCountArticles = jest.fn();
 await jest.unstable_mockModule('../src/repositories/articleRepository.js', () => ({
   findArticleById: mockFindArticleById,
   findTopHeadlines: mockFindTopHeadlines,
+    findAllArticles: jest.fn().mockResolvedValue([]),
   countArticles: mockCountArticles,
 }));
 

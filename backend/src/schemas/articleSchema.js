@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const articleParamSchema = z.object({
-  id: z.string().min(1, 'ID is required'),
+  id: z.string().regex(/^\d+$/, 'ID must be a number'),
 });
 
 export const headlineQuerySchema = z.object({
