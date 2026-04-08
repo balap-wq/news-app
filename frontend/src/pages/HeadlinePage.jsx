@@ -19,12 +19,7 @@ const HeadlinePage = () => {
   const totalPages = Math.ceil(totalResults / pageSize);
 
   if (error) {
-    return (
-      <ErrorMessage
-        message={error}
-        onRetry={() => window.location.reload()}
-      />
-    );
+    return <ErrorMessage message={error} onRetry={() => window.location.reload()} />;
   }
 
   return (
@@ -35,12 +30,8 @@ const HeadlinePage = () => {
 
       <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {loading
-          ? Array.from({ length: pageSize }).map((_, index) => (
-              <HeadlineCardSkeleton key={index} />
-            ))
-          : data?.map((article) => (
-              <Headlinecards key={article.id} article={article} />
-            ))}
+          ? Array.from({ length: pageSize }).map((_, index) => <HeadlineCardSkeleton key={index} />)
+          : data?.map((article) => <Headlinecards key={article.id} article={article} />)}
       </div>
 
       <div className="flex justify-center gap-4 mt-6">
