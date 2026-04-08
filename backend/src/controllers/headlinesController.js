@@ -2,6 +2,13 @@ import logger from '../config/logger.js';
 import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
 import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constant.js';
 
+// ✅ Custom ValidationError class
+class ValidationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'ValidationError';
+  }
+}
 
 // 🔍 Validate & normalize input
 function validateAndNormalize(value, allowedValues, fieldName) {
@@ -111,7 +118,6 @@ export async function getHeadlines(req, res, next) {
       });
     }
 
-    
     next(error);
   }
 }

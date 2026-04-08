@@ -3,15 +3,12 @@ import { jest } from '@jest/globals';
 
 const mockFindArticleById = jest.fn();
 const mockCountArticles = jest.fn();
-const mockFindTopHeadlines = jest.fn(); 
-
+const mockFindTopHeadlines = jest.fn();
 
 await jest.unstable_mockModule('../src/repositories/articleRepository.js', () => ({
   findArticleById: mockFindArticleById,
-  countArticles: mockCountArticles, 
-  findTopHeadlines: mockFindTopHeadlines, 
-  findTopHeadlines: mockFindTopHeadlines,
   countArticles: mockCountArticles,
+  findTopHeadlines: mockFindTopHeadlines,
 }));
 
 // ✅ Mock logger to suppress Winston logs during tests
@@ -24,8 +21,11 @@ await jest.unstable_mockModule('../src/config/logger.js', () => ({
 }));
 
 const { default: app } = await import('../src/app.js');
+const { getArticleById } = await import('../src/controllers/articlesController.js'); // ✅ import controller
 
 describe('GET /api/articles/:id Integration Tests', () => {
+  let req, res; // ✅ properly declared
+
   beforeEach(() => {
     req = {
       params: { id: 1 },
@@ -66,29 +66,26 @@ describe('GET /api/articles/:id Integration Tests', () => {
     expect(response.body).toHaveProperty('articleId', 9999);
   });
 
-  // ✅ Test 3 — Zod already coerced id to number
-  it('should call findArticleById with coerced number id', async () => {
-    mockFindArticleById.mockResolvedValue(null);
-
-    req.params = { id: 1 };
-
-    await getArticleById(req, res);
+  // ✅ Test 3 — Invalid ID handled by Zod middleware
+  it('should return 400 if id is not a valid number', async () => {
+    const response = await request(app).get('/api/articles/abc'); // ✅ fixed: use integration style
 
     expect(response.statusCode).toBe(400);
     expect(response.body).toHaveProperty('success', false);
-    expect(response.body).toHaveProperty('message', 'Validation failed');
+    expect(response.body).toHaveProperty('message', 'Invalid request');
   });
 
   // ✅ Test 4 — DB error
   it('should return 500 on unexpected error', async () => {
     mockFindArticleById.mockRejectedValue(new Error('DB error'));
 
-    await getArticleById(req, res);
+    await getArticleById(req, res); // ✅ now works since getArticleById is imported
 
     expect(mockFindArticleById).toHaveBeenCalledWith(1);
     expect(mockFindArticleById).toHaveBeenCalledTimes(1);
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
+      success: false,
       error: 'Internal server error',
     });
   });
@@ -103,7 +100,7 @@ describe('GET /api/articles/:id Integration Tests', () => {
       published_at: '2026-01-01',
     });
 
-    await getArticleById(req, res);
+    await getArticleById(req, res); // ✅ now works since getArticleById is imported
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({

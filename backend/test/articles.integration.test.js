@@ -5,7 +5,6 @@ const mockFindArticleById = jest.fn();
 const mockFindTopHeadlines = jest.fn();
 const mockCountArticles = jest.fn();
 
-
 await jest.unstable_mockModule('../src/repositories/articleRepository.js', () => ({
   findArticleById: mockFindArticleById,
   findTopHeadlines: mockFindTopHeadlines,
@@ -83,8 +82,12 @@ describe('GET /api/articles/:id Integration Tests', () => {
     expect(response.body.errors).toHaveProperty('id');
   });
 
-  // ✅ Test 5 — No id segment
-  it('should return 404 if no id segment in path', async () => {
+  // ✅ Test 5 — No id segment → falls through to GET / (getHeadlines)
+  it('should return 200 if no id segment in path', async () => {
+    // ✅ Mocks required by getHeadlines
+    mockFindTopHeadlines.mockResolvedValue([]);
+    mockCountArticles.mockResolvedValue(0);
+
     const response = await request(app).get('/api/articles/');
 
     expect(response.statusCode).toBe(200);
