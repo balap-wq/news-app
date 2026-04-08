@@ -1,5 +1,5 @@
 import express from 'express';
-import { syncHeadlines } from '../services/newsSyncService.js';
+import  { syncHeadlines} from '../services/newsSyncService.js';
 import logger from '../config/logger.js';
 
 const router = express.Router();

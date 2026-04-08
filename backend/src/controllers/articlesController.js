@@ -1,4 +1,4 @@
-import { findArticleById, findAllArticles } from '../repositories/articleRepository.js';
+import { findArticleById,   findTopHeadlines, countArticles, findAllArticles } from '../repositories/articleRepository.js'; 
 import logger from '../config/logger.js';
 
 function snakeToCamel(obj) {
@@ -12,32 +12,43 @@ function snakeToCamel(obj) {
   return camelObj;
 }
 
-export async function getArticles(req, res) {
+async function getHeadlines(req, res) {
   try {
-    const articles = await findAllArticles();
-    return res.status(200).json(articles);
-  } catch (error) {
-    logger.error('Error fetching articles:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Internal server error',
+    const { page = 1, category} = req.query;
+    
+    const limit = 9;
+    const offset = (parseInt(page, 10) - 1) * limit;
+
+    if (isNaN(offset) || offset < 0) {
+      return res.status(400).json({ error: 'Invalid page number' });
+    }
+
+    const articles = await findTopHeadlines({ limit, offset, category });
+    const totalCount = await countArticles({ category });
+
+    res.status(200).json({
+      articles,
+      totalResults: totalCount,
+      page: parseInt(page, 10),
     });
+  } catch (error) {
+    logger.error('Error fetching headlines:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
-export async function getArticleById(req, res) {
+async function getArticleById(req, res) {
   try {
-    const id = Number(req.params.id);
+    const { id } = req.params; 
+
     const article = await findArticleById(id);
+
     if (!article) {
-      return res.status(404).json({
-        success: false,
-        error: 'Article not found',
-        articleId: id,
-      });
+      return res.status(404).json({ error: 'Article not found', articleId: id });
     }
+
     const transformedArticle = snakeToCamel(article);
-    return res.status(200).json(transformedArticle);
+    res.status(200).json(transformedArticle);
   } catch (error) {
     logger.error('Error fetching article:', error);
     return res.status(500).json({
@@ -46,3 +57,5 @@ export async function getArticleById(req, res) {
     });
   }
 }
+
+export { getArticleById,getHeadlines  };

@@ -1,5 +1,21 @@
 import logger from '../config/logger.js';
 import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
+import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constant.js';
+import { ValidationError } from '../utils/error.js';
+
+function validateAndNormalize(value, allowedValues, fieldName) {
+  if (!value) return undefined;
+
+  const normalized = value.trim().toLowerCase();
+
+  if (!allowedValues.includes(normalized)) {
+    throw new ValidationError(
+      `Invalid ${fieldName}. Allowed values: ${allowedValues.join(', ')}`
+    );
+  }
+
+  return normalized;
+}
 
 function snakeToCamel(obj) {
   const camelObj = {};
@@ -10,14 +26,38 @@ function snakeToCamel(obj) {
   return camelObj;
 }
 
-export async function getHeadlines(req, res) {
+export async function getHeadlines(req, res, next) {
   try {
-    const { page = 1, category } = req.query;
-    const limit = 9;
-    const offset = (page - 1) * limit;
+    const { limit, category, country, page } = req.query;
+    const pageNumber = page ? parseInt(page, 10) : 1;
+    const pageLimit = limit ? parseInt(limit, 10) : 9;
+    const pageOffset = (pageNumber - 1) * pageLimit;
 
-    const headlines = await findTopHeadlines({ limit, offset, category });
-    const totalResults = await countArticles({ category });
+    // ✅ declare here so accessible everywhere
+    const normalizedCategory = validateAndNormalize(
+      category,
+      ALLOWED_CATEGORIES,
+      'category'
+    );
+
+    const normalizedCountry = validateAndNormalize(
+      country,
+      ALLOWED_COUNTRIES,
+      'country'
+    );
+
+    const headlines = await findTopHeadlines({
+      limit: pageLimit,
+      offset: pageOffset,
+      category: normalizedCategory,
+      country: normalizedCountry,
+    });
+
+    const totalResults = await countArticles({
+      category: normalizedCategory,
+      country: normalizedCountry,
+    });
+
     const transformedArticles = headlines.map(snakeToCamel);
 
     res.status(200).json({
@@ -25,13 +65,12 @@ export async function getHeadlines(req, res) {
       articles: transformedArticles,
       totalResults,
       count: transformedArticles.length,
-      page,
+      page, // ✅ send page back to frontend
     });
-  } catch (_error) {
-    logger.error('Error fetching headlines:', _error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch data',
-    });
+
+  } catch (error) {
+    logger.error(error);
+
+    next(error);
   }
 }

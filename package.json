@@ -22,5 +22,11 @@
     "lucide-react": "^0.577.0",
     "react-router-dom": "^7.13.1",
     "winston": "^3.19.0"
+  },
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
   }
 }

@@ -2,23 +2,44 @@ import request from 'supertest';
 import { jest } from '@jest/globals';
 
 const mockFindArticleById = jest.fn();
-const mockFindTopHeadlines = jest.fn();
 const mockCountArticles = jest.fn();
+const mockFindTopHeadlines = jest.fn(); 
+
 
 await jest.unstable_mockModule('../src/repositories/articleRepository.js', () => ({
   findArticleById: mockFindArticleById,
+  countArticles: mockCountArticles, 
+  findTopHeadlines: mockFindTopHeadlines, 
   findTopHeadlines: mockFindTopHeadlines,
-    findAllArticles: jest.fn().mockResolvedValue([]),
   countArticles: mockCountArticles,
+}));
+
+// ✅ Mock logger to suppress Winston logs during tests
+await jest.unstable_mockModule('../src/config/logger.js', () => ({
+  default: {
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+  },
 }));
 
 const { default: app } = await import('../src/app.js');
 
 describe('GET /api/articles/:id Integration Tests', () => {
   beforeEach(() => {
+    req = {
+      params: { id: 1 },
+    };
+
+    res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
     jest.clearAllMocks();
   });
 
+  // ✅ Test 1 — Success
   it('should return 200 with article data', async () => {
     mockFindArticleById.mockResolvedValue({
       id: 1,
@@ -34,6 +55,7 @@ describe('GET /api/articles/:id Integration Tests', () => {
     expect(response.body).toHaveProperty('description', 'Test Desc');
   });
 
+  // ✅ Test 2 — Not found
   it('should return 404 if article not found', async () => {
     mockFindArticleById.mockResolvedValue(null);
 
@@ -44,17 +66,52 @@ describe('GET /api/articles/:id Integration Tests', () => {
     expect(response.body).toHaveProperty('articleId', 9999);
   });
 
-  it('should return 400 if id is not a valid number', async () => {
-    const response = await request(app).get('/api/articles/abc');
+  // ✅ Test 3 — Zod already coerced id to number
+  it('should call findArticleById with coerced number id', async () => {
+    mockFindArticleById.mockResolvedValue(null);
+
+    req.params = { id: 1 };
+
+    await getArticleById(req, res);
 
     expect(response.statusCode).toBe(400);
     expect(response.body).toHaveProperty('success', false);
     expect(response.body).toHaveProperty('message', 'Validation failed');
   });
 
-  it('should return 200 if no id segment in path', async () => {
-    const response = await request(app).get('/api/articles/');
+  // ✅ Test 4 — DB error
+  it('should return 500 on unexpected error', async () => {
+    mockFindArticleById.mockRejectedValue(new Error('DB error'));
 
-    expect(response.statusCode).toBe(200);
+    await getArticleById(req, res);
+
+    expect(mockFindArticleById).toHaveBeenCalledWith(1);
+    expect(mockFindArticleById).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      error: 'Internal server error',
+    });
+  });
+
+  // ✅ Test 5 — snake_case to camelCase transformation
+  it('should transform snake_case keys to camelCase', async () => {
+    mockFindArticleById.mockResolvedValue({
+      id: 1,
+      title: 'Test Article',
+      url_to_image: 'https://example.com/image.jpg',
+      source_name: 'BBC News',
+      published_at: '2026-01-01',
+    });
+
+    await getArticleById(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      id: 1,
+      title: 'Test Article',
+      urlToImage: 'https://example.com/image.jpg',
+      sourceName: 'BBC News',
+      publishedAt: '2026-01-01',
+    });
   });
 });

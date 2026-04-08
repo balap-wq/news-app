@@ -1,9 +1,15 @@
 import winston from 'winston';
 
 const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'test' ? 'silent' : 'info',
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.errors({ stack: true }), // ✅ IMPORTANT
+    winston.format.json()
+  ),
   transports: [
-    new winston.transports.Console()
+    new winston.transports.Console(), // ✅ ensure console logging
+    new winston.transports.File({ filename: 'logs/app.log' }),
   ],
 });
 
