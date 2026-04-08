@@ -9,7 +9,7 @@ import ErrorMessage from '../Components/ErrorMessage';
 const HeadlinePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const pageSize = 9; // ✅ defined once, used everywhere
+  const pageSize = 9;
 
   const { data, loading, error, totalResults } = useHeadlines({
     page: currentPage,
@@ -22,20 +22,20 @@ const HeadlinePage = () => {
     return (
       <ErrorMessage
         message={error}
-        onRetry={() => window.location.reload()}  // ✅ fixed: was reload without ()
+        onRetry={() => window.location.reload()}
       />
     );
   }
 
   return (
-    <div className='bg-blue-50'>
+    <div className="bg-blue-50">
       <div className="mx-auto w-full text-center mt-7">
         <h1 className="text-3xl font-bold">Top Headlines</h1>
       </div>
 
       <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {loading
-          ? Array.from({ length: pageSize }).map((_, index) => (  // ✅ fixed: LIMIT → pageSize
+          ? Array.from({ length: pageSize }).map((_, index) => (
               <HeadlineCardSkeleton key={index} />
             ))
           : data?.map((article) => (

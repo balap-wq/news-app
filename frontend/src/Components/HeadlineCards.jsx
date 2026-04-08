@@ -16,9 +16,7 @@ function formatDate(dateString) {
 }
 
 export default function Headlinecards({ article }) {
-
   const { title, urlToImage, sourceName, publishedAt, author } = article;
-
 
   const navigate = useNavigate();
   const displayDate = formatDate(publishedAt);
