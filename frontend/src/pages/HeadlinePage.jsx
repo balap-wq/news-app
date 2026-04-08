@@ -9,21 +9,22 @@ import ErrorMessage from '../Components/ErrorMessage';
 const HeadlinePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
+  const pageSize = 9; // ✅ defined once, used everywhere
+
   const { data, loading, error, totalResults } = useHeadlines({
     page: currentPage,
-    limit: 9, // ✅ set limit to 9 for pagination
+    limit: pageSize,
   });
 
-  const pageSize = 9;
   const totalPages = Math.ceil(totalResults / pageSize);
 
-  if(error) {
-    return(
+  if (error) {
+    return (
       <ErrorMessage
-      message={error}
-      onRetry={()=> window.location.reload ()}
+        message={error}
+        onRetry={() => window.location.reload()}  // ✅ fixed: was reload without ()
       />
-    )
+    );
   }
 
   return (
@@ -32,10 +33,14 @@ const HeadlinePage = () => {
         <h1 className="text-3xl font-bold">Top Headlines</h1>
       </div>
 
-      <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 ">
+      <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {loading
-          ? Array.from({ length: LIMIT }).map((_, index) => <HeadlineCardSkeleton key={index} />)
-          : data?.map((article) => <Headlinecards key={article.id} article={article} />)}
+          ? Array.from({ length: pageSize }).map((_, index) => (  // ✅ fixed: LIMIT → pageSize
+              <HeadlineCardSkeleton key={index} />
+            ))
+          : data?.map((article) => (
+              <Headlinecards key={article.id} article={article} />
+            ))}
       </div>
 
       <div className="flex justify-center gap-4 mt-6">
@@ -63,7 +68,7 @@ const HeadlinePage = () => {
           <ArrowRight size={18} />
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 
