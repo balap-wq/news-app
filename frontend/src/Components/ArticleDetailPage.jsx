@@ -37,10 +37,9 @@ const ArticleDetailPage = () => {
 
   // ✅ Fetch on mount
   useEffect(() => {
-    if (!routeArticle) {
-      fetchArticle();
-    }
-  }, [id, routeArticle]);
+    fetchArticle(); // ALWAYS fetch
+  }, [id]);
+
 
   return (
     <div className="min-h-screen bg-blue-100 px-4">
@@ -52,7 +51,7 @@ const ArticleDetailPage = () => {
             navigate(`/headlines?page=${page}`);
             window.scrollTo(0, 0);
           }}
-          className="flex items-center gap-2 text-blue-200 hover:text-gray-200 hover:underline "
+          className="flex items-center gap-2 text-blue-600 hover:text-gray-200"
         >
           <ArrowLeft size={18} />
           Back to Headlines
@@ -60,38 +59,36 @@ const ArticleDetailPage = () => {
       </div>
 
       {/* ✅ Content Area */}
-      <div className="flex justify-center mt-4">
-        <div className="w-full max-w-3xl">
+      <div className="flex items-center justify-center mt-4">
 
-          <div className="bg-blue-50 rounded-2xl shadow-lg p-6 sm:p-8 md:p-10 min-h-450px flex flex-col justify-center">
+        {loading ? (
+          <div className="w-full max-w-3xl bg-blue-50 rounded-2xl shadow-lg p-10 flex items-center justify-center">
+            <LoadingSpinner />
+          </div>
+        ) : error ? (
+          <div className="w-full max-w-3xl bg-blue-50 rounded-2xl shadow-lg p-10">
+            <ErrorMessage message={error} onRetry={fetchArticle} />
+          </div>
+        ) : !article || !article.title || !article.description ? (
+          <EmptyState />
+        ) : (
+          <div className="w-full max-w-3xl bg-blue-50 rounded-2xl shadow-lg p-6 sm:p-8 md:p-10">
 
-            {loading ? (
-              <div className="flex justify-center items-center h-full">
-                <LoadingSpinner />
-              </div>
-            ) : error ? (
-              <ErrorMessage message={error} onRetry={fetchArticle} />
-            ) : !article || !article.title || !article.description ? (
-              <EmptyState />
-            ) : (
-              <>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center leading-tight">
-                  {article.title}
-                </h1>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center leading-tight">
+              {article.title}
+            </h1>
 
-                <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-700 leading-relaxed text-justify">
-                  {article.description}
-                </p>
+            <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-700 leading-relaxed text-justify">
+              {article.description}
+            </p>
 
-                <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-700 leading-relaxed text-justify">
-                  {article.content}
-                </p>
-              </>
-            )}
+            <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-700 leading-relaxed text-justify">
+              {article.content}
+            </p>
 
           </div>
+        )}
 
-        </div>
       </div>
     </div>
   );
