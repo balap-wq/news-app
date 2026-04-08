@@ -8,7 +8,7 @@ const App = () => {
   return (
     <>
       <BrowserRouter>
-        <Header/>
+        <Header />
         <Routes>
           <Route path="/" element={<Navigate to="/headlines" />} />
           <Route path="/headlines" element={<HeadlinePage />} />

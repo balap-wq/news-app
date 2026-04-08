@@ -20,8 +20,8 @@ const ArticleDetailPage = () => {
       setLoading(true);
       setError(null);
 
-   // ✅ Simulate network delay for better UX testing
-    //await new Promise((resolve) => setTimeout(resolve, 2000));
+      // ✅ Simulate network delay for better UX testing
+      //await new Promise((resolve) => setTimeout(resolve, 2000));
 
       const response = await axiosInstance.get(`/api/articles/${id}`);
       setArticle(response.data);
@@ -71,7 +71,6 @@ const ArticleDetailPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
       <div className="w-full max-w-3xl bg-blue-100 rounded-2xl shadow-lg p-6 sm:p-8 md:p-10">
-        
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center leading-tight">
           {article.title}
         </h1>
@@ -83,7 +82,6 @@ const ArticleDetailPage = () => {
         <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-700 leading-relaxed text-justify">
           {article.content}
         </p>
-
       </div>
     </div>
   );

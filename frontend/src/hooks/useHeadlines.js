@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axiosInstance from '../api/axiosInstance';
 
-function useHeadlines({ page = 1, category, country , limit = 9}) {
+function useHeadlines({ page = 1, category, country, limit = 9 }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -13,15 +13,15 @@ function useHeadlines({ page = 1, category, country , limit = 9}) {
     const fetchHeadlines = async () => {
       setLoading(true);
       setError(null);
-      
+
       try {
-        const params = { page ,limit};
+        const params = { page, limit };
 
         if (category) params.category = category;
         if (country) params.country = country;
 
         const response = await axiosInstance.get('/api/headlines', {
-          params, 
+          params,
           signal: controller.signal,
         });
 
@@ -41,7 +41,7 @@ function useHeadlines({ page = 1, category, country , limit = 9}) {
     return () => {
       controller.abort();
     };
-  }, [page, category, country]); 
+  }, [page, category, country]);
   return { data, loading, error, totalResults };
 }
 
