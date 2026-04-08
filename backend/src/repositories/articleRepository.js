@@ -125,7 +125,7 @@ async function findAllArticles({ limit = 10, offset = 0 }) {
   return await executeQuery(query, [limit, offset]);
 }
 
-async function findTopHeadlines({ limit = 10, offset = 0, category }) {
+async function findTopHeadlines({ limit = 10, offset = 0, category, country }) {
   limit = Math.min(limit, 100);
 
   let query = `SELECT * FROM articles `;
