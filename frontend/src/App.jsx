@@ -1,7 +1,7 @@
 import React from 'react';
 import HeadlinePage from './pages/HeadlinePage';
 import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
-import Articledetailpage from './Components/ArticleDetailPage';
+import Articledetailpage from './pages/ArticleDetailPage';
 
 const App = () => {
   return (

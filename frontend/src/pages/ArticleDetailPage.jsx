@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import axiosInstance from '../api/axiosInstance';
-import EmptyState from './EmptyState';
-import LoadingSpinner from './LoadingSpinner';
-import ErrorMessage from './ErrorMessage';
+import EmptyState from '../Components/EmptyState';
+import LoadingSpinner from '../Components/LoadingSpinner';
+import ErrorMessage from '../Components/ErrorMessage';
 
 const ArticleDetailPage = () => {
   const { id } = useParams();
@@ -21,7 +21,7 @@ const ArticleDetailPage = () => {
       setError(null);
 
    // ✅ Simulate network delay for better UX testing
-    //await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 150));
 
       const response = await axiosInstance.get(`/api/articles/${id}`);
       setArticle(response.data);
