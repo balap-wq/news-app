@@ -7,7 +7,7 @@ import Header from './Components/Header';
 const App = () => {
   return (
     <>
-    <div className="bg-blue-100">
+    <div className="min-h-screen bg-blue-100">
       <BrowserRouter >
         <Header/>
         <Routes>
