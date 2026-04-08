@@ -1,13 +1,7 @@
 import logger from '../config/logger.js';
-import {
-  findTopHeadlines,
-  countArticles,
-} from '../repositories/articleRepository.js';
-import {
-  ALLOWED_CATEGORIES,
-  ALLOWED_COUNTRIES,
-} from '../config/constant.js';
-import { ValidationError } from '../utils/error.js';
+import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
+import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constant.js';
+
 
 // 🔍 Validate & normalize input
 function validateAndNormalize(value, allowedValues, fieldName) {
