@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Headlinecards from '../Components/HeadlineCards';
 import useHeadlines from '../hooks/useHeadlines';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import Button from '../Components/Button';
 import HeadlineCardSkeleton from '../Components/HeadlineCardSkeleton';
 import ErrorMessage from '../Components/ErrorMessage';
+import { useSearchParams } from 'react-router-dom';
 
 const HeadlinePage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+ 
+  const [searchParams,setSearchParams] = useSearchParams();
+  const pageFromUrl = parseInt(searchParams.get('page')) || 1;
+  const [currentPage, setCurrentPage] = useState(pageFromUrl);
+
+  useEffect(()=>{
+    setCurrentPage(pageFromUrl);
+  },[pageFromUrl])
 
   const { data, loading, error, totalResults } = useHeadlines({
     page: currentPage,
@@ -27,7 +35,7 @@ const HeadlinePage = () => {
   }
 
   return (
-    <div className='bg-blue-50'>
+    <div className=''>
       <div className="mx-auto w-full text-center mt-7">
         <h1 className="text-3xl font-bold">Top Headlines</h1>
       </div>
@@ -35,13 +43,14 @@ const HeadlinePage = () => {
       <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 ">
         {loading
           ? Array.from({ length: 9 }).map((_, index) => <HeadlineCardSkeleton key={index} />)
-          : data?.map((article) => <Headlinecards key={article.id} article={article} />)}
+          : data?.map((article) => <Headlinecards key={article.id} article={article} currentPage={currentPage}/>)}
       </div>
 
       <div className="flex justify-center gap-4 mt-6">
         <Button
           onClick={() => {
-            setCurrentPage((p) => p - 1);
+            const prevPage = currentPage -1;
+            setSearchParams({page:prevPage});
             window.scrollTo(0, 0);
           }}
           disabled={currentPage === 1}
@@ -53,7 +62,8 @@ const HeadlinePage = () => {
 
         <Button
           onClick={() => {
-            setCurrentPage((p) => p + 1);
+            const nextPage = currentPage +1;
+            setSearchParams({page:nextPage});
             window.scrollTo(0, 0);
           }}
           disabled={currentPage >= totalPages}

@@ -11,8 +11,9 @@ function useHeadlines({ page = 1, category, country , limit = 9}) {
     const controller = new AbortController();
 
     const fetchHeadlines = async () => {
-      setLoading(true);
       setError(null);
+      setLoading(true);
+     
       
       try {
         const params = { page ,limit};

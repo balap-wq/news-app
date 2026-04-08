@@ -7,7 +7,8 @@ import Header from './Components/Header';
 const App = () => {
   return (
     <>
-      <BrowserRouter>
+    <div className="bg-blue-100">
+      <BrowserRouter >
         <Header/>
         <Routes>
           <Route path="/" element={<Navigate to="/headlines" />} />
@@ -15,6 +16,7 @@ const App = () => {
           <Route path="/article/:id" element={<Articledetailpage />} />
         </Routes>
       </BrowserRouter>
+      </div>
     </>
   );
 };

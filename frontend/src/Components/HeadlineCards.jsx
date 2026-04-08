@@ -15,7 +15,7 @@ function formatDate(dateString) {
   });
 }
 
-export default function Headlinecards({ article }) {
+export default function Headlinecards({ article ,currentPage }) {
   const { title, urlToImage, sourceName, publishedAt,author } = article;
   const navigate = useNavigate();
   const displayDate = formatDate(publishedAt);
@@ -26,8 +26,13 @@ export default function Headlinecards({ article }) {
         role="button"
         tabIndex={0}
         key={article.id}
-        onClick={() => navigate(`/article/${article.id}`, { state: article })}
-        className="cursor-pointer bg-blue-100 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
+        onClick={() => navigate(`/article/${article.id}`, {
+           state: {
+           article,
+           page: currentPage,
+          },
+           })}
+        className="cursor-pointer bg-blue-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
       >
         {/* Image */}
         <img
