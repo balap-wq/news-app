@@ -1,8 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import EmptyState from './EmptyState';
-import LoadingSpinner from './LoadingSpinner';
-import ErrorMessage from './ErrorMessage';
+import EmptyState from '../Components/EmptyState';
+import LoadingSpinner from '../Components/LoadingSpinner';
+import ErrorMessage from '../Components/ErrorMessage';
 import useArticle from '../hooks/useArticle';
 
 const ArticleDetailPage = () => {
