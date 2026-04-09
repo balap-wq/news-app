@@ -1,46 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-import axiosInstance from '../api/axiosInstance';
+import React from 'react';
+import { useParams } from 'react-router-dom';
 import EmptyState from './EmptyState';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
+import useArticle from '../hooks/useArticle';
 
 const ArticleDetailPage = () => {
   const { id } = useParams();
-  const location = useLocation();
-  const routeArticle = location.state?.article; // safer
 
-  const [article, setArticle] = useState(routeArticle || null);
-  const [loading, setLoading] = useState(!routeArticle);
-  const [error, setError] = useState(null);
+  const { article, loading, error } = useArticle(id);
 
-  // ✅ Reusable fetch function (IMPORTANT)
-  const fetchArticle = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-   // ✅ Simulate network delay for better UX testing
-    //await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      const response = await axiosInstance.get(`/api/articles/${id}`);
-      setArticle(response.data);
-    } catch (err) {
-      setError('Failed to load article');
-      console.error('Error fetching article:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ✅ Side effect
-  useEffect(() => {
-    if (!routeArticle) {
-      fetchArticle();
-    }
-  }, [id, routeArticle]);
-
-  // ✅ Loading state (inside card)
+  // ✅ Loading
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
@@ -51,23 +21,26 @@ const ArticleDetailPage = () => {
     );
   }
 
-  // ✅ Error state (inside same card layout)
+  // ✅ Error
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
         <div className="w-full max-w-3xl bg-blue-100 rounded-2xl shadow-lg p-10">
-          <ErrorMessage message={error} onRetry={fetchArticle} />
+          <ErrorMessage message={error} />
         </div>
       </div>
     );
   }
 
-  // ✅ Empty states
+  // ✅ Empty
   if (!article || !article.title || !article.description) {
     return <EmptyState />;
   }
 
-  // ✅ Success UI
+  // ✅ Clean content
+  const cleanContent = article.content?.replace(/\[\+\d+ chars\]/, "");
+
+  // ✅ Success
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
       <div className="w-full max-w-3xl bg-blue-100 rounded-2xl shadow-lg p-6 sm:p-8 md:p-10">
@@ -81,12 +54,24 @@ const ArticleDetailPage = () => {
         </p>
 
         <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-700 leading-relaxed text-justify">
-          {article.content}
+          {cleanContent}
         </p>
+
+        {/* ✅ Read Full Article Button */}
+        <div className="mt-6 text-center">
+          <a
+            href={article.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            Read Full Article →
+          </a>
+        </div>
 
       </div>
     </div>
   );
 };
 
-export default ArticleDetailPage;
+export default ArticleDetailPage; 

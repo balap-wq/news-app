@@ -9,10 +9,11 @@ import syncArticles from './jobs/syncJob.js';
 import headlinesRouter from './routes/headlines.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
-
-
+import dotenv from 'dotenv';
 import { testConnection } from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
+
+dotenv.config();
 
 await testConnection();
 const app = express();
