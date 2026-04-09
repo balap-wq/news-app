@@ -62,7 +62,7 @@ const HeadlinePage = () => {
           <ArrowRight size={18} />
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 
