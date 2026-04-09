@@ -49,7 +49,7 @@ const HeadlinePage = () => {
           <ArrowLeft size={18} />
           Prev
         </Button>
-        <span className="px-4 py-2 mb-5 font-semibold text-lg">{currentPage}</span>
+        <span className="px-4 py-2 mb-5 font-semibold text-lg">{currentPage} of {totalPages}</span>
 
         <Button
           onClick={() => {
