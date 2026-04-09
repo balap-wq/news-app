@@ -33,7 +33,7 @@ export default function Headlinecards({ article }) {
         <img
           src={urlToImage || placeholder}
           alt={title}
-          className="w-full sm:h-44 md:h-48 object-cover"
+          className="w-full h-44 md:h-48 object-cover"
         />
 
         {/* Content */}
@@ -42,7 +42,7 @@ export default function Headlinecards({ article }) {
 
           <div className="mt-3 text-sm text-gray-500 text-wrap ">
             <p className="">Source: {sourceName}</p>
-            <p className="h-6 text-wrap overflow-hidden">Author: {author}</p>
+            <p className="h-6 text-wrap overflow-hidden">Author: {author || "Unknown Author"}</p>
             <p>{displayDate}</p>
           </div>
         </div>
