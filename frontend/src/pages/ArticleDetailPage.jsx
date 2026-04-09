@@ -10,7 +10,7 @@ const ArticleDetailPage = () => {
 
   const { article, loading, error } = useArticle(id);
 
-  // ✅ Loading
+ 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
@@ -21,7 +21,7 @@ const ArticleDetailPage = () => {
     );
   }
 
-  // ✅ Error
+
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
@@ -32,15 +32,15 @@ const ArticleDetailPage = () => {
     );
   }
 
-  // ✅ Empty
+ 
   if (!article || !article.title || !article.description) {
     return <EmptyState />;
   }
 
-  // ✅ Clean content
+ 
   const cleanContent = article.content?.replace(/\[\+\d+ chars\]/, "");
 
-  // ✅ Success
+ 
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
       <div className="w-full max-w-3xl bg-blue-100 rounded-2xl shadow-lg p-6 sm:p-8 md:p-10">
@@ -57,7 +57,7 @@ const ArticleDetailPage = () => {
           {cleanContent}
         </p>
 
-        {/* ✅ Read Full Article Button */}
+       
         <div className="mt-6 text-center">
           <a
             href={article.url}
