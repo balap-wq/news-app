@@ -1,13 +1,11 @@
 import pool from '../config/db.js';
 import logger from '../config/logger.js';
 
-// Common DB executor
 async function executeQuery(query, values = []) {
   try {
     const { rows } = await pool.query(query, values);
     return rows;
   } catch (error) {
-    // ✅ FULL ERROR LOGGING
     logger.error('Database error:', error);
     throw error;
   }
@@ -99,20 +97,18 @@ RETURNING (xmax = 0) AS inserted;
 const rows = await executeQuery(query, values);
 
 if (!rows || rows.length === 0) {
-  throw new Error('Upsert failed');
+  return 'no-change'; // ✅ correct handling
 }
 
 return rows[0].inserted ? 'inserted' : 'updated';
 }
 
-// FIND BY ID
 async function findArticleById(id) {
   const query = `SELECT * FROM articles WHERE id = $1;`;
   const rows = await executeQuery(query, [id]);
   return rows[0] || null;
 }
 
-// FIND HEADLINES
 async function findTopHeadlines({ limit = 10, offset = 0, category, country }) {
   limit = Math.min(limit, 100);
 
@@ -170,4 +166,5 @@ async function countArticles({ category, country }) {
   const rows = await executeQuery(query, values);
   return parseInt(rows[0].count, 10);
 }
-export { insertArticle, upsertArticle, findArticleById, findTopHeadlines, countArticles };
+
+export { upsertArticle, findArticleById, findTopHeadlines, countArticles };

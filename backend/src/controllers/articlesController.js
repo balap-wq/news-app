@@ -1,56 +1,89 @@
-import { findArticleById,   findTopHeadlines, countArticles } from '../repositories/articleRepository.js'; 
+import {
+  findArticleById,
+  findTopHeadlines,
+  countArticles,
+} from '../repositories/articleRepository.js'; // ✅ removed findAllArticles
+
 import logger from '../config/logger.js';
 
+// 🔄 snake_case → camelCase
 function snakeToCamel(obj) {
   const camelObj = {};
   for (const key in obj) {
-    const camelKey = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+    const camelKey = key.replace(/_([a-z])/g, (_, char) =>
+      char.toUpperCase()
+    );
     camelObj[camelKey] = obj[key];
   }
   return camelObj;
 }
 
+// 📰 GET HEADLINES
 async function getHeadlines(req, res) {
   try {
-    const { page = 1, category} = req.query;
-    
-    const limit = 9;
-    const offset = (parseInt(page, 10) - 1) * limit;
+    const { page = 1, category } = req.query;
 
-    if (isNaN(offset) || offset < 0) {
+    const pageNumber = parseInt(page, 10);
+
+    if (isNaN(pageNumber) || pageNumber < 1) {
       return res.status(400).json({ error: 'Invalid page number' });
     }
 
-    const articles = await findTopHeadlines({ limit, offset, category });
+    const limit = 9;
+    const offset = (pageNumber - 1) * limit;
+
+    const articles = await findTopHeadlines({
+      limit,
+      offset,
+      category,
+    });
+
     const totalCount = await countArticles({ category });
 
+    // ✅ transform list
+    const transformedArticles = articles.map(snakeToCamel);
+
     res.status(200).json({
-      articles,
+      success: true,
+      articles: transformedArticles,
       totalResults: totalCount,
-      page: parseInt(page, 10),
+      page: pageNumber,
     });
   } catch (error) {
     logger.error('Error fetching headlines:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+    });
   }
 }
 
+// 📄 GET ARTICLE BY ID
 async function getArticleById(req, res) {
   try {
-    const { id } = req.params; 
+    const { id } = req.params;
 
     const article = await findArticleById(id);
 
     if (!article) {
-      return res.status(404).json({ error: 'Article not found', articleId: id });
+      return res.status(404).json({
+        success: false,
+        error: 'Article not found',
+        articleId: id,
+      });
     }
 
     const transformedArticle = snakeToCamel(article);
+
     res.status(200).json(transformedArticle);
   } catch (error) {
     logger.error('Error fetching article:', error);
-    res.status(500).json({ error: 'Internal server error' });
+
+    return res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+    });
   }
 }
 
-export { getArticleById,getHeadlines  };
+export { getArticleById, getHeadlines };
