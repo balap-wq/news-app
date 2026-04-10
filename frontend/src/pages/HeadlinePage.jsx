@@ -10,7 +10,12 @@ const HeadlinePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
-  const { data = [], loading, error, totalResults = 0 } = useHeadlines({
+  const {
+    data = [],
+    loading,
+    error,
+    totalResults = 0,
+  } = useHeadlines({
     page: currentPage,
     limit: pageSize,
   });
@@ -19,12 +24,7 @@ const HeadlinePage = () => {
   const totalPages = totalResults > 0 ? Math.ceil(totalResults / pageSize) : 1;
 
   if (error) {
-    return (
-      <ErrorMessage
-        message={error}
-        onRetry={() => setCurrentPage(1)}
-      />
-    );
+    return <ErrorMessage message={error} onRetry={() => setCurrentPage(1)} />;
   }
 
   return (
@@ -34,18 +34,16 @@ const HeadlinePage = () => {
       </div>
 
       <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        {loading
-          ? Array.from({ length: pageSize }).map((_, index) => (
-              <HeadlineCardSkeleton key={index} />
-            ))
-          : data.length > 0
-          ? data.map((article, index) => (
-              // ✅ safer key fallback
-              <HeadlineCards key={article.id || index} article={article} />
-            ))
-          : (
-              <p className="text-center col-span-full">No articles found</p>
-            )}
+        {loading ? (
+          Array.from({ length: pageSize }).map((_, index) => <HeadlineCardSkeleton key={index} />)
+        ) : data.length > 0 ? (
+          data.map((article, index) => (
+            // ✅ safer key fallback
+            <HeadlineCards key={article.id || index} article={article} />
+          ))
+        ) : (
+          <p className="text-center col-span-full">No articles found</p>
+        )}
       </div>
 
       {!loading && totalPages > 1 && (

@@ -21,14 +21,10 @@ export default function HeadlineCards({ article }) {
   const navigate = useNavigate();
   const displayDate = formatDate(publishedAt);
 
-  const handleNavigate = () =>
-    navigate(`/article/${article.id}`, { state: article });
+  const handleNavigate = () => navigate(`/article/${article.id}`, { state: article });
 
   return (
-    <div
-      key={article.id}              
-      className="mx-auto"
-    >
+    <div key={article.id} className="mx-auto">
       <div
         role="button"
         tabIndex={0}
@@ -45,13 +41,11 @@ export default function HeadlineCards({ article }) {
         />
 
         <div className="p-4 flex flex-col justify-between">
-          <h2 className="text-lg font-semibold line-clamp-2 leading-snug">
-            {title}
-          </h2>
+          <h2 className="text-lg font-semibold line-clamp-2 leading-snug">{title}</h2>
 
           <div className="mt-3 text-sm text-gray-500 text-wrap ">
             <p className="">Source: {sourceName}</p>
-            <p className="h-6 text-wrap overflow-hidden">Author: {author || "Unknown Author"}</p>
+            <p className="h-6 text-wrap overflow-hidden">Author: {author || 'Unknown Author'}</p>
             <p>{displayDate}</p>
           </div>
         </div>
