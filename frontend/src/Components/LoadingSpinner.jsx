@@ -1,8 +1,8 @@
-export default function LoadingSpinner({ size = "medium" }) {
+export default function LoadingSpinner({ size = 'medium' }) {
   const sizeClasses = {
-    small: "h-6 w-6 border-2",
-    medium: "h-10 w-10 border-4",
-    large: "h-16 w-16 border-4",
+    small: 'h-6 w-6 border-2',
+    medium: 'h-10 w-10 border-4',
+    large: 'h-16 w-16 border-4',
   };
 
   return (

@@ -7,10 +7,8 @@ import useArticle from '../hooks/useArticle';
 
 const ArticleDetailPage = () => {
   const { id } = useParams();
-
   const { article, loading, error } = useArticle(id);
 
- 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
@@ -20,7 +18,6 @@ const ArticleDetailPage = () => {
       </div>
     );
   }
-
 
   if (error) {
     return (
@@ -32,19 +29,15 @@ const ArticleDetailPage = () => {
     );
   }
 
- 
   if (!article || !article.title || !article.description) {
     return <EmptyState />;
   }
 
- 
-  const cleanContent = article.content?.replace(/\[\+\d+ chars\]/, "");
+  const cleanContent = article.content?.replace(/\[\+\d+ chars\]/, '');
 
- 
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
       <div className="w-full max-w-3xl bg-blue-100 rounded-2xl shadow-lg p-6 sm:p-8 md:p-10">
-        
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center leading-tight">
           {article.title}
         </h1>
@@ -57,7 +50,6 @@ const ArticleDetailPage = () => {
           {cleanContent}
         </p>
 
-       
         <div className="mt-6 text-center">
           <a
             href={article.url}
@@ -68,10 +60,9 @@ const ArticleDetailPage = () => {
             Read Full Article →
           </a>
         </div>
-
       </div>
     </div>
   );
 };
 
-export default ArticleDetailPage; 
+export default ArticleDetailPage;
