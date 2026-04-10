@@ -7,14 +7,13 @@ dotenv.config();
 const { Pool } = pkg;
 
 const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT), // ensure it's a number
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // required for cloud DB (Supabase)
+  },
 });
 
-// Handle unexpected errors on idle clients
+// Handle unexpected errors
 pool.on('error', (err) => {
   logger.error('Unexpected database error:', err);
   process.exit(-1);
@@ -23,11 +22,9 @@ pool.on('error', (err) => {
 // Test DB connection
 export const testConnection = async () => {
   try {
-    const client = await pool.connect();
-    logger.info('✅ Database connected successfully');
-    client.release();
+    const res = await pool.query('SELECT NOW()');
+    logger.info('✅ Database connected successfully:', res.rows[0]);
   } catch (error) {
-    // FULL error logging (important)
     logger.error('❌ Database connection failed:', error);
   }
 };
