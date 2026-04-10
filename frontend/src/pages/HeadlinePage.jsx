@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Headlinecards from '../Components/HeadlineCards';
+import HeadlineCards from '../Components/HeadlineCards';
 import useHeadlines from '../hooks/useHeadlines';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import Button from '../Components/Button';
@@ -8,7 +8,6 @@ import ErrorMessage from '../Components/ErrorMessage';
 
 const HeadlinePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
-
   const pageSize = 9;
 
   const { data, loading, error, totalResults } = useHeadlines({
@@ -19,7 +18,12 @@ const HeadlinePage = () => {
   const totalPages = Math.ceil(totalResults / pageSize);
 
   if (error) {
-    return <ErrorMessage message={error} onRetry={() => window.location.reload()} />;
+    return (
+      <ErrorMessage
+        message={error}
+        onRetry={() => setCurrentPage(1)}
+      />
+    );
   }
 
   return (
@@ -30,35 +34,43 @@ const HeadlinePage = () => {
 
       <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {loading
-          ? Array.from({ length: pageSize }).map((_, index) => <HeadlineCardSkeleton key={index} />)
-          : data?.map((article) => <Headlinecards key={article.id} article={article} />)}
+          ? Array.from({ length: pageSize }).map((_, index) => (
+              <HeadlineCardSkeleton key={index} />
+            ))
+          : data?.map((article) => (
+              <HeadlineCards key={article.id} article={article} />
+            ))}
       </div>
 
-      <div className="flex justify-center gap-4 mt-6">
-        <Button
-          onClick={() => {
-            setCurrentPage((p) => p - 1);
-            window.scrollTo(0, 0);
-          }}
-          disabled={currentPage === 1}
-        >
-          <ArrowLeft size={18} />
-          Prev
-        </Button>
-        <span className="px-4 py-2 mb-5 font-semibold text-lg">
-          {currentPage} of {totalPages || '...'}
-        </span>
-        <Button
-          onClick={() => {
-            setCurrentPage((p) => p + 1);
-            window.scrollTo(0, 0);
-          }}
-          disabled={currentPage >= totalPages}
-        >
-          Next
-          <ArrowRight size={18} />
-        </Button>
-      </div>
+      {!loading && (
+        <div className="flex justify-center gap-4 mt-6">
+          <Button
+            onClick={() => {
+              setCurrentPage((p) => p - 1);
+              window.scrollTo(0, 0);
+            }}
+            disabled={currentPage === 1}
+          >
+            <ArrowLeft size={18} />
+            Prev
+          </Button>
+
+          <span className="px-4 py-2 mb-5 font-semibold text-lg">
+            {currentPage} of {totalPages || '...'}
+          </span>
+
+          <Button
+            onClick={() => {
+              setCurrentPage((p) => p + 1);
+              window.scrollTo(0, 0);
+            }}
+            disabled={currentPage >= totalPages}
+          >
+            Next
+            <ArrowRight size={18} />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

@@ -9,7 +9,7 @@ const Header = () => {
           <h1 className="text-5xl font-extrabold">NewsHub</h1>
         </NavLink>
         <nav>
-          <ul className="flex space-x-4 mt-2">
+          <ul className="flex space-x-4 mt-2 hidden md:block">
             <li>
               <NavLink to="/headlines">Headlines</NavLink>
             </li>
