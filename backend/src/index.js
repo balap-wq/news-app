@@ -4,7 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import logger from './config/logger.js';
 import adminRoutes from './routes/adminRoutes.js';
-import { articlesRoutes } from './routes/articles.js';
+import  articlesRoutes  from './routes/articles.js';
 import syncArticles from './jobs/syncJob.js';
 import headlinesRouter from './routes/headlines.js';
 import swaggerUi from 'swagger-ui-express';

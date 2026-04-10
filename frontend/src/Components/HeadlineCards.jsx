@@ -28,7 +28,7 @@ export default function Headlinecards({ article ,currentPage }) {
         role="button"
         tabIndex={0}
         key={article.id}
-        onClick={() => navigate(`/article/${article.id}`,{
+        onClick={() => navigate(`/article/${article.id}?page=${currentPage}`,{    
            state: {
            article,
            page: currentPage,

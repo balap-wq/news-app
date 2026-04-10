@@ -9,7 +9,7 @@ const Button = ({ onClick, disabled, children, className }) => {
         ${
           disabled
             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'bg-blue-500 text-white hover:bg-blue-600 active:scale-95 shadow-md hover:shadow-lg'
+            : 'bg-blue-500 text-white hover:bg-blue-500 active:scale-95 shadow-md hover:shadow-lg hover:text-white hover:shadow-blue-300 hover:underline'
         } ${className}`}
     >
       {children}
