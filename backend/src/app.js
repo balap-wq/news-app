@@ -7,7 +7,7 @@ import logger from './config/logger.js';
 
 const app = express();
 
-app.use(cors());
+// app.use(cors());
 app.use(express.json());
 
 // Health check

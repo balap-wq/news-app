@@ -40,8 +40,8 @@ export default function HeadlineCards({ article }) {
       >
         <img
           src={urlToImage || placeholder}
-          alt={title || 'Article image'}
-          className="w-full sm:h-44 md:h-48 object-cover"
+          alt={title}
+          className="w-full h-44 md:h-48 object-cover"
         />
 
         <div className="p-4 flex flex-col justify-between">
@@ -49,11 +49,9 @@ export default function HeadlineCards({ article }) {
             {title}
           </h2>
 
-          <div className="mt-3 text-sm text-gray-500">
-            <p>Source: {sourceName}</p>
-            {author && (
-              <p className="h-6 overflow-hidden">Author: {author}</p>
-            )}
+          <div className="mt-3 text-sm text-gray-500 text-wrap ">
+            <p className="">Source: {sourceName}</p>
+            <p className="h-6 text-wrap overflow-hidden">Author: {author || "Unknown Author"}</p>
             <p>{displayDate}</p>
           </div>
         </div>

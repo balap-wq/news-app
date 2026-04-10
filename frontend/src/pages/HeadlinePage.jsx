@@ -10,12 +10,13 @@ const HeadlinePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
-  const { data, loading, error, totalResults } = useHeadlines({
+  const { data = [], loading, error, totalResults = 0 } = useHeadlines({
     page: currentPage,
     limit: pageSize,
   });
 
-  const totalPages = Math.ceil(totalResults / pageSize);
+  // ✅ Prevent NaN issue
+  const totalPages = totalResults > 0 ? Math.ceil(totalResults / pageSize) : 1;
 
   if (error) {
     return (
@@ -27,7 +28,7 @@ const HeadlinePage = () => {
   }
 
   return (
-    <div className="bg-blue-50">
+    <div className="bg-blue-50 min-h-screen">
       <div className="mx-auto w-full text-center mt-7">
         <h1 className="text-3xl font-bold">Top Headlines</h1>
       </div>
@@ -37,17 +38,22 @@ const HeadlinePage = () => {
           ? Array.from({ length: pageSize }).map((_, index) => (
               <HeadlineCardSkeleton key={index} />
             ))
-          : data?.map((article) => (
-              <HeadlineCards key={article.id} article={article} />
-            ))}
+          : data.length > 0
+          ? data.map((article, index) => (
+              // ✅ safer key fallback
+              <HeadlineCards key={article.id || index} article={article} />
+            ))
+          : (
+              <p className="text-center col-span-full">No articles found</p>
+            )}
       </div>
 
-      {!loading && (
-        <div className="flex justify-center gap-4 mt-6">
+      {!loading && totalPages > 1 && (
+        <div className="flex justify-center gap-4 mt-6 pb-10">
           <Button
             onClick={() => {
-              setCurrentPage((p) => p - 1);
-              window.scrollTo(0, 0);
+              setCurrentPage((p) => Math.max(p - 1, 1));
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             disabled={currentPage === 1}
           >
@@ -55,14 +61,14 @@ const HeadlinePage = () => {
             Prev
           </Button>
 
-          <span className="px-4 py-2 mb-5 font-semibold text-lg">
-            {currentPage} of {totalPages || '...'}
+          <span className="flex items-center px-3 font-medium">
+            Page {currentPage} of {totalPages}
           </span>
 
           <Button
             onClick={() => {
-              setCurrentPage((p) => p + 1);
-              window.scrollTo(0, 0);
+              setCurrentPage((p) => Math.min(p + 1, totalPages));
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             disabled={currentPage >= totalPages}
           >
