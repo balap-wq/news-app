@@ -48,11 +48,11 @@ async function insertArticle(article) {
 
 // UPSERT
 async function upsertArticle(article) {
-  if (!article || !article.url) {
-    throw new Error('Invalid article data (url required)');
-  }
+  if (!article || !article.url) {
+    throw new Error('Invalid article data (url required)');
+}
 
-    const query = `
+const query = `
 INSERT INTO articles (
   title, description, url_to_image, source_name,
   published_at, content, url, author, category, country
@@ -81,18 +81,18 @@ WHERE
   articles.published_at IS DISTINCT FROM EXCLUDED.published_at
 RETURNING (xmax = 0) AS inserted;
 `;
-  const values = [
-    article.title || null,
-    article.description || null,
-    article.urlToImage || article.url_to_image || null,
-    article.source?.name || article.source_name || null,
-    article.publishedAt || article.published_at || null,
-    article.content || null,
-    article.url,
-    article.author || null,
-    article.category || null,
-    article.country || null,
-  ];
+const values = [
+article.title || null,
+article.description || null,
+article.urlToImage || article.url_to_image || null,
+article.source?.name || article.source_name || null,
+article.publishedAt || article.published_at || null,
+article.content || null,
+article.url,
+article.author || null,
+article.category || null,
+article.country || null,
+];
 
 const rows = await executeQuery(query, values);
 
@@ -167,4 +167,4 @@ async function countArticles({ category, country }) {
   return parseInt(rows[0].count, 10);
 }
 
-export { upsertArticle, findArticleById, findTopHeadlines, countArticles };
+export {  insertArticle, upsertArticle, findArticleById, findTopHeadlines, countArticles };
