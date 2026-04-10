@@ -17,7 +17,7 @@ function useArticle(id) {
       setArticle(null);
 
       try {
-        // added time dealy to check loading spinner 
+        // added time dealy to check loading spinner
         // await new Promise(resolve => setTimeout(resolve, 2000));
         const response = await axiosInstance.get(`/api/articles/${id}`, {
           signal: controller.signal,

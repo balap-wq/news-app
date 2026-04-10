@@ -8,7 +8,6 @@ import ErrorMessage from '../Components/ErrorMessage';
 import { useSearchParams } from 'react-router-dom';
 
 const HeadlinePage = () => {
-
   const [searchParams, setSearchParams] = useSearchParams();
 
   // ✅ Single source of truth
@@ -28,12 +27,7 @@ const HeadlinePage = () => {
   const totalPages = totalResults > 0 ? Math.ceil(totalResults / pageSize) : 1;
 
   if (error) {
-    return (
-      <ErrorMessage 
-        message={error} 
-        onRetry={() => setSearchParams({ page: 1 })} 
-      />
-    );
+    return <ErrorMessage message={error} onRetry={() => setSearchParams({ page: 1 })} />;
   }
 
   return (
@@ -44,9 +38,7 @@ const HeadlinePage = () => {
 
       <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
         {loading
-          ? Array.from({ length: 9 }).map((_, index) => (
-              <HeadlineCardSkeleton key={index} />
-            ))
+          ? Array.from({ length: 9 }).map((_, index) => <HeadlineCardSkeleton key={index} />)
           : data?.map((article) => (
               <Headlinecards
                 key={article.id}
@@ -68,9 +60,7 @@ const HeadlinePage = () => {
           Prev
         </Button>
 
-        <span className="px-4 py-2 mb-5 font-semibold text-lg">
-          {currentPage}
-        </span>
+        <span className="px-4 py-2 mb-5 font-semibold text-lg">{currentPage}</span>
 
         <Button
           onClick={() => {

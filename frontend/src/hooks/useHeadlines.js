@@ -13,8 +13,7 @@ function useHeadlines({ page = 1, category, country, limit = 9 }) {
     const fetchHeadlines = async () => {
       setError(null);
       setLoading(true);
-     
-      
+
       try {
         const params = { page, limit };
         if (category) params.category = category;

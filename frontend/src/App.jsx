@@ -7,15 +7,15 @@ import HeadlinePage from './pages/HeadlinePage';
 const App = () => {
   return (
     <>
-    <div className="min-h-screen bg-blue-100">
-      <BrowserRouter >
-        <Header/>
-        <Routes>
-          <Route path="/" element={<Navigate to="/headlines" />} />
-          <Route path="/headlines" element={<HeadlinePage />} />
-          <Route path="/article/:id" element={<ArticleDetailPage />} />
-        </Routes>
-      </BrowserRouter>
+      <div className="min-h-screen bg-blue-100">
+        <BrowserRouter>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Navigate to="/headlines" />} />
+            <Route path="/headlines" element={<HeadlinePage />} />
+            <Route path="/article/:id" element={<ArticleDetailPage />} />
+          </Routes>
+        </BrowserRouter>
       </div>
     </>
   );
