@@ -7,7 +7,12 @@ import logger from './config/logger.js';
 
 const app = express();
 
-// app.use(cors());
+// ✅ Enable CORS (important for frontend connection)
+app.use(cors({
+  origin: 'http://localhost:5173', // your Vite frontend
+  credentials: true,
+}));
+
 app.use(express.json());
 
 // Health check
@@ -17,7 +22,7 @@ app.get('/health', (req, res) => {
 
 // Routes
 app.use('/api/articles', articlesRoutes);
-app.use('/api/headlines', headlinesRoutes); // ✅ FIX ADDED
+app.use('/api/headlines', headlinesRoutes);
 
 // 404 handler
 app.use((req, res) => {
