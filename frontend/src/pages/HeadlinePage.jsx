@@ -17,21 +17,21 @@ const HeadlinePage = () => {
     setCurrentPage(pageFromUrl);
   },[pageFromUrl])
 
-  const { data, loading, error, totalResults } = useHeadlines({
+  const {
+    data = [],
+    loading,
+    error,
+    totalResults = 0,
+  } = useHeadlines({
     page: currentPage,
-    limit: 9, // ✅ set limit to 9 for pagination
+    limit: pageSize,
   });
 
-  const pageSize = 9;
-  const totalPages = Math.ceil(totalResults / pageSize);
+  // ✅ Prevent NaN issue
+  const totalPages = totalResults > 0 ? Math.ceil(totalResults / pageSize) : 1;
 
-  if(error) {
-    return(
-      <ErrorMessage
-      message={error}
-      onRetry={()=> window.location.reload ()}
-      />
-    )
+  if (error) {
+    return <ErrorMessage message={error} onRetry={() => setCurrentPage(1)} />;
   }
 
   return (

@@ -1,15 +1,10 @@
 import logger from '../config/logger.js';
-// const schemas = {
-//   headlineQuerySchema,
-//   articleParamSchema,
-//   articleBodySchema,
-// };
+
 export const validateRequest = ({ schema } = {}) => {
   return (req, res, next) => {
     let data;
     let source;
 
-    
     if (req.body && Object.keys(req.body).length > 0) {
       data = req.body;
       source = 'body';

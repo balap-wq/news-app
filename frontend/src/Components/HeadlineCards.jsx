@@ -20,8 +20,10 @@ export default function Headlinecards({ article ,currentPage }) {
   const navigate = useNavigate();
   const displayDate = formatDate(publishedAt);
 
+  const handleNavigate = () => navigate(`/article/${article.id}`, { state: article });
+
   return (
-    <div className="mx-auto">
+    <div key={article.id} className="mx-auto">
       <div
         role="button"
         tabIndex={0}
@@ -34,20 +36,18 @@ export default function Headlinecards({ article ,currentPage }) {
            })}
         className="cursor-pointer bg-blue-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
       >
-        {/* Image */}
         <img
           src={urlToImage || placeholder}
           alt={title}
-          className="w-full sm:h-44 md:h-48 object-cover"
+          className="w-full h-44 md:h-48 object-cover"
         />
 
-        {/* Content */}
         <div className="p-4 flex flex-col justify-between">
           <h2 className="text-lg font-semibold line-clamp-2 leading-snug">{title}</h2>
 
           <div className="mt-3 text-sm text-gray-500 text-wrap ">
             <p className="">Source: {sourceName}</p>
-            <p className="h-6 text-wrap overflow-hidden">Author: {author}</p>
+            <p className="h-6 text-wrap overflow-hidden">Author: {author || 'Unknown Author'}</p>
             <p>{displayDate}</p>
           </div>
         </div>

@@ -10,10 +10,12 @@ import headlinesRouter from './routes/headlines.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 
-import { testConnection } from './config/db.js';
-import { errorHandler } from './middleware/errorHandler.js';
+import { testConnection } from "./config/db.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
+// ✅ 3. TEST DATABASE CONNECTION
 await testConnection();
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -31,6 +33,7 @@ app.use(
     credentials: true,
   })
 );
+
 
 app.use(express.json());
 
