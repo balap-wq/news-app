@@ -1,0 +1,24 @@
+import swaggerJSDoc from "swagger-jsdoc";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "News App API",
+      version: "1.0.0",
+      description: "API documentation for the News App backend",
+    },
+    servers: [
+        {
+            url: process.env.BASE_URL || "http://localhost:5000",
+        },
+    ],
+    },
+    apis: ["./src/routes/*.js","./src/index.js"], // Path to the API docs
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+export default swaggerSpec;
