@@ -40,12 +40,12 @@ const HeadlinePage = () => {
         {loading
           ? Array.from({ length: 9 }).map((_, index) => <HeadlineCardSkeleton key={index} />)
           : data?.map((article) => (
-              <Headlinecards
-                key={article.id}
-                article={article}
-                currentPage={currentPage} // ✅ still pass it
-              />
-            ))}
+            <Headlinecards
+              key={article.id}
+              article={article}
+              currentPage={currentPage} // ✅ still pass it
+            />
+          ))}
       </div>
 
       <div className="flex justify-center gap-4 mt-6">
@@ -54,7 +54,11 @@ const HeadlinePage = () => {
             setSearchParams({ page: currentPage - 1 });
             window.scrollTo(0, 0);
           }}
-          disabled={currentPage === 1}
+          className={
+            currentPage === 1
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-500 text-white hover:bg-blue-600 active:scale-95 shadow-md hover:shadow-lg hover:shadow-blue-300'
+          }
         >
           <ArrowLeft size={18} />
           Prev
@@ -68,6 +72,11 @@ const HeadlinePage = () => {
             window.scrollTo(0, 0);
           }}
           disabled={currentPage >= totalPages}
+          className={
+            currentPage >= totalPages
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-500 text-white hover:bg-blue-600 active:scale-95 shadow-md hover:shadow-lg hover:shadow-blue-300'
+          }
         >
           Next
           <ArrowRight size={18} />
@@ -78,3 +87,4 @@ const HeadlinePage = () => {
 };
 
 export default HeadlinePage;
+

@@ -9,12 +9,14 @@ const Header = () => {
           <h1 className="text-5xl font-extrabold">NewsHub</h1>
         </NavLink>
         <nav>
-          <ul className="flex space-x-4 mt-2 hidden md:block">
+          <ul className="flex space-x-4 mt-2 md:block">
             <li>
-              <NavLink to="/headlines">Headlines</NavLink>
+              <NavLink to="/headlines" className={"hover:underline "}>Headlines</NavLink>
             </li>
             <li>
-              <NavLink to="/about">About</NavLink>
+              <NavLink to="/about" className={"hover:underline "}>
+                About
+              </NavLink>
             </li>
           </ul>
         </nav>

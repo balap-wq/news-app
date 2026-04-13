@@ -20,9 +20,9 @@ const ArticleDetailPage = () => {
       <div className="w-full max-w-3xl">
         <Button
           onClick={() => navigate(-1)}
-          className="mb-4 mt-4 text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+          className="mb-4 mt-4 relative h-12 overflow-hidden rounded bg-neutral-950 px-5 py-2.5 text-white transition-all duration-300 hover:bg-neutral-800 hover:ring-2 hover:ring-neutral-800 hover:ring-offset-2 "
         >
-          <ArrowLeft size={14} />
+          <ArrowLeft size={18} />
           Back to Headlines
         </Button>
       </div>
@@ -56,9 +56,9 @@ const ArticleDetailPage = () => {
                 href={article.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex bg-blue-600 text-white px-6 py-2 items-center gap-2 rounded-lg"
+                className="inline-flex bg-blue-500 text-white px-6 py-2 items-center gap-2 rounded-lg hover:bg-blue-600 hover:underline"
               >
-                Read Full Article <ArrowRight size={14} />
+                Read Full Article <ArrowRight size={18} />
               </a>
             </div>
           </div>
