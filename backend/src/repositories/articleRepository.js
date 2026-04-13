@@ -14,7 +14,7 @@ async function executeQuery(query, values = []) {
 async function upsertArticle(article) {
   if (!article || !article.url) {
     throw new Error('Invalid article data (url required)');
-}
+  }
 
 const query = `
 INSERT INTO articles (

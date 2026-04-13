@@ -13,7 +13,8 @@ export const ALLOWED_COUNTRIES = [
 ];
 export const DEFAULT_COUNTRY = process.env.DEFAULT_COUNTRY || 'us';
 
-export const buildArticleValues = (article) => [
+export function buildArticleValues(article) {
+  return [
   article.title || null,
   article.description || null,
   article.urlToImage || article.url_to_image || null,
@@ -24,4 +25,5 @@ export const buildArticleValues = (article) => [
   article.author || null,
   article.category || null,
   article.country || null,
-];
+  ]
+}
