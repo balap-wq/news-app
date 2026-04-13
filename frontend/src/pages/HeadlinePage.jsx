@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import HeadlineCards from '../Components/HeadlineCards';
 import useHeadlines from '../hooks/useHeadlines';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
@@ -7,7 +7,11 @@ import HeadlineCardSkeleton from '../Components/HeadlineCardSkeleton';
 import ErrorMessage from '../Components/ErrorMessage';
 
 const HeadlinePage = () => {
+
+
+  const [inputError, setInputError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageInput, setPageInput] = useState("");
   const pageSize = 9;
 
   const {
@@ -20,6 +24,27 @@ const HeadlinePage = () => {
     limit: pageSize,
   });
 
+  useEffect(()=>{
+    setPageInput(currentPage.toString());
+  },[currentPage]);
+
+  const handler = (e) =>{
+    setPageInput(e.target.value);
+    setInputError("");
+  };
+
+  const handlePage = (e) =>{
+    if (e.key === "Enter") {
+      const page = Number(pageInput);
+      if (!page || page < 1 || page > totalPages) {
+        setInputError(`Enter a valid page ( 1 - ${totalPages} )`);
+        return;
+      }
+      setCurrentPage(page);
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+  }
+
   // ✅ Prevent NaN issue
   const totalPages = totalResults > 0 ? Math.ceil(totalResults / pageSize) : 1;
 
@@ -28,9 +53,9 @@ const HeadlinePage = () => {
   }
 
   return (
-    <div className="bg-blue-50 min-h-screen">
-      <div className="mx-auto w-full text-center mt-7">
-        <h1 className="text-3xl font-bold">Top Headlines</h1>
+    <div className="bg-[#FAFAFA] min-h-screen">
+      <div className="mx-auto w-full text-center mt-7 ">
+        <h1 className="text-3xl font-bold inline-block border-b-3 border-amber-300 text-center">Top Headlines</h1>
       </div>
 
       <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -47,7 +72,8 @@ const HeadlinePage = () => {
       </div>
 
       {!loading && totalPages > 1 && (
-        <div className="flex justify-center gap-4 mt-6 pb-10">
+        <div className="flex justify-center items-center md:gap-4 mt-6 pb-10">
+          
           <Button
             onClick={() => {
               setCurrentPage((p) => Math.max(p - 1, 1));
@@ -59,8 +85,8 @@ const HeadlinePage = () => {
             Prev
           </Button>
 
-          <span className="flex items-center px-3 font-medium">
-            Page {currentPage} of {totalPages}
+          <span className="flex items-center px-3 font-medium pb-5">
+            <input type="text" className='w-7 text-center border-none rounded outline-none focus:ring-2 focus:ring-blue-400' value={pageInput} onChange={(e)=>{setPageInput(e.target.value); setInputError("")}} onKeyDown={handlePage} min={1} max={totalPages}/> of {totalPages}
           </span>
 
           <Button
@@ -73,8 +99,13 @@ const HeadlinePage = () => {
             Next
             <ArrowRight size={18} />
           </Button>
+          {inputError && (
+            <p className="text-red-500 text-xs mt-1">{inputError}</p>
+          )}
         </div>
+          
       )}
+      
     </div>
   );
 };

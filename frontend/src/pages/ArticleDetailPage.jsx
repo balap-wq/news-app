@@ -36,8 +36,8 @@ const ArticleDetailPage = () => {
   const cleanContent = article.content?.replace(/\[\+\d+ chars\]/, '');
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-50 px-4">
-      <div className="w-full max-w-3xl bg-blue-100 rounded-2xl shadow-lg p-6 sm:p-8 md:p-10">
+    <div className="min-h-screen flex items-center justify-center bg-[#FAFAFA] px-4">
+      <div className="w-full max-w-3xl bg-white rounded-2xl shadow-lg p-6 sm:p-8 md:p-10">
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center leading-tight">
           {article.title}
         </h1>

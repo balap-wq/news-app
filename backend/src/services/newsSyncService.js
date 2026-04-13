@@ -33,6 +33,7 @@ export async function syncHeadlines() {
 
         const mappedArticle = {
           ...rest,
+          url: article.url,
           source_name: source?.name || '',
           url_to_image: urlToImage || '',
           published_at: publishedAt ? new Date(publishedAt) : null,

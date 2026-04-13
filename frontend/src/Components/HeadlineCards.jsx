@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import placeholder from '../images/placeholder.png';
+import { Book, CalendarClock, UserPen } from 'lucide-react';
 
 function formatDate(dateString) {
   if (!dateString) return 'Unknown date';
@@ -24,7 +25,7 @@ export default function HeadlineCards({ article }) {
   const handleNavigate = () => navigate(`/article/${article.id}`, { state: article });
 
   return (
-    <div key={article.id} className="mx-auto">
+    <div key={article.id} className="mx-auto ">
       <div
         role="button"
         tabIndex={0}
@@ -32,21 +33,32 @@ export default function HeadlineCards({ article }) {
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') handleNavigate();
         }}
-        className="cursor-pointer bg-blue-100 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
+        className=" cursor-pointer rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col hover:scale-105 "
       >
         <img
           src={urlToImage || placeholder}
           alt={title}
-          className="w-full h-44 md:h-48 object-cover"
+          className="w-full h-44 md:h-48 object-cover "
         />
 
-        <div className="p-4 flex flex-col justify-between">
+        <div className=" p-4 flex flex-col justify-between bg-sky-100 ">
           <h2 className="text-lg font-semibold line-clamp-2 leading-snug">{title}</h2>
 
-          <div className="mt-3 text-sm text-gray-500 text-wrap ">
-            <p className="">Source: {sourceName}</p>
-            <p className="h-6 text-wrap overflow-hidden">Author: {author || 'Unknown Author'}</p>
-            <p>{displayDate}</p>
+          <div className="mt-3 text-sm text-gray-500 space-y-1">
+            <div className="flex items-center gap-2">
+              <Book size={14} />
+              <p className="truncate">Source: {sourceName}</p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <UserPen size={14} />
+              <p className="truncate">Author: {author || 'Unknown Author'}</p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <CalendarClock size={14} />
+              <p>{displayDate}</p>
+            </div>
           </div>
         </div>
       </div>

@@ -4,12 +4,12 @@ import { NavLink } from 'react-router-dom';
 const Header = () => {
   return (
     <>
-      <div className="bg-black text-white p-4 sticky top-0 z-10 mx-auto flex items-center justify-between">
+      <div className="bg-black text-white p-4 sticky top-0 z-10 mx-auto md:flex items-center justify-between">
         <NavLink to="/headlines">
-          <h1 className="text-5xl font-extrabold">NewsHub</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold">NewsHub</h1>
         </NavLink>
         <nav>
-          <ul className="flex space-x-4 mt-2 hidden md:block">
+          <ul className="flex space-x-4 mt-3">
             <li>
               <NavLink to="/headlines">Headlines</NavLink>
             </li>
