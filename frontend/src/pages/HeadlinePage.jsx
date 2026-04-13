@@ -40,12 +40,12 @@ const HeadlinePage = () => {
         {loading
           ? Array.from({ length: 9 }).map((_, index) => <HeadlineCardSkeleton key={index} />)
           : data?.map((article) => (
-            <Headlinecards
-              key={article.id}
-              article={article}
-              currentPage={currentPage} // ✅ still pass it
-            />
-          ))}
+              <Headlinecards
+                key={article.id}
+                article={article}
+                currentPage={currentPage} // ✅ still pass it
+              />
+            ))}
       </div>
 
       <div className="flex justify-center gap-4 mt-6">
@@ -87,4 +87,3 @@ const HeadlinePage = () => {
 };
 
 export default HeadlinePage;
-
