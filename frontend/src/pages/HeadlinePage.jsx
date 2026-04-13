@@ -6,6 +6,7 @@ import Button from '../Components/Button';
 import HeadlineCardSkeleton from '../Components/HeadlineCardSkeleton';
 import ErrorMessage from '../Components/ErrorMessage';
 import { useSearchParams } from 'react-router-dom';
+import { TrendingUp } from 'lucide-react';
 
 const HeadlinePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,7 +33,8 @@ const HeadlinePage = () => {
 
   return (
     <div>
-      <div className="mx-auto w-full text-center mt-7">
+      <div className="mx-auto w-full text-center mt-7 flex items-center justify-center gap-2">
+        <TrendingUp size={40}/>
         <h1 className="text-3xl font-bold">Top Headlines</h1>
       </div>
 
