@@ -1,6 +1,6 @@
 import pool from '../config/db.js';
 import logger from '../config/logger.js';
-
+import { buildArticleValues } from '../config/constant.js';
 async function executeQuery(query, values = []) {
   try {
     const { rows } = await pool.query(query, values);
@@ -10,42 +10,6 @@ async function executeQuery(query, values = []) {
     throw error;
   }
 }
-
-// INSERT
-async function insertArticle(article) {
-  if (!article) throw new Error('Article data is required');
-
-  const query = `
-    INSERT INTO articles (
-      title, description, url_to_image, source_name,
-      published_at, content, url, author, category, country
-    )
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
-    RETURNING *;
-  `;
-
-  const values = [
-    article.title,
-    article.description,
-    article.url_to_image,
-    article.source_name,
-    article.published_at,
-    article.content,
-    article.url,
-    article.author,
-    article.category,
-    article.country || null,
-  ];
-
-  const rows = await executeQuery(query, values);
-
-  if (!rows || rows.length === 0) {
-    throw new Error('Insert failed');
-  }
-
-  return rows[0];
-}
-
 // UPSERT
 async function upsertArticle(article) {
   if (!article || !article.url) {
@@ -81,19 +45,7 @@ WHERE
   articles.published_at IS DISTINCT FROM EXCLUDED.published_at
 RETURNING (xmax = 0) AS inserted;
 `;
-const values = [
-article.title || null,
-article.description || null,
-article.urlToImage || article.url_to_image || null,
-article.source?.name || article.source_name || null,
-article.publishedAt || article.published_at || null,
-article.content || null,
-article.url,
-article.author || null,
-article.category || null,
-article.country || null,
-];
-
+const values = buildArticleValues(article);
 const rows = await executeQuery(query, values);
 
 if (!rows || rows.length === 0) {
@@ -167,4 +119,4 @@ async function countArticles({ category, country }) {
   return parseInt(rows[0].count, 10);
 }
 
-export {  insertArticle, upsertArticle, findArticleById, findTopHeadlines, countArticles };
+export { upsertArticle, findArticleById, findTopHeadlines, countArticles };
