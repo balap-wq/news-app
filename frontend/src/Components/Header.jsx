@@ -1,5 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { NotebookTabs } from 'lucide-react';
+import { Store } from 'lucide-react';
 
 const Header = () => {
   return (
@@ -9,14 +11,16 @@ const Header = () => {
           <h1 className="text-5xl font-extrabold">NewsHub</h1>
         </NavLink>
         <nav>
-          <ul className="flex space-x-4 mt-2 md:block">
+          <ul className="flex items-center gap-6 text-lg">
             <li>
               <NavLink to="/headlines" className={'hover:underline '}>
+                <NotebookTabs size={20} className="inline-block mr-1 pb-1" />
                 Headlines
               </NavLink>
             </li>
             <li>
               <NavLink to="/about" className={'hover:underline '}>
+                <Store size={20} className="inline-block mr-1 pb-1" />
                 About
               </NavLink>
             </li>
