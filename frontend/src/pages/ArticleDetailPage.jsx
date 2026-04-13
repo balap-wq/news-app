@@ -31,7 +31,9 @@ const ArticleDetailPage = () => {
       <div className="w-full max-w-3xl bg-blue-100 rounded-2xl shadow-lg p-6 sm:p-8 md:p-10 min-h-[50vh] flex items-center justify-center">
         {loading && <LoadingSpinner />}
 
-        {!loading && error && <ErrorMessage message={error} onRetry={()=> window.location.reload()}/>}
+        {!loading && error && (
+          <ErrorMessage message={error} onRetry={() => window.location.reload()} />
+        )}
 
         {!loading && !error && (!article || !article.title) && <EmptyState />}
 

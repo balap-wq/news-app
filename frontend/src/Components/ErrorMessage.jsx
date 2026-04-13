@@ -13,7 +13,7 @@ function ErrorMessage({ message, onRetry }) {
 
       {onRetry && (
         <button
-          onClick={()=> window.location.reload()}
+          onClick={() => window.location.reload()}
           className="mt-3 px-5 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition hover:cursor-pointer"
         >
           Retry
