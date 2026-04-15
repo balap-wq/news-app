@@ -1,8 +1,8 @@
 import logger from '../config/logger.js';
-import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
+import prisma from '../prismaClient.js'; // ✅ use Prisma
 import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constant.js';
 
-
+// (kept same - no breaking change)
 function validateAndNormalize(value, allowedValues, fieldName) {
   if (!value) return undefined;
 
@@ -17,6 +17,7 @@ function validateAndNormalize(value, allowedValues, fieldName) {
   return normalized;
 }
 
+// (kept - but Prisma already returns camelCase, still safe)
 function snakeToCamel(obj) {
   const camelObj = {};
   for (const key in obj) {
@@ -46,16 +47,30 @@ export async function getHeadlines(req, res, next) {
       'country'
     );
 
-    const headlines = await findTopHeadlines({
-      limit: pageLimit,
-      offset: pageOffset,
-      category: normalizedCategory,
-      country: normalizedCountry,
+    // Prisma where condition (dynamic)
+    const whereCondition = {};
+
+    if (normalizedCategory) {
+      whereCondition.category = normalizedCategory;
+    }
+
+    if (normalizedCountry) {
+      whereCondition.country = normalizedCountry;
+    }
+
+    // FETCH DATA
+    const headlines = await prisma.article.findMany({
+      where: whereCondition,
+      skip: pageOffset,
+      take: pageLimit,
+      orderBy: {
+        publishedAt: 'desc',
+      },
     });
 
-    const totalResults = await countArticles({
-      category: normalizedCategory,
-      country: normalizedCountry,
+    // COUNT
+    const totalResults = await prisma.article.count({
+      where: whereCondition,
     });
 
     const transformedArticles = headlines.map(snakeToCamel);
@@ -65,12 +80,11 @@ export async function getHeadlines(req, res, next) {
       articles: transformedArticles,
       totalResults,
       count: transformedArticles.length,
-      page, // ✅ send page back to frontend
+      page: pageNumber,
     });
 
   } catch (error) {
     logger.error(error);
-
     next(error);
   }
 }

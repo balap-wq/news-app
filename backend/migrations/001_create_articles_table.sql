@@ -1,19 +1,19 @@
 -- Create articles table
 
 CREATE TABLE articles (
-    id GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    title VARCHAR(500) NOT NULL,
-    description TEXT,
-    content TEXT,
-    url VARCHAR(1000) UNIQUE NOT NULL,
-    url_to_image VARCHAR(1000),
-    source_name VARCHAR(255),
-    author VARCHAR(255),
-    category VARCHAR(100),
-    published_at TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  id SERIAL PRIMARY KEY,
+  title TEXT,
+  description TEXT,
+  content TEXT,
+  author TEXT,
+  source_name TEXT,
+  url TEXT,
+  url_to_image TEXT,
+  published_at TIMESTAMP,
+  category TEXT,
+  country TEXT,
+  created_at TIMESTAMP DEFAULT NOW()
 );
-
 -- Indexes for performance 
 
 -- Index on published_at (for sorting/filtering latest news)
