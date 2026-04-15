@@ -1,22 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import useArticle from '../hooks/useArticle';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import ErrorMessage from '../Components/ErrorMessage';
 import EmptyState from '../Components/EmptyState';
-
-function formatDate(dateString) {
-  if (!dateString) return 'Unknown date';
-  const date = new Date(dateString);
-  if (Number.isNaN(date.getTime())) return dateString;
-  return date.toLocaleString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  });
-}
+import ExternalLink from '../Components/ExternalLink';
+import { formatDate } from '../utils/date-formatter';
+import articleImagePlaceholder from '../images/article-image-placeholder.svg';
 
 export default function ArticleDetailPage() {
   const { id } = useParams();
@@ -27,113 +17,101 @@ export default function ArticleDetailPage() {
 
   const data = state || article;
 
+  const [imgError, setImgError] = useState(false);
+
   if (loading) return <LoadingSpinner />;
   if (error) return <ErrorMessage message={error} onRetry={() => navigate(-1)} />;
   if (!data) return <EmptyState />;
 
-  const { title, urlToImage, content, description, author, publishedAt, url, sourceName } = data;
+  const {
+    title,
+    urlToImage,
+    content,
+    description,
+    author,
+    publishedAt,
+    url,
+    sourceName,
+  } = data;
+
+  const formattedDate = publishedAt ? formatDate(publishedAt) : null;
 
   return (
-    <main className=" bg-blue-50">
-      {/* hero image */}
-      {urlToImage ? (
-        <div className="w-full  h-80  sm:h-96 overflow-hidden mt-4 ">
-          <img
-            src={urlToImage}
-            alt={title ? `Hero image for: ${title}` : 'Article hero image'}
-            className="w-full h-full object-contain"
-            onError={(e) => {
-              e.target.style.display = 'none';
-              e.target.nextSibling.style.display = 'flex';
-            }}
-          />
-          <div className="hidden w-full h-full bg-gray-100 items-center justify-center flex-col gap-2 text-gray-400">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-12 h-12"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            <span className="text-sm">Image unavailable</span>
-          </div>
-        </div>
-      ) : (
-        <div className="w-full h-72 sm:h-80 mt-4 bg-gray-100 flex flex-col items-center justify-center gap-2 text-gray-400">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-12 h-12"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+    <main className="bg-[#FAFAFA] min-h-screen py-10 pb-16">
+      <div
+        className="max-w-3xl mx-auto bg-[#0b0b33] rounded-2xl overflow-hidden"
+        style={{
+          boxShadow: '0 2px 0 #2a2a4a, 0 4px 0 #1a1a2e, 0 30px 60px rgba(0,0,0,0.5)',
+        }}
+      >
+        {/* Image Section */}
+        {urlToImage && !imgError ? (
+          <div className="w-full h-64 sm:h-80 overflow-hidden">
+            <img
+              src={urlToImage}
+              alt={title || 'Article image'}
+              className="w-full h-full object-cover"
+              onError={() => setImgError(true)}
             />
-          </svg>
-          <span className="text-sm">No image available</span>
-        </div>
-      )}
-
-      {/* article body */}
-      <div className="max-w-3xl mx-auto px-4 sm:px-15 py-8">
-        {/* title */}
-        <h1 className="text-xl sm:text-3xl font-bold text-gray-900 leading-snug mb-4">{title}</h1>
-
-        {/* metadata row */}
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200">
-          {sourceName && <span className="font-medium text-gray-700">{sourceName}</span>}
-          {sourceName && (author || publishedAt) && <span aria-hidden="true">·</span>}
-          {author && <span>By {author}</span>}
-          {author && publishedAt && <span aria-hidden="true">·</span>}
-          {publishedAt && <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>}
-        </div>
-
-        {/* description */}
-        {description && (
-          <p className="text-lg leading-relaxed text-gray-700 mb-4 font-medium">{description}</p>
-        )}
-
-        {/* content */}
-        {content && (
-          <p className="text-lg leading-relaxed text-gray-800">
-            {content.replace(/\s*\[\+\d+ chars\]$/, '')}
-          </p>
-        )}
-
-        {/* external link */}
-        {url && (
-          <div className="mt-8">
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-            >
-              Read full article{sourceName ? ` on ${sourceName}` : ''}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4 text-gray-400"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-                <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-              </svg>
-            </a>
+          </div>
+        ) : (
+          <div className="w-full h-48 bg-[#0f0f1a] flex flex-col items-center justify-center gap-2 text-stone-600">
+            <img
+              src={articleImagePlaceholder}
+              alt="No image available"
+              className="w-12 h-12"
+            />
+            <span className="text-sm">
+              {urlToImage ? 'Image unavailable' : 'No image available'}
+            </span>
           </div>
         )}
+
+        {/* Content */}
+        <div className="px-5 sm:px-6 py-10">
+          {/* Title */}
+          <h1
+            className="text-2xl sm:text-4xl font-bold text-[#f0efff] leading-tight mb-5"
+            style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}
+          >
+            {title}
+          </h1>
+
+          {/* Metadata */}
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-stone-500 uppercase tracking-widest mb-8 pb-8 border-b border-[rgba(255,255,255,0.07)]">
+            {author && (
+              <span className="text-stone-400 font-medium normal-case tracking-normal text-sm">
+                By {author}
+              </span>
+            )}
+            {author && formattedDate && <span>·</span>}
+            {formattedDate && (
+              <time dateTime={publishedAt}>{formattedDate}</time>
+            )}
+          </div>
+
+          {/* Description */}
+          {description && (
+            <p
+              className="text-xl text-[#c5c4e0] mb-6 leading-relaxed"
+              style={{ fontFamily: 'Georgia, serif' }}
+            >
+              {description}
+            </p>
+          )}
+
+          {/* Content */}
+          {content && (
+            <p className="text-base text-[#ceced8] leading-8 tracking-wide">
+              {content.replace(/\s*\[\+\d+ chars\]$/, '')}
+            </p>
+          )}
+
+          {/* External Link */}
+          <div className="mt-8">
+            <ExternalLink url={url} title={sourceName || 'Read Full Article'} />
+          </div>
+        </div>
       </div>
     </main>
   );
