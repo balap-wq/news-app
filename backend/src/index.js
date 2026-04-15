@@ -48,6 +48,19 @@ app.use("/api/articles", articlesRoutes);
 app.use("/api/headlines", headlinesRouter);
 app.use("/api/admin", adminRoutes);
 
+// ✅ Health check
+
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check
+ *     description: Checks the health of the API.
+ *     responses:
+ *       200:
+ *         description: API is healthy
+ */
+
 // ✅ 7. HEALTH CHECK
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
