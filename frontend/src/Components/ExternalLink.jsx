@@ -17,7 +17,6 @@ export default function ExternalLink({ url, title }) {
       }}
     >
       Read full article{displaySource ? ` on ${displaySource}` : ''}
-
       <svg
         xmlns="http://www.w3.org/2000/svg"
         className="w-4 h-4"

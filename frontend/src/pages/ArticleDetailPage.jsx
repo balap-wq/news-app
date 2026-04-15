@@ -23,16 +23,7 @@ export default function ArticleDetailPage() {
   if (error) return <ErrorMessage message={error} onRetry={() => navigate(-1)} />;
   if (!data) return <EmptyState />;
 
-  const {
-    title,
-    urlToImage,
-    content,
-    description,
-    author,
-    publishedAt,
-    url,
-    sourceName,
-  } = data;
+  const { title, urlToImage, content, description, author, publishedAt, url, sourceName } = data;
 
   const formattedDate = publishedAt ? formatDate(publishedAt) : null;
 
@@ -56,11 +47,7 @@ export default function ArticleDetailPage() {
           </div>
         ) : (
           <div className="w-full h-48 bg-[#0f0f1a] flex flex-col items-center justify-center gap-2 text-stone-600">
-            <img
-              src={articleImagePlaceholder}
-              alt="No image available"
-              className="w-12 h-12"
-            />
+            <img src={articleImagePlaceholder} alt="No image available" className="w-12 h-12" />
             <span className="text-sm">
               {urlToImage ? 'Image unavailable' : 'No image available'}
             </span>
@@ -85,9 +72,7 @@ export default function ArticleDetailPage() {
               </span>
             )}
             {author && formattedDate && <span>·</span>}
-            {formattedDate && (
-              <time dateTime={publishedAt}>{formattedDate}</time>
-            )}
+            {formattedDate && <time dateTime={publishedAt}>{formattedDate}</time>}
           </div>
 
           {/* Description */}
