@@ -1,25 +1,26 @@
 import logger from '../config/logger.js';
 import prisma from '../prismaClient.js';
 
-// (optional - not really needed now, but kept so no side effects)
+// 🔄 snake_case → camelCase
 function snakeToCamel(obj) {
   const camelObj = {};
   for (const key in obj) {
-    const camelKey = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+    const camelKey = key.replace(/_([a-z])/g, (_, char) =>
+      char.toUpperCase()
+    );
     camelObj[camelKey] = obj[key];
   }
   return camelObj;
 }
 
-// ✅ GET ALL ARTICLES (HEADLINES)
+// 📰 GET HEADLINES
 async function getHeadlines(req, res) {
   try {
     const { page = 1, category } = req.query;
 
-    const limit = 9;
-    const offset = (parseInt(page, 10) - 1) * limit;
+    const pageNumber = parseInt(page, 10);
 
-    if (isNaN(offset) || offset < 0) {
+    if (isNaN(pageNumber) || pageNumber < 1) {
       return res.status(400).json({ error: 'Invalid page number' });
     }
 
@@ -40,18 +41,22 @@ async function getHeadlines(req, res) {
     });
 
     res.status(200).json({
-      articles,
+      success: true,
+      articles: transformedArticles,
       totalResults: totalCount,
-      page: parseInt(page, 10),
+      page: pageNumber,
     });
 
   } catch (error) {
     logger.error('Error fetching headlines:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+    });
   }
 }
 
-// ✅ GET BY ID
+// 📄 GET ARTICLE BY ID
 async function getArticleById(req, res) {
   try {
     const { id } = req.params;
@@ -64,16 +69,22 @@ async function getArticleById(req, res) {
 
     if (!article) {
       return res.status(404).json({
+        success: false,
         error: 'Article not found',
         articleId: id,
       });
     }
 
-    res.status(200).json(article);
+    const transformedArticle = snakeToCamel(article);
 
+    res.status(200).json(transformedArticle);
   } catch (error) {
     logger.error('Error fetching article:', error);
-    res.status(500).json({ error: 'Internal server error' });
+
+    return res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+    });
   }
 }
 

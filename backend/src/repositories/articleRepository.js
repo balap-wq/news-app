@@ -32,7 +32,7 @@ export async function upsertArticle(mappedArticle) {
 
     return result ? 'inserted' : 'updated';
   } catch (error) {
-    console.error('Upsert Error:', error);
+    logger.error('Database error:', error);
     throw error;
   }
 }

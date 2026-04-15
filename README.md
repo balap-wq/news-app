@@ -1,3 +1,5 @@
+[![CI Pipeline](https://github.com/koders-tribe/news-app/actions/workflows/ci.yml/badge.svg)](https://github.com/koders-tribe/news-app/actions/workflows/ci.yml)
+
 # News App
 
 A full-stack news application with a React frontend and Node.js backend.

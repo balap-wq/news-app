@@ -4,6 +4,14 @@ import logger from './logger.js';
 
 dotenv.config();
 
+console.log('DB CONFIG:', {
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
+
 const { Pool } = pkg;
 
 const pool = new Pool({
