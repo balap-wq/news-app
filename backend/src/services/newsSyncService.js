@@ -1,11 +1,11 @@
 import { fetchTopHeadlines } from './newsApiService.js';
-import { upsertArticle } from '../repositories/articleRepository.js';
+import prisma from '../prismaClient.js'; // ✅ use Prisma
 import { ALLOWED_CATEGORIES, DEFAULT_COUNTRY } from '../config/constant.js';
 import logger from '../config/logger.js';
 
 export async function syncHeadlines() {
   logger.info('Starting Sync Headlines Service...');
-
+  
   let inserted = 0;
   let updated = 0;
 
@@ -30,21 +30,31 @@ export async function syncHeadlines() {
       try {
         const { source, urlToImage, publishedAt, ...rest } = article;
 
+        // ✅ Map API data → Prisma format (camelCase)
         const mappedArticle = {
-          ...rest,
-          url: article.url,
-          source_name: source?.name || '',
-          url_to_image: urlToImage || '',
-          published_at: publishedAt ? new Date(publishedAt) : null,
-          created_at: new Date(),
-          category: article.category || category || 'general',
+          title: rest.title || 'No Title',
+          content: rest.description || '',
+          url: rest.url,
+          urlToImage: urlToImage || '',
+          source: source?.name || '',
+          publishedAt: publishedAt ? new Date(publishedAt) : null,
+          category: category || 'general',
           country: DEFAULT_COUNTRY,
         };
 
-        const result = await upsertArticle(mappedArticle);
+        // ✅ UPSERT (insert or update)
+        const result = await prisma.article.upsert({
+          where: {
+            url: mappedArticle.url, // must be UNIQUE in schema
+          },
+          update: mappedArticle,
+          create: mappedArticle,
+        });
 
-        if (result === 'inserted') inserted += 1;
-        else if (result === 'updated') updated += 1;
+        if (result) {
+          updated++; // Prisma upsert doesn't tell insert/update separately → safe increment
+        }
+
       } catch (error) {
         logger.error('Error processing article:', error);
       }
@@ -52,7 +62,6 @@ export async function syncHeadlines() {
   }
 
   logger.info('Sync Headlines Service completed', {
-    articlesInserted: inserted,
-    articlesUpdated: updated,
+    articlesProcessed: inserted + updated,
   });
 }

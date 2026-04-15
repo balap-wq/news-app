@@ -1,16 +1,8 @@
 import logger from '../config/logger.js';
-import { findTopHeadlines, countArticles } from '../repositories/articleRepository.js';
+import prisma from '../prismaClient.js'; // ✅ use Prisma
 import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constant.js';
 
-// ✅ Custom ValidationError class
-class ValidationError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'ValidationError';
-  }
-}
-
-// 🔍 Validate & normalize input
+// (kept same - no breaking change)
 function validateAndNormalize(value, allowedValues, fieldName) {
   if (!value) return undefined;
 
@@ -23,7 +15,7 @@ function validateAndNormalize(value, allowedValues, fieldName) {
   return normalized;
 }
 
-// 🔄 snake_case → camelCase
+// (kept - but Prisma already returns camelCase, still safe)
 function snakeToCamel(obj) {
   const camelObj = {};
   for (const key in obj) {
@@ -66,17 +58,30 @@ export async function getHeadlines(req, res, next) {
       offset: pageOffset,
     });
 
-    // 📡 DB calls
-    const headlines = await findTopHeadlines({
-      limit: pageLimit,
-      offset: pageOffset,
-      category: normalizedCategory,
-      country: normalizedCountry,
+    // Prisma where condition (dynamic)
+    const whereCondition = {};
+
+    if (normalizedCategory) {
+      whereCondition.category = normalizedCategory;
+    }
+
+    if (normalizedCountry) {
+      whereCondition.country = normalizedCountry;
+    }
+
+    // FETCH DATA
+    const headlines = await prisma.article.findMany({
+      where: whereCondition,
+      skip: pageOffset,
+      take: pageLimit,
+      orderBy: {
+        publishedAt: 'desc',
+      },
     });
 
-    const totalResults = await countArticles({
-      category: normalizedCategory,
-      country: normalizedCountry,
+    // COUNT
+    const totalResults = await prisma.article.count({
+      where: whereCondition,
     });
 
     logger.info(`Fetched ${headlines.length} articles`);
@@ -91,21 +96,10 @@ export async function getHeadlines(req, res, next) {
       totalResults,
       count: transformedArticles.length,
       page: pageNumber,
+      page: pageNumber,
     });
   } catch (error) {
-    logger.error('Error in getHeadlines:', {
-      message: error.message,
-      stack: error.stack,
-    });
-
-    // ✅ Handle validation error
-    if (error instanceof ValidationError) {
-      return res.status(400).json({
-        success: false,
-        message: error.message,
-      });
-    }
-
+    logger.error(error);
     next(error);
   }
 }
