@@ -36,11 +36,6 @@ const HeadlinePage = () => {
     }
   }, [inputError]);
 
-  const handler = (e) => {
-    setPageInput(e.target.value);
-    setInputError('');
-  };
-
   const handlePage = (e) => {
     if (e.key === 'Enter') {
       const page = Number(pageInput);
