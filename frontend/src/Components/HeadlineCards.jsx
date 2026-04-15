@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import placeholder from '../images/placeholder.png';
 
 function formatDate(dateString) {
@@ -15,25 +15,27 @@ function formatDate(dateString) {
   });
 }
 
-export default function Headlinecards({ article, currentPage }) {
+export default function HeadlineCards({ article }) {
   const { title, urlToImage, sourceName, publishedAt, author } = article;
   const navigate = useNavigate();
   const displayDate = formatDate(publishedAt);
+  const [searchParams] = useSearchParams();
+  const currentPage = parseInt(searchParams.get('page')) || 1;
 
   return (
-    <div key={article.id} className="mx-auto">
+    <div className="mx-auto">
       <div
         role="button"
         tabIndex={0}
-        key={article.id}
-        onClick={() =>
+        onClick={() => {
           navigate(`/article/${article.id}?page=${currentPage}`, {
             state: {
               article,
               page: currentPage,
             },
-          })
-        }
+          });
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
         className="cursor-pointer bg-blue-50 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
       >
         <img

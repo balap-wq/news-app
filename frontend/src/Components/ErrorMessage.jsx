@@ -16,7 +16,7 @@ function ErrorMessage({ message, onRetry }) {
 
       {onRetry && (
         <button
-          onClick={() => window.location.reload()}
+          onClick={onRetry}
           className="mt-3 px-5 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-700 hover:cursor-pointer flex items-center gap-2 transition duration-300 hover:scale-100 active:scale-95"
         >
           <RotateCcw size={20} />

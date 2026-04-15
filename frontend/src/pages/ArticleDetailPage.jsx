@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import EmptyState from '../Components/EmptyState';
 import LoadingSpinner from '../Components/LoadingSpinner';
 import ErrorMessage from '../Components/ErrorMessage';
@@ -10,16 +10,17 @@ import Button from '../Components/Button';
 const ArticleDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const page = location.state?.page || new URLSearchParams(location.search).get('page') || 1;
+  const { article, loading, error, refetch } = useArticle(id);
 
-  const { article, loading, error } = useArticle(id);
-
-  const cleanContent = article?.content?.replace(/\[\+\d+ chars\]/, '');
+  const cleanContent = article?.content?.replace(/\[\+\d+\schars\]/, '') || '';
 
   return (
     <div className="min-h-screen bg-blue-50 px-4 flex flex-col items-center">
       <div className="w-full max-w-3xl">
         <Button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(`/headlines?page=${page}`)}
           className="mb-4 mt-4 relative h-12 overflow-hidden rounded bg-neutral-950 px-5 py-2.5 text-white transition-all duration-300 hover:bg-neutral-800 hover:ring-2 hover:ring-neutral-800 hover:ring-offset-2 "
         >
           <ArrowLeft size={18} />
@@ -32,7 +33,13 @@ const ArticleDetailPage = () => {
         {loading && <LoadingSpinner />}
 
         {!loading && error && (
-          <ErrorMessage message={error} onRetry={() => window.location.reload()} />
+          <ErrorMessage
+            message={error}
+            onRetry={() => {
+              refetch();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
         )}
 
         {!loading && !error && (!article || !article.title) && <EmptyState />}

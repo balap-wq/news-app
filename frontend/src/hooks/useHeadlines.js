@@ -6,6 +6,7 @@ function useHeadlines({ page = 1, category, country, limit = 9 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [totalResults, setTotalResults] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -41,9 +42,13 @@ function useHeadlines({ page = 1, category, country, limit = 9 }) {
     fetchHeadlines();
 
     return () => controller.abort();
-  }, [page, category, country, limit]); // fix: added limit
+  }, [page, category, country, limit, refreshKey]);
 
-  return { data, loading, error, totalResults };
+  const refetch = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
+
+  return { data, loading, error, totalResults, refetch };
 }
 
 export default useHeadlines;

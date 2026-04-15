@@ -7,6 +7,7 @@ import HeadlineCardSkeleton from '../Components/HeadlineCardSkeleton';
 import ErrorMessage from '../Components/ErrorMessage';
 import { useSearchParams } from 'react-router-dom';
 import { TrendingUp } from 'lucide-react';
+import EmptyState from '../Components/EmptyState';
 
 const HeadlinePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,6 +21,7 @@ const HeadlinePage = () => {
     loading,
     error,
     totalResults = 0,
+    refetch,
   } = useHeadlines({
     page: currentPage,
     limit: pageSize,
@@ -28,8 +30,17 @@ const HeadlinePage = () => {
   const totalPages = totalResults > 0 ? Math.ceil(totalResults / pageSize) : 1;
 
   if (error) {
-    return <ErrorMessage message={error} onRetry={() => setSearchParams({ page: 1 })} />;
+    return (
+      <ErrorMessage
+        message={error}
+        onRetry={() => {
+          refetch();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
+    );
   }
+  //onRetry={() => setSearchParams({ page: currentPage })}
 
   return (
     <div>
@@ -38,24 +49,31 @@ const HeadlinePage = () => {
         <h1 className="text-3xl font-bold">Top Headlines</h1>
       </div>
 
-      <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        {loading
-          ? Array.from({ length: 9 }).map((_, index) => <HeadlineCardSkeleton key={index} />)
-          : data?.map((article) => (
-              <Headlinecards
-                key={article.id}
-                article={article}
-                currentPage={currentPage} // ✅ still pass it
-              />
-            ))}
-      </div>
+      {!loading && !error && data.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <div className="p-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {loading
+            ? Array.from({ length: 9 }).map((_, index) => (
+                <HeadlineCardSkeleton key={`skeleton-${index}`} />
+              ))
+            : data.map((article) => <Headlinecards key={article.id} article={article} />)}
+        </div>
+      )}
 
       <div className="flex justify-center gap-4 mt-6">
         <Button
+          aria-label="Previous page"
           onClick={() => {
-            setSearchParams({ page: currentPage - 1 });
-            window.scrollTo(0, 0);
+            if (currentPage === 1) return;
+            setSearchParams((prev) => {
+              const params = new URLSearchParams(prev);
+              params.set('page', Math.max(1, currentPage - 1));
+              return params;
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
+          disabled={currentPage === 1}
           className={
             currentPage === 1
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -69,9 +87,15 @@ const HeadlinePage = () => {
         <span className="px-4 py-2 mb-5 font-semibold text-lg">{currentPage}</span>
 
         <Button
+          aria-label="Next page"
           onClick={() => {
-            setSearchParams({ page: currentPage + 1 });
-            window.scrollTo(0, 0);
+            if (currentPage >= totalPages) return;
+            setSearchParams((prev) => {
+              const params = new URLSearchParams(prev);
+              params.set('page', Math.min(totalPages, currentPage + 1));
+              return params;
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           disabled={currentPage >= totalPages}
           className={
