@@ -68,6 +68,6 @@ const HeadlineCards = ({ article }) => {
       </div>
     </div>
   );
-}
+};
 
 export default HeadlineCards;
