@@ -6,7 +6,6 @@ import logger from '../config/logger.js';
 export async function syncHeadlines() {
   logger.info('Starting Sync Headlines Service...');
   
-  let inserted = 0;
   let updated = 0;
 
   for (const category of ALLOWED_CATEGORIES) {
@@ -42,7 +41,7 @@ export async function syncHeadlines() {
           country: DEFAULT_COUNTRY,
         };
 
-        // ✅ UPSERT (insert or update)
+        // ✅ UPSERT (update)
         const result = await prisma.article.upsert({
           where: {
             url: mappedArticle.url, // must be UNIQUE in schema
@@ -62,6 +61,6 @@ export async function syncHeadlines() {
   }
 
   logger.info('Sync Headlines Service completed', {
-    articlesProcessed: inserted + updated,
+    articlesProcessed:  updated,
   });
 }
