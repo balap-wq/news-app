@@ -78,17 +78,23 @@ export async function getHeadlines(req, res, next) {
       offset: pageOffset,
     });
 
-    // 📡 DB calls
-    const headlines = await findTopHeadlines({
-      limit: pageLimit,
-      offset: pageOffset,
-      category: normalizedCategory,
-      country: normalizedCountry,
+    // ✅ Prisma DB calls (FIXED)
+    const whereCondition = {
+      ...(normalizedCategory && { category: normalizedCategory }),
+      ...(normalizedCountry && { country: normalizedCountry }),
+    };
+
+    const headlines = await prisma.article.findMany({
+      where: whereCondition,
+      skip: pageOffset,
+      take: pageLimit,
+      orderBy: {
+        publishedAt: 'desc',
+      },
     });
 
-    const totalResults = await countArticles({
-      category: normalizedCategory,
-      country: normalizedCountry,
+    const totalResults = await prisma.article.count({
+      where: whereCondition,
     });
 
     logger.info(`Fetched ${headlines.length} articles`);
@@ -96,15 +102,15 @@ export async function getHeadlines(req, res, next) {
     // 🔄 Transform data
     const transformedArticles = headlines.map(snakeToCamel);
 
-    // 📤 Response
+    // 📤 Response (FIXED duplicate key)
     res.status(200).json({
       success: true,
       articles: transformedArticles,
       totalResults,
       count: transformedArticles.length,
       page: pageNumber,
-      page: pageNumber,
     });
+
   } catch (error) {
     logger.error('Error in getHeadlines:', {
       message: error.message,
