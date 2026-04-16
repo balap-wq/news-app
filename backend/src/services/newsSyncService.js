@@ -30,16 +30,18 @@ export async function syncHeadlines() {
       try {
         const { source, urlToImage, publishedAt, ...rest } = article;
 
+        // ✅ FIXED mapping (snake_case)
         const mappedArticle = {
           title: rest.title || 'No Title',
           content: rest.description || '',
           url: rest.url,
-          urlToImage: urlToImage || '',
-          source: source?.name || '',
-          publishedAt: publishedAt ? new Date(publishedAt) : null,
+
+          url_to_image: urlToImage || '',
+          source_name: source?.name || '',
+          published_at: publishedAt ? new Date(publishedAt) : null,
+
           category: category || 'general',
           country: DEFAULT_COUNTRY,
-          userId: 1, // ✅ IMPORTANT FIX (CI SAFE)
         };
 
         await prisma.article.upsert({

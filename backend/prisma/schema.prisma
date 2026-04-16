@@ -7,35 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  articles  Article[]
-  createdAt DateTime  @default(now())
-}
-
 model Article {
-  id          Int       @id @default(autoincrement())
-  title       String
-  description String?
-  content     String?
+  id BigInt @id @default(autoincrement())
+  title        String?
+  description  String?
+  content      String?
+  url          String    @unique
+  url_to_image String?
+  source_name  String?
+  author       String?
+  category     String?
+  country      String?
+  published_at DateTime? @db.Timestamp(6)
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
 
-  author      String?
-  source      String?
-
-  url         String?   @unique
-  urlToImage  String?
-
-  publishedAt DateTime?
-
-  category    String?
-  country     String?
-
-  userId      Int?        // ✅ FIXED (optional)
-  user        User? @relation(fields: [userId], references: [id]) // ✅ FIXED
-
-  createdAt   DateTime  @default(now())
-
-  @@map("articles")   
+  @@map("articles")
 }

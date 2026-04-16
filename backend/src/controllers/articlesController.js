@@ -43,7 +43,7 @@ async function getHeadlines(req, res) {
         skip: offset,
         take: limit,
         orderBy: {
-          publishedAt: 'desc',
+          published_at: 'desc',
         },
       });
 

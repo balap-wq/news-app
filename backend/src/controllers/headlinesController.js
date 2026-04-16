@@ -90,7 +90,7 @@ export async function getHeadlines(req, res) {
         skip: pageOffset,
         take: pageLimit,
         orderBy: {
-          publishedAt: 'desc',
+          published_at: 'desc',
         },
       });
 

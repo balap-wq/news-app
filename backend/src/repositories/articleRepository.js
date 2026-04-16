@@ -1,31 +1,27 @@
 import prisma from '../prismaClient.js';
 import logger from '../config/logger.js';
 
-// ✅ FIND BY ID (IMPORTANT for tests)
-export async function findArticleById(id) {
-  try {
-    return await prisma.article.findUnique({
-      where: { id },
-    });
-  } catch (error) {
-    logger.error('Error in findArticleById:', error);
-    throw error;
-  }
-}
-
-// ✅ UPSERT (existing)
+// UPSERT (insert or update)
 export async function upsertArticle(mappedArticle) {
   try {
-    const result = await prisma.article.upsert({
+    // 🔍 Needed to know insert or update
+    const existingArticle = await prisma.article.findUnique({
+      where: { url: mappedArticle.url },
+    });
+
+    await prisma.article.upsert({
       where: {
         url: mappedArticle.url,
       },
       update: {
         title: mappedArticle.title,
         content: mappedArticle.content,
-        urlToImage: mappedArticle.url_to_image,
-        source: mappedArticle.source,
-        publishedAt: mappedArticle.published_at,
+
+        // ✅ FIX: use DB column names
+        url_to_image: mappedArticle.url_to_image,
+        source_name: mappedArticle.source_name || mappedArticle.source_name,
+        published_at: mappedArticle.published_at,
+
         category: mappedArticle.category,
         country: mappedArticle.country,
       },
@@ -33,18 +29,32 @@ export async function upsertArticle(mappedArticle) {
         title: mappedArticle.title,
         content: mappedArticle.content,
         url: mappedArticle.url,
-        urlToImage: mappedArticle.url_to_image,
-        source: mappedArticle.source,
-        publishedAt: mappedArticle.published_at,
+
+        // ✅ include all fields
+        url_to_image: mappedArticle.url_to_image,
+        source_name: mappedArticle.source || mappedArticle.source_name,
+        published_at: mappedArticle.published_at,
         category: mappedArticle.category,
         country: mappedArticle.country,
-        userId: 1,
       },
     });
 
-    return result;
+    return existingArticle ? 'updated' : 'inserted';
+
   } catch (error) {
     logger.error('Database error:', error);
+    throw error;
+  }
+}
+
+// ✅ KEEP THIS (correct)
+export async function findArticleById(id) {
+  try {
+    return await prisma.article.findUnique({
+      where: { id },
+    });
+  } catch (error) {
+    logger.error('Error in findArticleById:', error);
     throw error;
   }
 }
