@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { NotebookTabs } from 'lucide-react';
-import { Store } from 'lucide-react';
+
 
 const Header = () => {
   return (
