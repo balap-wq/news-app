@@ -24,7 +24,9 @@ async function getHeadlines(req, res) {
       return res.status(400).json({ error: 'Invalid page number' });
     }
 
-    // ✅ Prisma filter
+    const limit = 9;
+    const offset = (pageNumber - 1) * limit;
+
     const whereCondition = category ? { category } : {};
 
     const articles = await prisma.article.findMany({
@@ -40,6 +42,9 @@ async function getHeadlines(req, res) {
       where: whereCondition,
     });
 
+    // ✅ FIX: transform
+    const transformedArticles = articles.map(snakeToCamel);
+
     res.status(200).json({
       success: true,
       articles: transformedArticles,
@@ -49,6 +54,7 @@ async function getHeadlines(req, res) {
 
   } catch (error) {
     logger.error('Error fetching headlines:', error);
+
     res.status(500).json({
       success: false,
       error: 'Internal server error',
@@ -78,6 +84,7 @@ async function getArticleById(req, res) {
     const transformedArticle = snakeToCamel(article);
 
     res.status(200).json(transformedArticle);
+
   } catch (error) {
     logger.error('Error fetching article:', error);
 
@@ -92,8 +99,6 @@ async function getArticleById(req, res) {
 async function createArticle(req, res) {
   try {
     const { title, content } = req.body;
-
-    console.log("BODY:", req.body);
 
     if (!title || !content) {
       return res.status(400).json({

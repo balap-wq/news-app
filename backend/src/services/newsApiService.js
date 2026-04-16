@@ -6,10 +6,6 @@ import 'dotenv/config';
 const BASE_URL = process.env.NEWS_API_BASE_URL;
 const API_KEY = process.env.NEWS_API_KEY;
 
-// 🔍 DEBUG LOGS (add this)
-logger.info(`BASE_URL: ${BASE_URL}`);
-logger.info(`API_KEY: ${API_KEY ? 'Loaded ✅' : 'Missing ❌'}`);
-
 // ❗ Validation (safe)
 if (!BASE_URL) {
   throw new Error('Missing NEWS_API_BASE_URL in .env');
