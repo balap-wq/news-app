@@ -16,6 +16,11 @@ export const validateRequest = ({ schema } = {}) => {
       source = 'query';
     }
 
+    // ✅ FIX: if no data found, skip validation and move on
+    if (!data) {
+      return next();
+    }
+
     const parsed = schema.safeParse(data);
 
     if (!parsed.success) {
