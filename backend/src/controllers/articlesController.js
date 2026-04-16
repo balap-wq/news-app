@@ -1,5 +1,6 @@
 import logger from '../config/logger.js';
 import prisma from '../prismaClient.js';
+import { findArticleById } from '../repositories/articleRepository.js';
 
 // 🔄 snake_case → camelCase
 function snakeToCamel(obj) {
@@ -12,7 +13,6 @@ function snakeToCamel(obj) {
   }
   return camelObj;
 }
-
 // 📰 GET HEADLINES
 async function getHeadlines(req, res) {
   try {
@@ -42,7 +42,6 @@ async function getHeadlines(req, res) {
       where: whereCondition,
     });
 
-    // ✅ FIX: transform
     const transformedArticles = articles.map(snakeToCamel);
 
     res.status(200).json({
@@ -62,22 +61,17 @@ async function getHeadlines(req, res) {
   }
 }
 
-// 📄 GET ARTICLE BY ID
+// 📄 GET ARTICLE BY ID (FIXED)
 async function getArticleById(req, res) {
   try {
     const { id } = req.params;
 
-    const article = await prisma.article.findUnique({
-      where: {
-        id: parseInt(id),
-      },
-    });
+    const article = await findArticleById(parseInt(id));
 
     if (!article) {
       return res.status(404).json({
-        success: false,
         error: 'Article not found',
-        articleId: id,
+        articleId: parseInt(id),
       });
     }
 
@@ -166,6 +160,7 @@ async function deleteArticle(req, res) {
   }
 }
 
+// ✅ EXPORTS (IMPORTANT)
 export {
   getArticleById,
   getHeadlines,
