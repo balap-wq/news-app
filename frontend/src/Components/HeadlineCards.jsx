@@ -1,19 +1,7 @@
 import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import placeholder from '../images/placeholder.png';
-
-function formatDate(dateString) {
-  if (!dateString) return 'Unknown date';
-  const date = new Date(dateString);
-  if (Number.isNaN(date.getTime())) return dateString;
-  return date.toLocaleString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  });
-}
+import { formatDate } from '../utils/date-formatter';
 
 export default function HeadlineCards({ article }) {
   const { title, urlToImage, sourceName, publishedAt, author } = article;
@@ -47,8 +35,8 @@ export default function HeadlineCards({ article }) {
         <div className="p-4 flex flex-col justify-between">
           <h2 className="text-lg font-semibold line-clamp-2 leading-snug">{title}</h2>
 
-          <div className="mt-3 text-sm text-gray-500 text-wrap ">
-            <p className="">Source: {sourceName}</p>
+          <div className="mt-3 text-sm text-gray-500 text-wrap">
+            <p>Source: {sourceName}</p>
             <p className="h-6 text-wrap overflow-hidden">Author: {author || 'Unknown Author'}</p>
             <p>{displayDate}</p>
           </div>
