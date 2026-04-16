@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import placeholder from '../images/placeholder.png';
 import { Book, CalendarClock, UserPen } from 'lucide-react';
 
@@ -16,22 +16,26 @@ function formatDate(dateString) {
   });
 }
 
-export default function HeadlineCards({ article }) {
+const HeadlineCards = ({ article }) => {
   const { title, urlToImage, sourceName, publishedAt, author } = article;
-
   const navigate = useNavigate();
   const displayDate = formatDate(publishedAt);
-
-  const handleNavigate = () => navigate(`/article/${article.id}`, { state: article });
+  const [searchParams] = useSearchParams();
+  const currentPage = parseInt(searchParams.get('page')) || 1;
 
   return (
-    <div key={article.id} className="mx-auto ">
+    <div className="mx-auto">
       <div
         role="button"
         tabIndex={0}
-        onClick={handleNavigate}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') handleNavigate();
+        onClick={() => {
+          navigate(`/article/${article.id}?page=${currentPage}`, {
+            state: {
+              article,
+              page: currentPage,
+            },
+          });
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         className=" cursor-pointer rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col hover:scale-105 "
       >
@@ -41,10 +45,10 @@ export default function HeadlineCards({ article }) {
           className="w-full h-44 md:h-48 object-cover "
         />
 
-        <div className=" p-4 flex flex-col justify-between bg-sky-100 ">
+        <div className=" p-4 flex flex-col justify-between bg-gray-300 ">
           <h2 className="text-lg font-semibold line-clamp-2 leading-snug">{title}</h2>
 
-          <div className="mt-3 text-sm text-gray-500 space-y-1">
+          <div className="mt-3 text-sm text-gray-600 space-y-1">
             <div className="flex items-center gap-2">
               <Book size={14} />
               <p className="truncate">Source: {sourceName}</p>
@@ -65,3 +69,5 @@ export default function HeadlineCards({ article }) {
     </div>
   );
 }
+
+export default HeadlineCards;

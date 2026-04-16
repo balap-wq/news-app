@@ -7,14 +7,16 @@ import HeadlinePage from './pages/HeadlinePage';
 const App = () => {
   return (
     <>
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Navigate to="/headlines" />} />
-          <Route path="/headlines" element={<HeadlinePage />} />
-          <Route path="/article/:id" element={<ArticleDetailPage />} />
-        </Routes>
-      </BrowserRouter>
+      <div className="min-h-screen bg-[#FAFAFA]">
+        <BrowserRouter>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Navigate to="/headlines" />} />
+            <Route path="/headlines" element={<HeadlinePage />} />
+            <Route path="/article/:id" element={<ArticleDetailPage />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
     </>
   );
 };
