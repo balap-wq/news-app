@@ -54,7 +54,6 @@ router.get('/', getHeadlines);
 router.get(
   '/:id',
   validateRequest({ schema: articleParamSchema }),
-  validateRequest({ schema: articleParamSchema }),
   getArticleById
 );
 
