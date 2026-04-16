@@ -35,7 +35,6 @@ export default function ArticleDetailPage() {
 
   return (
     <main className="bg-[#FAFAFA] min-h-screen py-10 pb-16 px-4">
-
       {/* Back to Headlines Button */}
       <div className="max-w-3xl mx-auto">
         <Button
@@ -96,11 +95,7 @@ export default function ArticleDetailPage() {
               </div>
             ) : (
               <div className="w-full h-48 bg-[#c3c3db] flex flex-col items-center justify-center gap-2 text-stone-600">
-                <img
-                  src={articleImagePlaceholder}
-                  alt="No image available"
-                  className="w-12 h-12"
-                />
+                <img src={articleImagePlaceholder} alt="No image available" className="w-12 h-12" />
                 <span className="text-sm">
                   {urlToImage ? 'Image unavailable' : 'No image available'}
                 </span>
@@ -109,7 +104,6 @@ export default function ArticleDetailPage() {
 
             {/* Article Body */}
             <div className="px-5 sm:px-6 py-10">
-
               {/* Title */}
               <h1
                 className="text-2xl sm:text-4xl font-bold text-[#f0efff] leading-tight mb-5"
@@ -132,9 +126,7 @@ export default function ArticleDetailPage() {
                   </span>
                 )}
                 {author && formattedDate && <span>·</span>}
-                {formattedDate && (
-                  <time dateTime={publishedAt}>{formattedDate}</time>
-                )}
+                {formattedDate && <time dateTime={publishedAt}>{formattedDate}</time>}
               </div>
 
               {/* Description */}
@@ -158,7 +150,6 @@ export default function ArticleDetailPage() {
               <div className="mt-8">
                 <ExternalLink url={url} title="Read Full Article" />
               </div>
-
             </div>
           </>
         )}

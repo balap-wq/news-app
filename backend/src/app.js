@@ -8,10 +8,12 @@ import logger from './config/logger.js';
 const app = express();
 
 // ✅ Enable CORS (important for frontend connection)
-app.use(cors({
-  origin: 'http://localhost:5173', // your Vite frontend
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // your Vite frontend
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 

@@ -16,7 +16,7 @@ async function upsertArticle(article) {
     throw new Error('Invalid article data (url required)');
   }
 
-const query = `
+  const query = `
 INSERT INTO articles (
   title, description, url_to_image, source_name,
   published_at, content, url, author, category, country
@@ -45,14 +45,14 @@ WHERE
   articles.published_at IS DISTINCT FROM EXCLUDED.published_at
 RETURNING (xmax = 0) AS inserted;
 `;
-const values = buildArticleValues(article);
-const rows = await executeQuery(query, values);
+  const values = buildArticleValues(article);
+  const rows = await executeQuery(query, values);
 
-if (!rows || rows.length === 0) {
-  return 'no-change'; // ✅ correct handling
-}
+  if (!rows || rows.length === 0) {
+    return 'no-change'; // ✅ correct handling
+  }
 
-return rows[0].inserted ? 'inserted' : 'updated';
+  return rows[0].inserted ? 'inserted' : 'updated';
 }
 
 async function findArticleById(id) {

@@ -31,16 +31,15 @@ const HeadlinePage = () => {
 
   if (error) {
     return (
-      <div className='bg-stone-900 container mx-auto w-90 h-80 md:w-140 mt-10 rounded-3xl shadow-2xl flex flex-col items-center justify-center px-4  py-20'>
+      <div className="bg-stone-900 container mx-auto w-90 h-80 md:w-140 mt-10 rounded-3xl shadow-2xl flex flex-col items-center justify-center px-4  py-20">
         <ErrorMessage
-        message={error}
-        onRetry={() => {
-          refetch();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-      />
+          message={error}
+          onRetry={() => {
+            refetch();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
       </div>
-      
     );
   }
   //onRetry={() => setSearchParams({ page: currentPage })}

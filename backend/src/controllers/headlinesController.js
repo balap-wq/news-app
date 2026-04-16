@@ -17,9 +17,7 @@ function validateAndNormalize(value, allowedValues, fieldName) {
   const normalized = value.trim().toLowerCase();
 
   if (!allowedValues.includes(normalized)) {
-    throw new ValidationError(
-      `Invalid ${fieldName}. Allowed values: ${allowedValues.join(', ')}`
-    );
+    throw new ValidationError(`Invalid ${fieldName}. Allowed values: ${allowedValues.join(', ')}`);
   }
 
   return normalized;
@@ -29,9 +27,7 @@ function validateAndNormalize(value, allowedValues, fieldName) {
 function snakeToCamel(obj) {
   const camelObj = {};
   for (const key in obj) {
-    const camelKey = key.replace(/_([a-z])/g, (_, char) =>
-      char.toUpperCase()
-    );
+    const camelKey = key.replace(/_([a-z])/g, (_, char) => char.toUpperCase());
     camelObj[camelKey] = obj[key];
   }
   return camelObj;
@@ -59,17 +55,9 @@ export async function getHeadlines(req, res, next) {
     const pageOffset = (pageNumber - 1) * pageLimit;
 
     // ✅ Normalize inputs
-    const normalizedCategory = validateAndNormalize(
-      category,
-      ALLOWED_CATEGORIES,
-      'category'
-    );
+    const normalizedCategory = validateAndNormalize(category, ALLOWED_CATEGORIES, 'category');
 
-    const normalizedCountry = validateAndNormalize(
-      country,
-      ALLOWED_COUNTRIES,
-      'country'
-    );
+    const normalizedCountry = validateAndNormalize(country, ALLOWED_COUNTRIES, 'country');
 
     logger.info('Normalized values:', {
       category: normalizedCategory,

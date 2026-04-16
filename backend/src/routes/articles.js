@@ -9,10 +9,6 @@ const router = express.Router();
 router.get('/', getHeadlines);
 
 // GET article by ID
-router.get(
-  '/:id',
-  validateRequest({ schema: articleParamSchema }),
-  getArticleById
-);
+router.get('/:id', validateRequest({ schema: articleParamSchema }), getArticleById);
 
 export default router;
