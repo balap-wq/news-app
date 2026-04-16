@@ -58,18 +58,12 @@ export async function getHeadlines(req, res, next) {
       offset: pageOffset,
     });
 
-    // Prisma where condition (dynamic)
-    const whereCondition = {};
+    // ✅ Prisma DB calls (FIXED)
+    const whereCondition = {
+      ...(normalizedCategory && { category: normalizedCategory }),
+      ...(normalizedCountry && { country: normalizedCountry }),
+    };
 
-    if (normalizedCategory) {
-      whereCondition.category = normalizedCategory;
-    }
-
-    if (normalizedCountry) {
-      whereCondition.country = normalizedCountry;
-    }
-
-    // FETCH DATA
     const headlines = await prisma.article.findMany({
       where: whereCondition,
       skip: pageOffset,
@@ -79,7 +73,6 @@ export async function getHeadlines(req, res, next) {
       },
     });
 
-    // COUNT
     const totalResults = await prisma.article.count({
       where: whereCondition,
     });
@@ -89,15 +82,15 @@ export async function getHeadlines(req, res, next) {
     // 🔄 Transform data
     const transformedArticles = headlines.map(snakeToCamel);
 
-    // 📤 Response
+    // 📤 Response (FIXED duplicate key)
     res.status(200).json({
       success: true,
       articles: transformedArticles,
       totalResults,
       count: transformedArticles.length,
       page: pageNumber,
-      page: pageNumber,
     });
+
   } catch (error) {
     logger.error(error);
     next(error);
