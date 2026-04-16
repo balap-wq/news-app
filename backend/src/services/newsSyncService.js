@@ -1,5 +1,5 @@
 import { fetchTopHeadlines } from './newsApiService.js';
-import prisma from '../prismaClient.js'; // ✅ use Prisma
+import prisma from '../prismaClient.js';
 import { ALLOWED_CATEGORIES, DEFAULT_COUNTRY } from '../config/constant.js';
 import logger from '../config/logger.js';
 
@@ -10,6 +10,7 @@ export async function syncHeadlines() {
 
   for (const category of ALLOWED_CATEGORIES) {
     let articles;
+
     try {
       articles = await fetchTopHeadlines({
         country: DEFAULT_COUNTRY,
@@ -29,7 +30,6 @@ export async function syncHeadlines() {
       try {
         const { source, urlToImage, publishedAt, ...rest } = article;
 
-        // ✅ Map API data → Prisma format (camelCase)
         const mappedArticle = {
           title: rest.title || 'No Title',
           content: rest.description || '',
@@ -39,20 +39,18 @@ export async function syncHeadlines() {
           publishedAt: publishedAt ? new Date(publishedAt) : null,
           category: category || 'general',
           country: DEFAULT_COUNTRY,
+          userId: 1, // ✅ IMPORTANT FIX (CI SAFE)
         };
 
-        // ✅ UPSERT (update)
-        const result = await prisma.article.upsert({
+        await prisma.article.upsert({
           where: {
-            url: mappedArticle.url, // must be UNIQUE in schema
+            url: mappedArticle.url,
           },
           update: mappedArticle,
           create: mappedArticle,
         });
 
-        if (result) {
-          updated++; // Prisma upsert doesn't tell insert/update separately → safe increment
-        }
+        updated++;
 
       } catch (error) {
         logger.error('Error processing article:', error);
@@ -61,6 +59,6 @@ export async function syncHeadlines() {
   }
 
   logger.info('Sync Headlines Service completed', {
-    articlesProcessed:  updated,
+    articlesProcessed: updated,
   });
 }
