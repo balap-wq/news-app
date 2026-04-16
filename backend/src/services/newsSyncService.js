@@ -1,16 +1,16 @@
 import { fetchTopHeadlines } from './newsApiService.js';
-import prisma from '../prismaClient.js';
+import prisma from '../prismaClient.js'; // ✅ use Prisma
 import { ALLOWED_CATEGORIES, DEFAULT_COUNTRY } from '../config/constant.js';
 import logger from '../config/logger.js';
 
 export async function syncHeadlines() {
   logger.info('Starting Sync Headlines Service...');
-
-  let processed = 0; // ✅ single counter (fix ESLint issue)
+  
+  let inserted = 0;
+  let updated = 0;
 
   for (const category of ALLOWED_CATEGORIES) {
     let articles;
-
     try {
       articles = await fetchTopHeadlines({
         country: DEFAULT_COUNTRY,
@@ -30,13 +30,7 @@ export async function syncHeadlines() {
       try {
         const { source, urlToImage, publishedAt, ...rest } = article;
 
-        // ❗ Skip invalid articles (IMPORTANT FIX)
-        if (!rest.url) {
-          logger.warn('Skipping article with missing URL');
-          continue;
-        }
-
-        // ✅ Map API → Prisma
+        // ✅ Map API data → Prisma format (camelCase)
         const mappedArticle = {
           title: rest.title || 'No Title',
           content: rest.description || '',
@@ -48,14 +42,18 @@ export async function syncHeadlines() {
           country: DEFAULT_COUNTRY,
         };
 
-        // ✅ UPSERT
-        await prisma.article.upsert({
-          where: { url: mappedArticle.url },
+        // ✅ UPSERT (insert or update)
+        const result = await prisma.article.upsert({
+          where: {
+            url: mappedArticle.url, // must be UNIQUE in schema
+          },
           update: mappedArticle,
           create: mappedArticle,
         });
 
-        processed++; // ✅ correct counter
+        if (result) {
+          updated++; // Prisma upsert doesn't tell insert/update separately → safe increment
+        }
 
       } catch (error) {
         logger.error('Error processing article:', error);
@@ -64,6 +62,6 @@ export async function syncHeadlines() {
   }
 
   logger.info('Sync Headlines Service completed', {
-    articlesProcessed: processed,
+    articlesProcessed: inserted + updated,
   });
 }
