@@ -6,6 +6,8 @@ function useArticle(id) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [refreshKey, setRefreshKey] = useState(0);
+
   useEffect(() => {
     if (!id) return;
 
@@ -14,7 +16,6 @@ function useArticle(id) {
     const fetchArticle = async () => {
       setLoading(true);
       setError(null);
-      setArticle(null);
 
       try {
         const response = await axiosInstance.get(`/api/articles/${id}`, {
@@ -23,7 +24,7 @@ function useArticle(id) {
 
         setArticle(response.data);
       } catch (err) {
-        if (err.name === 'CanceledError') return;
+        if (err.code === 'ERR_CANCELED') return;
 
         if (err.response?.status === 404) {
           setError('Article not found');
@@ -42,9 +43,13 @@ function useArticle(id) {
     return () => {
       controller.abort();
     };
-  }, [id]);
+  }, [id, refreshKey]);
 
-  return { article, loading, error };
+  const refetch = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
+
+  return { article, loading, error, refetch };
 }
 
 export default useArticle;
