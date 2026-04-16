@@ -1,4 +1,5 @@
 import prisma from '../prismaClient.js';
+import logger from '../config/logger.js';
 
 //  UPSERT (insert or update)
 export async function upsertArticle(mappedArticle) {

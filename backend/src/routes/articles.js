@@ -165,4 +165,4 @@ router.delete(
   deleteArticle
 );
 
-export { router as articlesRoutes };
+export default router;
