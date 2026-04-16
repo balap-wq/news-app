@@ -2,25 +2,26 @@ import axios from 'axios';
 import logger from '../config/logger.js';
 import 'dotenv/config';
 
-// Environment variables
 const BASE_URL = process.env.NEWS_API_BASE_URL;
 const API_KEY = process.env.NEWS_API_KEY;
 
-// ❗ Validation (safe)
-if (!BASE_URL) {
+// ✅ FIX: allow tests to run
+if (!BASE_URL && process.env.NODE_ENV !== 'test') {
   throw new Error('Missing NEWS_API_BASE_URL in .env');
 }
 
-if (!API_KEY) {
+if (!API_KEY && process.env.NODE_ENV !== 'test') {
   throw new Error('Missing NEWS_API_KEY in .env');
 }
 
-// Main Function
-export const fetchTopHeadlines = async ({ country = 'us', category, pageSize = 100 }) => {
+export const fetchTopHeadlines = async ({
+  country = 'us',
+  category,
+  pageSize = 100
+}) => {
   try {
     const url = `${BASE_URL}/top-headlines`;
 
-    // 🔍 Debug URL (without exposing full key)
     logger.info(`Requesting: ${url} (category: ${category})`);
 
     const response = await axios.get(url, {
@@ -30,18 +31,14 @@ export const fetchTopHeadlines = async ({ country = 'us', category, pageSize = 1
         category,
         pageSize,
       },
-      timeout: 10000, // ✅ prevent hanging
+      timeout: 10000,
     });
 
     if (response.data.status !== 'ok') {
       throw new Error('Invalid response from News API');
     }
 
-    const articles = response.data.articles;
-
-    logger.info(`Fetched ${articles.length} articles for ${category}`);
-
-    return articles;
+    return response.data.articles;
 
   } catch (error) {
     logger.error("News API Error:", {

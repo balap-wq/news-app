@@ -1,21 +1,30 @@
 import prisma from '../prismaClient.js';
 import logger from '../config/logger.js';
 
-//  UPSERT (insert or update)
+// ✅ FIND BY ID (IMPORTANT for tests)
+export async function findArticleById(id) {
+  try {
+    return await prisma.article.findUnique({
+      where: { id },
+    });
+  } catch (error) {
+    logger.error('Error in findArticleById:', error);
+    throw error;
+  }
+}
+
+// ✅ UPSERT (existing)
 export async function upsertArticle(mappedArticle) {
   try {
     const result = await prisma.article.upsert({
       where: {
-        url: mappedArticle.url, //  unique field
+        url: mappedArticle.url,
       },
       update: {
         title: mappedArticle.title,
         content: mappedArticle.content,
         urlToImage: mappedArticle.url_to_image,
-
-        // FIX 1: change sourceName → source
         source: mappedArticle.source,
-
         publishedAt: mappedArticle.published_at,
         category: mappedArticle.category,
         country: mappedArticle.country,
@@ -25,13 +34,15 @@ export async function upsertArticle(mappedArticle) {
         content: mappedArticle.content,
         url: mappedArticle.url,
         urlToImage: mappedArticle.url_to_image,
-
-        // ✅ FIX 2: REQUIRED FIELD (very important)
-        userId: 1, // 👉 default user (you can change later)
-      }
+        source: mappedArticle.source,
+        publishedAt: mappedArticle.published_at,
+        category: mappedArticle.category,
+        country: mappedArticle.country,
+        userId: 1,
+      },
     });
 
-    return result ? 'inserted' : 'updated';
+    return result;
   } catch (error) {
     console.error('Upsert Error:', error);
     throw error;
