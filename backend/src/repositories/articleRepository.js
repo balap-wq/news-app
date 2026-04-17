@@ -16,16 +16,20 @@ export async function findArticleById(id) {
 // ✅ UPSERT (existing)
 export async function upsertArticle(mappedArticle) {
   try {
-    const result = await prisma.article.upsert({
+
+    await prisma.article.upsert({
       where: {
         url: mappedArticle.url,
       },
       update: {
         title: mappedArticle.title,
         content: mappedArticle.content,
-        urlToImage: mappedArticle.url_to_image,
-        source: mappedArticle.source,
-        publishedAt: mappedArticle.published_at,
+
+        // ✅ FIX: use DB column names
+        url_to_image: mappedArticle.url_to_image,
+        source_name: mappedArticle.source_name ,
+        published_at: mappedArticle.published_at,
+
         category: mappedArticle.category,
         country: mappedArticle.country,
       },
