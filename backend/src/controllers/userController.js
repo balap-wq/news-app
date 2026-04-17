@@ -1,4 +1,4 @@
-import prisma from '../prisma/prismaClient.js';
+import prisma from '../prismaClient.js';
 
 export const createUser = async (req, res) => {
   const user = await prisma.user.create({

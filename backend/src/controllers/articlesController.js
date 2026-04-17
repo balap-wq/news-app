@@ -1,28 +1,7 @@
 import logger from '../config/logger.js';
 import prisma from '../prismaClient.js';
 import { findArticleById } from '../repositories/articleRepository.js';
-
-// 🔄 snake_case → camelCase + BigInt fix
-function snakeToCamel(obj) {
-  const camelObj = {};
-
-  for (const key in obj) {
-    const camelKey = key.replace(/_([a-z])/g, (_, char) =>
-      char.toUpperCase()
-    );
-
-    let value = obj[key];
-
-    // ✅ FIX: BigInt → Number (important for JSON)
-    if (typeof value === 'bigint') {
-      value = Number(value);
-    }
-
-    camelObj[camelKey] = value;
-  }
-
-  return camelObj;
-}
+import snakeToCamel from '../utils/caseHandling.js';
 
 // 📰 GET HEADLINES
 async function getHeadlines(req, res) {
@@ -63,12 +42,11 @@ async function getHeadlines(req, res) {
     } catch (dbError) {
       logger.error('DB Error in getHeadlines:', dbError);
 
-      // ✅ IMPORTANT: fallback for tests
       articles = [];
       totalCount = 0;
     }
 
-    const transformedArticles = articles.map(snakeToCamel);
+    const transformedArticles = snakeToCamel(articles);
 
     return res.status(200).json({
       success: true,
@@ -90,22 +68,22 @@ async function getHeadlines(req, res) {
 // 📄 GET ARTICLE BY ID
 async function getArticleById(req, res) {
   try {
-    const id = Number(req.params.id);
+    const id = req.params.id;
+    const articleId = parseInt(id, 10);
 
-    // ✅ FIX: validation (needed for test)
-    if (isNaN(id)) {
+    if (isNaN(articleId) || articleId <= 0) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid request',
+        error: "Invalid article ID",
       });
     }
 
-    const article = await findArticleById(id);
+    const article = await findArticleById(articleId);
 
     if (!article) {
       return res.status(404).json({
         error: 'Article not found',
-        articleId: id,
+        articleId,
       });
     }
 
@@ -211,12 +189,20 @@ async function createArticle(req, res) {
 // ✅ UPDATE
 async function updateArticle(req, res) {
   try {
-    const id = Number(req.params.id);
+    const id = req.params.id;
+    const articleId = parseInt(id, 10);
+
+    if (isNaN(articleId) || articleId <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid article ID",
+      });
+    }
 
     const { title, content } = req.body;
 
     const updatedArticle = await prisma.article.update({
-      where: { id },
+      where: { id: articleId },
       data: { title, content },
     });
 
@@ -231,10 +217,18 @@ async function updateArticle(req, res) {
 // ✅ DELETE
 async function deleteArticle(req, res) {
   try {
-    const id = Number(req.params.id);
+    const id = req.params.id;
+    const articleId = parseInt(id, 10);
+
+    if (isNaN(articleId) || articleId <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid article ID",
+      });
+    }
 
     await prisma.article.delete({
-      where: { id },
+      where: { id: articleId },
     });
 
     return res.status(200).json({

@@ -4,10 +4,6 @@ import logger from '../config/logger.js';
 // UPSERT (insert or update)
 export async function upsertArticle(mappedArticle) {
   try {
-    // 🔍 Needed to know insert or update
-    const existingArticle = await prisma.article.findUnique({
-      where: { url: mappedArticle.url },
-    });
 
     await prisma.article.upsert({
       where: {
@@ -19,7 +15,7 @@ export async function upsertArticle(mappedArticle) {
 
         // ✅ FIX: use DB column names
         url_to_image: mappedArticle.url_to_image,
-        source_name: mappedArticle.source_name || mappedArticle.source_name,
+        source_name: mappedArticle.source_name ,
         published_at: mappedArticle.published_at,
 
         category: mappedArticle.category,

@@ -1,6 +1,7 @@
 import logger from '../config/logger.js';
 import prisma from '../prismaClient.js';
 import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constant.js';
+import  snakeToCamel  from '../utils/caseHandling.js';
 
 // ✅ Custom ValidationError
 class ValidationError extends Error {
@@ -25,17 +26,7 @@ function validateAndNormalize(value, allowedValues, fieldName) {
   return normalized;
 }
 
-// 🔄 snake_case → camelCase
-function snakeToCamel(obj) {
-  const camelObj = {};
-  for (const key in obj) {
-    const camelKey = key.replace(/_([a-z])/g, (_, char) =>
-      char.toUpperCase()
-    );
-    camelObj[camelKey] = obj[key];
-  }
-  return camelObj;
-}
+
 
 // 🚀 Controller
 export async function getHeadlines(req, res) {
@@ -106,7 +97,7 @@ export async function getHeadlines(req, res) {
       totalResults = 0;
     }
 
-    const transformedArticles = headlines.map(snakeToCamel);
+    const transformedArticles = snakeToCamel(headlines);
 
     return res.status(200).json({
       success: true,

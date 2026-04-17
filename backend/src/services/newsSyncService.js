@@ -28,13 +28,13 @@ export async function syncHeadlines() {
 
     for (const article of articles) {
       try {
-        const { source, urlToImage, publishedAt, ...rest } = article;
+        const { source, urlToImage, publishedAt, ...articleData } = article;
 
         // ✅ FIXED mapping (snake_case)
         const mappedArticle = {
-          title: rest.title || 'No Title',
-          content: rest.description || '',
-          url: rest.url,
+          title: articleData.title || 'No Title',
+          content: articleData.description || '',
+          url: articleData.url,
 
           url_to_image: urlToImage || '',
           source_name: source?.name || '',
