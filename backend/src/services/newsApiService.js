@@ -1,6 +1,6 @@
 import axios from 'axios';
 import logger from '../config/logger.js';
-import 'dotenv/config';
+
 
 // ✅ Custom Error Classes
 export class NewsApiRateLimitError extends Error {
