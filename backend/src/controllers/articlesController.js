@@ -2,17 +2,29 @@ import logger from '../config/logger.js';
 import prisma from '../prismaClient.js';
 import { findArticleById } from '../repositories/articleRepository.js';
 
-// (optional - not really needed now, but kept so no side effects)
+// 🔄 snake_case → camelCase + BigInt fix
 function snakeToCamel(obj) {
   const camelObj = {};
+
   for (const key in obj) {
-    const camelKey = key.replace(/_([a-z])/g, (_, char) => char.toUpperCase());
-    camelObj[camelKey] = obj[key];
+    const camelKey = key.replace(/_([a-z])/g, (_, char) =>
+      char.toUpperCase()
+    );
+
+    let value = obj[key];
+
+    // ✅ FIX: BigInt → Number (important for JSON)
+    if (typeof value === 'bigint') {
+      value = Number(value);
+    }
+
+    camelObj[camelKey] = value;
   }
+
   return camelObj;
 }
 
-// 📰 GET HEADLINES (✅ CI SAFE FIX)
+// 📰 GET HEADLINES
 async function getHeadlines(req, res) {
   try {
     const query = req.query || {};
@@ -32,7 +44,6 @@ async function getHeadlines(req, res) {
 
     const whereCondition = category ? { category } : {};
 
-    // ✅ SAFE DB CALL (IMPORTANT FOR CI)
     let articles = [];
     let totalCount = 0;
 
@@ -53,7 +64,7 @@ async function getHeadlines(req, res) {
     } catch (dbError) {
       logger.error('DB Error in getHeadlines:', dbError);
 
-      // ✅ fallback → DO NOT crash
+      // ✅ IMPORTANT: fallback for tests
       articles = [];
       totalCount = 0;
     }
@@ -77,18 +88,25 @@ async function getHeadlines(req, res) {
   }
 }
 
-// 📄 GET ARTICLE BY ID (already correct)
+// 📄 GET ARTICLE BY ID
 async function getArticleById(req, res) {
   try {
-    const { id } = req.params;
-    const { id } = req.params;
+    const id = Number(req.params.id);
 
-    const article = await findArticleById(parseInt(id));
+    // ✅ FIX: validation (needed for test)
+    if (isNaN(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid request',
+      });
+    }
+
+    const article = await findArticleById(id);
 
     if (!article) {
       return res.status(404).json({
         error: 'Article not found',
-        articleId: parseInt(id),
+        articleId: id,
       });
     }
 
@@ -135,17 +153,13 @@ async function createArticle(req, res) {
 // ✅ UPDATE
 async function updateArticle(req, res) {
   try {
-    const { id } = req.params;
+    const id = Number(req.params.id);
+
     const { title, content } = req.body;
 
     const updatedArticle = await prisma.article.update({
-      where: {
-        id: parseInt(id),
-      },
-      data: {
-        title,
-        content,
-      },
+      where: { id },
+      data: { title, content },
     });
 
     return res.status(200).json(updatedArticle);
@@ -159,12 +173,10 @@ async function updateArticle(req, res) {
 // ✅ DELETE
 async function deleteArticle(req, res) {
   try {
-    const { id } = req.params;
+    const id = Number(req.params.id);
 
     await prisma.article.delete({
-      where: {
-        id: parseInt(id),
-      },
+      where: { id },
     });
 
     return res.status(200).json({
@@ -177,7 +189,6 @@ async function deleteArticle(req, res) {
   }
 }
 
-// ✅ EXPORTS
 export {
   getArticleById,
   getHeadlines,
