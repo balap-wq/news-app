@@ -46,7 +46,8 @@ export async function upsertArticle(mappedArticle) {
       },
     });
 
-    return result;
+    return  'success';
+
   } catch (error) {
     console.error('Upsert Error:', error);
     throw error;
