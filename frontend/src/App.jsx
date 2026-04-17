@@ -7,7 +7,7 @@ import HeadlinePage from './pages/HeadlinePage';
 const App = () => {
   return (
     <>
-      <div className="min-h-screen bg-blue-100">
+      <div className="min-h-screen bg-[#FAFAFA]">
         <BrowserRouter>
           <Header />
           <Routes>
