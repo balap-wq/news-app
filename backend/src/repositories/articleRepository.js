@@ -35,7 +35,7 @@ export async function upsertArticle(mappedArticle) {
       },
     });
 
-    return existingArticle ? 'updated' : 'inserted';
+    return  'success';
 
   } catch (error) {
     logger.error('Database error:', error);
