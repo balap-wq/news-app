@@ -126,26 +126,85 @@ async function getArticleById(req, res) {
 // ✅ CREATE
 async function createArticle(req, res) {
   try {
-    const { title, content } = req.body;
+    const { title, content, url, description } = req.body;
 
-    if (!title || !content) {
+    const trimmedTitle = title?.trim();
+    const trimmedContent = content?.trim() || null;
+    const trimmedDescription = description?.trim() || null;
+
+    if (!trimmedTitle) {
       return res.status(400).json({
-        error: "Title and content required",
+        success: false,
+        error: "Title is required",
+      });
+    }
+
+    if (!url?.trim()) {
+      return res.status(400).json({
+        success: false,
+        error: "URL is required",
+      });
+    }
+
+    let normalizedUrl;
+    try {
+      normalizedUrl = new URL(url.trim()).toString();
+    } catch {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid URL format",
+      });
+    }
+
+    if (trimmedContent && trimmedContent.length < 10) {
+      return res.status(400).json({
+        success: false,
+        error: "Content must be at least 10 characters",
+      });
+    }
+
+    if (trimmedDescription && trimmedDescription.length > 500) {
+      return res.status(400).json({
+        success: false,
+        error: "Description too long",
+      });
+    }
+
+    // ✅ Pre-check for duplicate
+    const existing = await prisma.article.findUnique({
+      where: { url: normalizedUrl },
+    });
+
+    if (existing) {
+      return res.status(409).json({
+        success: false,
+        error: "Article with this URL already exists",
       });
     }
 
     const newArticle = await prisma.article.create({
       data: {
-        title,
-        content,
+        title: trimmedTitle,
+        content: trimmedContent,
+        url: normalizedUrl,
+        description: trimmedDescription,
       },
     });
 
     return res.status(201).json(newArticle);
 
   } catch (error) {
+    if (error.code === 'P2002') {
+      return res.status(409).json({
+        success: false,
+        error: "Article with this URL already exists",
+      });
+    }
+
     logger.error('Error creating article:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({
+      error: 'Internal server error',
+    });
   }
 }
 
