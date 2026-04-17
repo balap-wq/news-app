@@ -1,7 +1,6 @@
 import axios from 'axios';
 import logger from '../config/logger.js';
 
-
 // ✅ Custom Error Classes
 export class NewsApiRateLimitError extends Error {
   constructor(message) {

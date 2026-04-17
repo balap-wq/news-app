@@ -52,10 +52,9 @@ app.use('/api/admin', adminRoutes);
  */
 
 // ✅ 7. HEALTH CHECK
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok", timestamp: new Date().toISOString() });
-// ✅ Health check
-
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  // ✅ Health check
 });
 
 // ✅ Sample endpoint
@@ -63,10 +62,9 @@ app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
 
-
 // ✅ 9. SWAGGER (ONLY IN PRODUCTION)
-if (process.env.NODE_ENV === "development") {
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+if (process.env.NODE_ENV === 'development') {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 }
 
 // ✅ Cron job
