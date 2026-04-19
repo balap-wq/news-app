@@ -1,7 +1,7 @@
 import logger from '../config/logger.js';
 import prisma from '../prismaClient.js';
 import { ALLOWED_CATEGORIES, ALLOWED_COUNTRIES } from '../config/constant.js';
-import  snakeToCamel  from '../utils/caseHandling.js';
+import snakeToCamel from '../utils/caseHandling.js';
 
 // ✅ Custom ValidationError
 class ValidationError extends Error {
@@ -23,8 +23,6 @@ function validateAndNormalize(value, allowedValues, fieldName) {
 
   return normalized;
 }
-
-
 
 // 🚀 Controller
 export async function getHeadlines(req, res) {
@@ -52,17 +50,9 @@ export async function getHeadlines(req, res) {
 
     const pageOffset = (pageNumber - 1) * pageLimit;
 
-    const normalizedCategory = validateAndNormalize(
-      category,
-      ALLOWED_CATEGORIES,
-      'category'
-    );
+    const normalizedCategory = validateAndNormalize(category, ALLOWED_CATEGORIES, 'category');
 
-    const normalizedCountry = validateAndNormalize(
-      country,
-      ALLOWED_COUNTRIES,
-      'country'
-    );
+    const normalizedCountry = validateAndNormalize(country, ALLOWED_COUNTRIES, 'country');
 
     const whereCondition = {
       ...(normalizedCategory && { category: normalizedCategory }),
@@ -86,7 +76,6 @@ export async function getHeadlines(req, res) {
       totalResults = await prisma.article.count({
         where: whereCondition,
       });
-
     } catch (dbError) {
       logger.error('DB Error in getHeadlines:', dbError);
 
@@ -104,7 +93,6 @@ export async function getHeadlines(req, res) {
       count: transformedArticles.length,
       page: pageNumber,
     });
-
   } catch (error) {
     logger.error('Error in getHeadlines:', error);
 

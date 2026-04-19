@@ -5,7 +5,7 @@ import logger from '../config/logger.js';
 
 export async function syncHeadlines() {
   logger.info('Starting Sync Headlines Service...');
-  
+
   let updated = 0;
 
   for (const category of ALLOWED_CATEGORIES) {
@@ -53,7 +53,6 @@ export async function syncHeadlines() {
         });
 
         updated++;
-
       } catch (error) {
         logger.error('Error processing article:', error);
       }

@@ -4,7 +4,6 @@ import logger from '../config/logger.js';
 // UPSERT (insert or update)
 export async function upsertArticle(mappedArticle) {
   try {
-
     await prisma.article.upsert({
       where: {
         url: mappedArticle.url,
@@ -15,7 +14,7 @@ export async function upsertArticle(mappedArticle) {
 
         // ✅ FIX: use DB column names
         url_to_image: mappedArticle.url_to_image,
-        source_name: mappedArticle.source_name ,
+        source_name: mappedArticle.source_name,
         published_at: mappedArticle.published_at,
 
         category: mappedArticle.category,
@@ -35,8 +34,7 @@ export async function upsertArticle(mappedArticle) {
       },
     });
 
-    return  'success';
-
+    return 'success';
   } catch (error) {
     logger.error('Database error:', error);
     throw error;

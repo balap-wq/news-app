@@ -6,9 +6,7 @@ function snakeToCamel(data) {
   const camelObj = {};
 
   for (const key in data) {
-    const camelKey = key.replace(/_([a-z])/g, (_, char) =>
-      char.toUpperCase()
-    );
+    const camelKey = key.replace(/_([a-z])/g, (_, char) => char.toUpperCase());
 
     let value = data[key];
 
@@ -22,4 +20,4 @@ function snakeToCamel(data) {
   return camelObj;
 }
 
-export  default snakeToCamel;
+export default snakeToCamel;

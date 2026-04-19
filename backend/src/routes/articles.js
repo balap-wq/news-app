@@ -4,7 +4,7 @@ import {
   getArticleById,
   createArticle,
   updateArticle,
-  deleteArticle
+  deleteArticle,
 } from '../controllers/articlesController.js';
 
 import { validateRequest } from '../middleware/validateRequest.js';
@@ -51,11 +51,7 @@ router.get('/', getHeadlines);
  *       404:
  *         description: Article not found
  */
-router.get(
-  '/:id',
-  validateRequest({ schema: articleParamSchema }),
-  getArticleById
-);
+router.get('/:id', validateRequest({ schema: articleParamSchema }), getArticleById);
 
 /**
  * @swagger
@@ -134,11 +130,7 @@ router.post('/', createArticle);
  *       404:
  *         description: Article not found
  */
-router.put(
-  '/:id',
-  validateRequest({ schema: articleParamSchema }),
-  updateArticle
-);
+router.put('/:id', validateRequest({ schema: articleParamSchema }), updateArticle);
 
 /**
  * @swagger
@@ -159,10 +151,6 @@ router.put(
  *       404:
  *         description: Article not found
  */
-router.delete(
-  '/:id',
-  validateRequest({ schema: articleParamSchema }),
-  deleteArticle
-);
+router.delete('/:id', validateRequest({ schema: articleParamSchema }), deleteArticle);
 
 export default router;
