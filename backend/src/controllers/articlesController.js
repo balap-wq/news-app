@@ -39,7 +39,6 @@ async function getHeadlines(req, res) {
       totalCount = await prisma.article.count({
         where: whereCondition,
       });
-
     } catch (dbError) {
       logger.error('DB Error in getHeadlines:', dbError);
 
@@ -55,7 +54,6 @@ async function getHeadlines(req, res) {
       totalResults: totalCount,
       page: pageNumber,
     });
-
   } catch (error) {
     logger.error('Error fetching headlines:', error);
 
@@ -75,7 +73,7 @@ async function getArticleById(req, res) {
     if (isNaN(articleId) || articleId <= 0) {
       return res.status(400).json({
         success: false,
-        error: "Invalid article ID",
+        error: 'Invalid article ID',
       });
     }
 
@@ -91,7 +89,6 @@ async function getArticleById(req, res) {
     res.status(200).json(article);
 
     return res.status(200).json(transformedArticle);
-
   } catch (error) {
     logger.error('Error fetching article:', error);
 
@@ -114,14 +111,14 @@ async function createArticle(req, res) {
     if (!trimmedTitle) {
       return res.status(400).json({
         success: false,
-        error: "Title is required",
+        error: 'Title is required',
       });
     }
 
     if (!url?.trim()) {
       return res.status(400).json({
         success: false,
-        error: "URL is required",
+        error: 'URL is required',
       });
     }
 
@@ -131,21 +128,21 @@ async function createArticle(req, res) {
     } catch {
       return res.status(400).json({
         success: false,
-        error: "Invalid URL format",
+        error: 'Invalid URL format',
       });
     }
 
     if (trimmedContent && trimmedContent.length < 10) {
       return res.status(400).json({
         success: false,
-        error: "Content must be at least 10 characters",
+        error: 'Content must be at least 10 characters',
       });
     }
 
     if (trimmedDescription && trimmedDescription.length > 500) {
       return res.status(400).json({
         success: false,
-        error: "Description too long",
+        error: 'Description too long',
       });
     }
 
@@ -157,7 +154,7 @@ async function createArticle(req, res) {
     if (existing) {
       return res.status(409).json({
         success: false,
-        error: "Article with this URL already exists",
+        error: 'Article with this URL already exists',
       });
     }
 
@@ -171,12 +168,11 @@ async function createArticle(req, res) {
     });
 
     return res.status(201).json(newArticle);
-
   } catch (error) {
     if (error.code === 'P2002') {
       return res.status(409).json({
         success: false,
-        error: "Article with this URL already exists",
+        error: 'Article with this URL already exists',
       });
     }
 
@@ -196,7 +192,7 @@ async function updateArticle(req, res) {
     if (isNaN(articleId) || articleId <= 0) {
       return res.status(400).json({
         success: false,
-        error: "Invalid article ID",
+        error: 'Invalid article ID',
       });
     }
 
@@ -208,7 +204,6 @@ async function updateArticle(req, res) {
     });
 
     return res.status(200).json(updatedArticle);
-
   } catch (error) {
     logger.error('Error updating article:', error);
     return res.status(500).json({ error: 'Internal server error' });
@@ -224,7 +219,7 @@ async function deleteArticle(req, res) {
     if (isNaN(articleId) || articleId <= 0) {
       return res.status(400).json({
         success: false,
-        error: "Invalid article ID",
+        error: 'Invalid article ID',
       });
     }
 
@@ -235,17 +230,10 @@ async function deleteArticle(req, res) {
     return res.status(200).json({
       message: 'Article deleted successfully',
     });
-
   } catch (error) {
     logger.error('Error deleting article:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
 
-export {
-  getArticleById,
-  getHeadlines,
-  createArticle,
-  updateArticle,
-  deleteArticle,
-};
+export { getArticleById, getHeadlines, createArticle, updateArticle, deleteArticle };
