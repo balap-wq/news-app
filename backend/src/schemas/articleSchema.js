@@ -2,7 +2,12 @@ import { z } from 'zod';
 
 // 1. Validate query params for GET /api/headlines
 const headlineQuerySchema = z.object({
-  page: z.coerce.number().int('Page must be a positive integer').min(1, 'Page must be a positive integer').optional().default(1),
+  page: z.coerce
+    .number()
+    .int('Page must be a positive integer')
+    .min(1, 'Page must be a positive integer')
+    .optional()
+    .default(1),
   category: z.string().optional(),
   country: z.string().optional(),
 });

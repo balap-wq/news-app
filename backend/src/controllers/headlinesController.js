@@ -18,9 +18,7 @@ function validateAndNormalize(value, allowedValues, fieldName) {
   const normalized = value.trim().toLowerCase();
 
   if (!allowedValues.includes(normalized)) {
-    throw new ValidationError(
-      `Invalid ${fieldName}. Allowed values: ${allowedValues.join(', ')}`
-    );
+    throw new ValidationError(`Invalid ${fieldName}. Allowed values: ${allowedValues.join(', ')}`);
   }
 
   return normalized;
