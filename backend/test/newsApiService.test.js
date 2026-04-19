@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals";
+import { jest } from '@jest/globals';
 
 let axios;
 let fetchTopHeadlines;
@@ -7,14 +7,14 @@ let NewsApiAuthError;
 let NewsApiFetchError;
 
 // ✅ Mock axios first
-jest.unstable_mockModule("axios", () => ({
+jest.unstable_mockModule('axios', () => ({
   default: {
     get: jest.fn(),
   },
 }));
 
 // ✅ Mock logger to suppress Winston logs during tests
-jest.unstable_mockModule("../src/config/logger.js", () => ({
+jest.unstable_mockModule('../src/config/logger.js', () => ({
   default: {
     info: jest.fn(),
     error: jest.fn(),
@@ -24,9 +24,9 @@ jest.unstable_mockModule("../src/config/logger.js", () => ({
 
 beforeAll(async () => {
   // ✅ Import after mocks
-  axios = (await import("axios")).default;
+  axios = (await import('axios')).default;
 
-  const service = await import("../src/services/newsApiService.js");
+  const service = await import('../src/services/newsApiService.js');
 
   fetchTopHeadlines = service.fetchTopHeadlines;
   NewsApiRateLimitError = service.NewsApiRateLimitError;
@@ -34,18 +34,17 @@ beforeAll(async () => {
   NewsApiFetchError = service.NewsApiFetchError;
 });
 
-describe("fetchTopHeadlines", () => {
-
+describe('fetchTopHeadlines', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
   // ✅ Success
-  it("should return articles array on success", async () => {
-    const mockArticles = [{ title: "News 1" }];
+  it('should return articles array on success', async () => {
+    const mockArticles = [{ title: 'News 1' }];
 
     axios.get.mockResolvedValue({
-      data: { status: "ok", articles: mockArticles },
+      data: { status: 'ok', articles: mockArticles },
     });
 
     const result = await fetchTopHeadlines({});
@@ -53,31 +52,27 @@ describe("fetchTopHeadlines", () => {
   });
 
   // ✅ 429
-  it("should throw rate limit error", async () => {
+  it('should throw rate limit error', async () => {
     axios.get.mockRejectedValue({
       response: { status: 429 },
     });
 
-    await expect(fetchTopHeadlines({}))
-      .rejects.toThrow(NewsApiRateLimitError);
+    await expect(fetchTopHeadlines({})).rejects.toThrow(NewsApiRateLimitError);
   });
 
   // ✅ 401
-  it("should throw auth error", async () => {
+  it('should throw auth error', async () => {
     axios.get.mockRejectedValue({
       response: { status: 401 },
     });
 
-    await expect(fetchTopHeadlines({}))
-      .rejects.toThrow(NewsApiAuthError);
+    await expect(fetchTopHeadlines({})).rejects.toThrow(NewsApiAuthError);
   });
 
   // ✅ Network
-  it("should throw fetch error", async () => {
-    axios.get.mockRejectedValue(new Error("Network Error"));
+  it('should throw fetch error', async () => {
+    axios.get.mockRejectedValue(new Error('Network Error'));
 
-    await expect(fetchTopHeadlines({}))
-      .rejects.toThrow(NewsApiFetchError);
+    await expect(fetchTopHeadlines({})).rejects.toThrow(NewsApiFetchError);
   });
-
 });

@@ -28,6 +28,7 @@ npm run install:all
 ```
 
 Or install individually:
+
 ```bash
 cd backend && npm install
 cd frontend && npm install
@@ -51,6 +52,7 @@ npm run dev
 ```
 
 This starts:
+
 - **Frontend**: http://localhost:5173
 - **Backend**: http://localhost:5000
 
@@ -66,10 +68,10 @@ cd frontend && npm run dev
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Health check |
-| GET | `/api/news` | Get news articles |
+| Method | Endpoint    | Description       |
+| ------ | ----------- | ----------------- |
+| GET    | `/health`   | Health check      |
+| GET    | `/api/news` | Get news articles |
 
 ## Tooling
 
@@ -90,10 +92,10 @@ cd backend && npm run lint
 cd frontend && npm run lint
 ```
 
-
 # Uses of Prettier and lint:
 
 ### Summary
+
 - Added ESLint configuration using the latest flat config approach
 - Integrated Prettier for consistent code formatting
 - Configured React and React Hooks linting rules
@@ -105,22 +107,24 @@ cd frontend && npm run lint
 ### Commands to Check & Fix
 
 #### 🔍 Check lint issues
+
 npm run lint
 
 #### 🔧 Fix lint issues automatically
+
 npm run lint:fix
 
 #### 🔍 Check Prettier formatting
+
 npx prettier --check .
 
 #### 🔧 Fix Prettier formatting
+
 npx prettier --write .
 
 ---
 
-
-
--------------------------------------------> ## 🐶 Husky Setup (Git Hooks)  <--------------------------------------------------------------------
+-------------------------------------------> ## 🐶 Husky Setup (Git Hooks) <--------------------------------------------------------------------
 
 ### ⚙️ How it is used in this project
 
@@ -134,7 +138,7 @@ npm run --prefix backend lint
 
 👉 If lint fails:
 
-* ❌ Commit is blocked
+- ❌ Commit is blocked
 
 ---
 
@@ -148,7 +152,7 @@ npm run --prefix backend test
 
 👉 If tests fail:
 
-* ❌ Push is blocked
+- ❌ Push is blocked
 
 ---
 
@@ -193,9 +197,9 @@ git push
 
 ### ⚠️ Important Notes
 
-* Husky is configured at the project root
-* Backend scripts are executed using `--prefix backend`
-* If hooks fail, fix errors before retrying
+- Husky is configured at the project root
+- Backend scripts are executed using `--prefix backend`
+- If hooks fail, fix errors before retrying
 
 ---
 
@@ -215,9 +219,9 @@ http://localhost:5000/api/docs
 
 ### Endpoints
 
-* **GET /api/headlines** → Fetch headlines (supports `page`, `limit`)
-* **GET /api/articles/{id}** → Get article by ID
-* **GET /health** → Health check
+- **GET /api/headlines** → Fetch headlines (supports `page`, `limit`)
+- **GET /api/articles/{id}** → Get article by ID
+- **GET /health** → Health check
 
 ### Setup
 
@@ -228,8 +232,8 @@ npm install swagger-ui-express swagger-jsdoc
 
 ### ⚠️ Notes
 
-* Backend runs on `http://localhost:5000`
-* Ensure CORS is enabled in server
+- Backend runs on `http://localhost:5000`
+- Ensure CORS is enabled in server
 
 ---
 
@@ -245,18 +249,18 @@ npm run seed
 
 ### Details
 
-* Inserts sample articles into the database
-* Helps frontend development without real API data
-* Can be re-run to refresh data
+- Inserts sample articles into the database
+- Helps frontend development without real API data
+- Can be re-run to refresh data
 
 ### File
 
-* Seeder script: `src/seeds/sampleArticles.js`
+- Seeder script: `src/seeds/sampleArticles.js`
 
 ### Notes
 
-* Ensure database is connected before running
-* Existing data may be overwritten (based on implementation)
+- Ensure database is connected before running
+- Existing data may be overwritten (based on implementation)
 
 ## CORS Configuration
 
@@ -273,8 +277,8 @@ To allow communication between frontend and backend during development, CORS is 
 3. Configure in backend:
 
    app.use(cors({
-     origin: process.env.FRONTEND_URL,
-     methods: ["GET", "POST", "OPTIONS"],
+   origin: process.env.FRONTEND_URL,
+   methods: ["GET", "POST", "OPTIONS"],
    }));
 
 ### Purpose

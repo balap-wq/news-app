@@ -10,9 +10,7 @@ import logger from '../config/logger.js';
 function snakeToCamel(obj) {
   const camelObj = {};
   for (const key in obj) {
-    const camelKey = key.replace(/_([a-z])/g, (_, char) =>
-      char.toUpperCase()
-    );
+    const camelKey = key.replace(/_([a-z])/g, (_, char) => char.toUpperCase());
     camelObj[camelKey] = obj[key];
   }
   return camelObj;

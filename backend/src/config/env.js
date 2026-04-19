@@ -1,15 +1,13 @@
 import { z } from 'zod';
 import dotenv from 'dotenv'; // ← ADD
-dotenv.config();   
+dotenv.config();
 
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
 
-  
   PORT: z.string().regex(/^\d+$/).optional(),
   NODE_ENV: z.string().optional(),
 
-  
   NEWS_API_BASE_URL: z.string().url('NEWS_API_BASE_URL must be a valid URL'),
   NEWS_API_KEY: z.string().min(1, 'NEWS_API_KEY is required'),
 
@@ -28,4 +26,3 @@ if (!parsed.success) {
   process.exit(1);
 }
 export const env = parsed.data;
-

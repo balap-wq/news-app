@@ -1,20 +1,8 @@
 import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import placeholder from '../images/placeholder.png';
+import { formatDate } from '../utils/date-formatter';
 import { Book, CalendarClock, UserPen } from 'lucide-react';
-
-function formatDate(dateString) {
-  if (!dateString) return 'Unknown date';
-  const date = new Date(dateString);
-  if (Number.isNaN(date.getTime())) return dateString;
-  return date.toLocaleString(undefined, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  });
-}
 
 const HeadlineCards = ({ article }) => {
   const { title, urlToImage, sourceName, publishedAt, author } = article;
