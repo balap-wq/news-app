@@ -66,17 +66,4 @@ export const ALLOWED_COUNTRIES = [
 ];
 export const DEFAULT_COUNTRY = process.env.DEFAULT_COUNTRY || 'us';
 
-export function buildArticleValues(article) {
-  return [
-    article.title || null,
-    article.description || null,
-    article.url_to_image || article.url_to_image || null,
-    article.source_name?.name || article.source_name || null,
-    article.published_at || article.published_at || null,
-    article.content || null,
-    article.url || null,
-    article.author || null,
-    article.category || null,
-    article.country || null,
-  ];
-}
+
