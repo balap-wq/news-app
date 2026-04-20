@@ -65,5 +65,3 @@ export const ALLOWED_COUNTRIES = [
   'za',
 ];
 export const DEFAULT_COUNTRY = process.env.DEFAULT_COUNTRY || 'us';
-
-
