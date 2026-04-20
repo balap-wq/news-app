@@ -4,10 +4,11 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
+
 model Article {
-  id BigInt @id @default(autoincrement())
+  id           BigInt    @id @default(autoincrement())
   title        String?
   description  String?
   content      String?
@@ -20,9 +21,8 @@ model Article {
   published_at DateTime? @db.Timestamp(6)
   created_at   DateTime? @default(now()) @db.Timestamp(6)
 
-  @@map("articles")
-
   @@index([category, published_at(sort: Desc)])
   @@index([country, published_at(sort: Desc)])
   @@index([published_at(sort: Desc)])
+  @@map("articles")
 }
