@@ -5,7 +5,7 @@ const EmptyState = ({ onRefresh }) => {
     <div className="flex flex-col items-center justify-center py-20">
       <div className="text-5xl mb-4">📰</div>
 
-      <p className="text-gray-600 text-lg text-center">
+      <p className="text-stone-100 text-lg text-center">
         No headlines available right now. Try again later.
       </p>
 

@@ -17,12 +17,12 @@ Implements the `useHeadlines` custom hook for fetching paginated headlines from 
 
 Select the type of change for this PR.
 
-* [ ] Feature
-* [ ] Bug Fix
-* [ ] Refactor
-* [ ] Documentation
-* [ ] Performance Improvement
-* [ ] Chore / Maintenance
+- [ ] Feature
+- [ ] Bug Fix
+- [ ] Refactor
+- [ ] Documentation
+- [ ] Performance Improvement
+- [ ] Chore / Maintenance
 
 ---
 
@@ -30,11 +30,11 @@ Select the type of change for this PR.
 
 List the major changes included in this PR.
 
-* Created `src/hooks/useHeadlines.js`
-* Implemented API request to `/api/headlines`
-* Added loading state management
-* Added error handling
-* Implemented `AbortController` to prevent memory leaks
+- Created `src/hooks/useHeadlines.js`
+- Implemented API request to `/api/headlines`
+- Added loading state management
+- Added error handling
+- Implemented `AbortController` to prevent memory leaks
 
 ---
 
@@ -56,11 +56,11 @@ Using:
 
 Explain how the changes were tested.
 
-* [ ] Tested locally
-* [ ] Verified loading state
-* [ ] Verified error handling
-* [ ] Tested API integration
-* [ ] Tested edge cases
+- [ ] Tested locally
+- [ ] Verified loading state
+- [ ] Verified error handling
+- [ ] Tested API integration
+- [ ] Tested edge cases
 
 Additional Notes:
 Describe any additional testing performed.
@@ -80,20 +80,20 @@ No UI changes in this PR.
 
 Before requesting review, confirm the following:
 
-* [ ] Code follows project coding standards
-* [ ] Code has been linted and formatted
-* [ ] No console logs or debug code left
-* [ ] All new files are included in commits
-* [ ] Documentation updated if required
-* [ ] No unnecessary files included
+- [ ] Code follows project coding standards
+- [ ] Code has been linted and formatted
+- [ ] No console logs or debug code left
+- [ ] All new files are included in commits
+- [ ] Documentation updated if required
+- [ ] No unnecessary files included
 
 ---
 
 ## Status
 
-* [ ] Draft PR
-* [ ] Ready for Review
-* [ ] Work in Progress
+- [ ] Draft PR
+- [ ] Ready for Review
+- [ ] Work in Progress
 
 ---
 

@@ -5,7 +5,6 @@ import { headlineQuerySchema } from '../schemas/articleSchema.js';
 
 const router = express.Router();
 
-
 /**
  * @swagger
  * /api/headlines:
