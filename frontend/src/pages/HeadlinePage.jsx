@@ -112,9 +112,10 @@ const HeadlinePage = () => {
         <button
           onClick={() => setMobileDropdownOpen((prev) => !prev)}
           className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200
-            ${activeCategory
-              ? 'bg-yellow-400 text-gray-900 border-yellow-400'
-              : 'bg-transparent border-gray-400 text-gray-600'
+            ${
+              activeCategory
+                ? 'bg-yellow-400 text-gray-900 border-yellow-400'
+                : 'bg-transparent border-gray-400 text-gray-600'
             }`}
         >
           <SlidersHorizontal size={16} />
@@ -126,20 +127,18 @@ const HeadlinePage = () => {
         {/* Mobile Dropdown */}
         {mobileDropdownOpen && (
           <div className="absolute top-12 right-6 z-50 bg-white border border-gray-200 rounded-2xl shadow-xl w-48 py-2 overflow-hidden">
-
             {/* All option */}
             <button
               onClick={() => handleCategoryChange('')}
               className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors
-                ${activeCategory === ''
-                  ? 'bg-yellow-50 text-yellow-700 font-semibold'
-                  : 'text-gray-700 hover:bg-gray-50'
+                ${
+                  activeCategory === ''
+                    ? 'bg-yellow-50 text-yellow-700 font-semibold'
+                    : 'text-gray-700 hover:bg-gray-50'
                 }`}
             >
               All
-              {activeCategory === '' && (
-                <span className="float-right text-yellow-500">✓</span>
-              )}
+              {activeCategory === '' && <span className="float-right text-yellow-500">✓</span>}
             </button>
 
             <div className="border-t border-gray-100 my-1" />
@@ -150,9 +149,10 @@ const HeadlinePage = () => {
                 key={cat}
                 onClick={() => handleCategoryChange(cat.toLowerCase())}
                 className={`w-full text-left px-4 py-2.5 text-sm transition-colors
-                  ${activeCategory === cat.toLowerCase()
-                    ? 'bg-yellow-50 text-yellow-700 font-semibold'
-                    : 'text-gray-700 hover:bg-gray-50'
+                  ${
+                    activeCategory === cat.toLowerCase()
+                      ? 'bg-yellow-50 text-yellow-700 font-semibold'
+                      : 'text-gray-700 hover:bg-gray-50'
                   }`}
               >
                 {cat}
@@ -168,14 +168,14 @@ const HeadlinePage = () => {
       {/* ── Desktop Category Filter Bar — hidden on mobile ── */}
       <div className="max-w-7xl mx-auto px-6 mt-4">
         <div className="hidden md:flex flex-wrap items-center gap-2">
-
           {/* All chip */}
           <button
             onClick={() => handleCategoryChange('')}
             className={`ml-43 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 cursor-pointer
-              ${activeCategory === ''
-                ? 'bg-yellow-400 text-gray-900 border-yellow-400'
-                : 'bg-transparent border-gray-400 text-gray-600 hover:border-gray-600 hover:text-gray-900'
+              ${
+                activeCategory === ''
+                  ? 'bg-yellow-400 text-gray-900 border-yellow-400'
+                  : 'bg-transparent border-gray-400 text-gray-600 hover:border-gray-600 hover:text-gray-900'
               }`}
           >
             All
@@ -187,9 +187,10 @@ const HeadlinePage = () => {
               key={cat}
               onClick={() => handleCategoryChange(cat.toLowerCase())}
               className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 cursor-pointer
-                ${activeCategory === cat.toLowerCase()
-                  ? 'bg-yellow-400 text-gray-900 border-yellow-400'
-                  : 'bg-transparent border-gray-400 text-gray-600 hover:border-gray-600 hover:text-gray-900'
+                ${
+                  activeCategory === cat.toLowerCase()
+                    ? 'bg-yellow-400 text-gray-900 border-yellow-400'
+                    : 'bg-transparent border-gray-400 text-gray-600 hover:border-gray-600 hover:text-gray-900'
                 }`}
             >
               {cat}
@@ -221,9 +222,7 @@ const HeadlinePage = () => {
             ? Array.from({ length: 9 }).map((_, index) => (
                 <HeadlineCardSkeleton key={`skeleton-${index}`} />
               ))
-            : data.map((article) => (
-                <HeadlineCards key={article.id} article={article} />
-              ))}
+            : data.map((article) => <HeadlineCards key={article.id} article={article} />)}
         </div>
       )}
 
