@@ -1,7 +1,6 @@
 import axios from 'axios';
 import logger from '../config/logger.js';
 
-
 // ✅ Custom Error Classes
 export class NewsApiRateLimitError extends Error {
   constructor(message) {
@@ -54,7 +53,7 @@ export const fetchTopHeadlines = async ({ country = 'us', category, pageSize = 1
     return articles;
   } catch (error) {
     // Log error with context
-    logger.error("News API Error:", {
+    logger.error('News API Error:', {
       message: error.message,
       status: error.response?.status,
     });

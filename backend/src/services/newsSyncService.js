@@ -6,7 +6,6 @@ import logger from '../config/logger.js';
 export async function syncHeadlines() {
   logger.info('Starting Sync Headlines Service...');
 
-  
   let inserted = 0;
   let updated = 0;
 
