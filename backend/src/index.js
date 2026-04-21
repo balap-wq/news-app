@@ -65,6 +65,14 @@ if (process.env.NODE_ENV === 'production') {
 // ✅ Cron job
 syncArticles();
 
+// ✅ 404 handler (MUST be before errorHandler)
+app.use((req, res, next) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+  });
+});
+
 
 // ✅ Error handler (ALWAYS last)
 app.use(errorHandler);

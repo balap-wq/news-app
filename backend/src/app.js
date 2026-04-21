@@ -26,9 +26,8 @@ app.use('/api/headlines', headlinesRoutes);
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).json({
-    error: 'Route not found',
-  });
+  console.log('404 HIT');  // 👈 add this
+  res.status(404).json({ error: 'Route not found' });
 });
 
 // Global error handler
