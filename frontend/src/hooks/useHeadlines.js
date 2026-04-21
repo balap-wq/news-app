@@ -11,7 +11,7 @@ function useHeadlines({ page = 1, category, country, limit = 9 }) {
   useEffect(() => {
     const controller = new AbortController();
 
-    const fetchHeadlines = async () => {
+    const fetchHeadlines = async (retryCount = 1) => {
       setError(null);
       setLoading(true);
 
@@ -29,6 +29,14 @@ function useHeadlines({ page = 1, category, country, limit = 9 }) {
         setTotalResults(response.data.totalResults || 0);
       } catch (err) {
         if (err.name !== 'CanceledError') {
+          if (retryCount > 0) {
+            console.log('Retrying API...');
+            setTimeout(() => {
+              fetchHeadlines(retryCount - 1);
+            }, 2000); // wait 2s before retry
+            return;
+          }
+
           setError(err.message);
         }
       } finally {
