@@ -66,7 +66,7 @@ if (process.env.NODE_ENV === 'production') {
 syncArticles();
 
 // ✅ 404 handler (MUST be before errorHandler)
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404).json({
     success: false,
     message: "Route not found",
