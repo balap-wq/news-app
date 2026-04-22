@@ -71,7 +71,6 @@ async function getArticleById(req, res) {
 
     if (!article) {
       return res.status(404).json({
-        success: false,
         error: 'Article not found',
         articleId,
       });
@@ -79,10 +78,8 @@ async function getArticleById(req, res) {
 
     const transformedArticle = snakeToCamel(article);
 
-    return res.status(200).json({
-      success: true,
-      article: transformedArticle,
-    });
+    // ✅ FIXED: return flat object
+    return res.status(200).json(transformedArticle);
   } catch (error) {
     logger.error('Error fetching article:', error);
 
