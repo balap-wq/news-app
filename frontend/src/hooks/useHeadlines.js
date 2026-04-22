@@ -11,7 +11,7 @@ function useHeadlines({ page = 1, category, country, limit = 9 }) {
   useEffect(() => {
     const controller = new AbortController();
 
-    const fetchHeadlines = async (retryCount = 1) => {
+    const fetchHeadlines = async (retryCount = 0) => {
       setError(null);
       setLoading(true);
 
