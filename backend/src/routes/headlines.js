@@ -15,6 +15,7 @@ const router = express.Router();
  *     200:
  *       description: A list of news headlines
  */
+await new Promise((res) => setTimeout(res, 2000));
 
 router.get('/', getHeadlines);
 router.get(
