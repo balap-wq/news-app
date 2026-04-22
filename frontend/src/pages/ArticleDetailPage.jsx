@@ -106,6 +106,7 @@ export default function ArticleDetailPage() {
             <div className="px-5 sm:px-6 py-10">
               {/* Title */}
               <h1
+                data-testid="article-title"
                 className="text-2xl sm:text-4xl font-bold text-[#f0efff] leading-tight mb-5"
                 style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}
               >
