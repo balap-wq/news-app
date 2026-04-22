@@ -29,7 +29,7 @@ console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
 // ✅ CORS FIX (safe + production ready)
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: process.env.FRONTEND_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   })
@@ -79,7 +79,7 @@ app.use(errorHandler);
 
 // ✅ Start server
 app.listen(PORT, () => {
-  logger.info(`Server running on http://localhost:${PORT}`);
+  logger.info(`Server running on port${PORT}`);
 });
 
 export default app;
