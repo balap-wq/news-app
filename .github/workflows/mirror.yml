@@ -3,7 +3,7 @@ name: Mirror to Personal Repo
 on:
   push:
     branches:
-      - main   # change if your branch is different
+      - main # change if your branch is different
 
 jobs:
   mirror:
