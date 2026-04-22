@@ -27,7 +27,9 @@ async function getHeadlines(req, res) {
         where: whereCondition,
         skip: offset,
         take: limit,
-        orderBy: { publishedAt: 'desc' },
+        orderBy: {
+          publishedAt: 'desc', // ✅ correct field
+        },
       });
 
       totalCount = await prisma.article.count({
@@ -58,7 +60,8 @@ async function getHeadlines(req, res) {
 // 📄 GET ARTICLE BY ID
 async function getArticleById(req, res) {
   try {
-    const articleId = parseInt(req.params.id, 10);
+    const id = req.params.id;
+    const articleId = parseInt(id, 10);
 
     if (isNaN(articleId) || articleId <= 0) {
       return res.status(400).json({
@@ -78,7 +81,6 @@ async function getArticleById(req, res) {
 
     const transformedArticle = snakeToCamel(article);
 
-    // ✅ FIXED: return flat object
     return res.status(200).json(transformedArticle);
   } catch (error) {
     logger.error('Error fetching article:', error);
@@ -100,11 +102,17 @@ async function createArticle(req, res) {
     const trimmedDescription = description?.trim() || null;
 
     if (!trimmedTitle) {
-      return res.status(400).json({ success: false, error: 'Title is required' });
+      return res.status(400).json({
+        success: false,
+        error: 'Title is required',
+      });
     }
 
     if (!url?.trim()) {
-      return res.status(400).json({ success: false, error: 'URL is required' });
+      return res.status(400).json({
+        success: false,
+        error: 'URL is required',
+      });
     }
 
     let normalizedUrl;
@@ -131,6 +139,7 @@ async function createArticle(req, res) {
       });
     }
 
+    // ✅ Pre-check for duplicate
     const existing = await prisma.article.findUnique({
       where: { url: normalizedUrl },
     });
@@ -151,10 +160,7 @@ async function createArticle(req, res) {
       },
     });
 
-    return res.status(201).json({
-      success: true,
-      article: newArticle,
-    });
+    return res.status(201).json(newArticle);
   } catch (error) {
     if (error.code === 'P2002') {
       return res.status(409).json({
@@ -164,14 +170,17 @@ async function createArticle(req, res) {
     }
 
     logger.error('Error creating article:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({
+      error: 'Internal server error',
+    });
   }
 }
 
 // ✅ UPDATE
 async function updateArticle(req, res) {
   try {
-    const articleId = parseInt(req.params.id, 10);
+    const id = req.params.id;
+    const articleId = parseInt(id, 10);
 
     if (isNaN(articleId) || articleId <= 0) {
       return res.status(400).json({
@@ -187,10 +196,7 @@ async function updateArticle(req, res) {
       data: { title, content },
     });
 
-    return res.status(200).json({
-      success: true,
-      article: updatedArticle,
-    });
+    return res.status(200).json(updatedArticle);
   } catch (error) {
     logger.error('Error updating article:', error);
     return res.status(500).json({ error: 'Internal server error' });
@@ -200,7 +206,8 @@ async function updateArticle(req, res) {
 // ✅ DELETE
 async function deleteArticle(req, res) {
   try {
-    const articleId = parseInt(req.params.id, 10);
+    const id = req.params.id;
+    const articleId = parseInt(id, 10);
 
     if (isNaN(articleId) || articleId <= 0) {
       return res.status(400).json({
@@ -214,7 +221,6 @@ async function deleteArticle(req, res) {
     });
 
     return res.status(200).json({
-      success: true,
       message: 'Article deleted successfully',
     });
   } catch (error) {

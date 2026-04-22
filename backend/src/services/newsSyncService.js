@@ -30,6 +30,7 @@ export async function syncHeadlines() {
       try {
         const { source, urlToImage, publishedAt, ...articleData } = article;
 
+        // ✅ FIXED mapping (snake_case)
         const mappedArticle = {
           title: articleData.title || 'No Title',
           content: articleData.description || '',

@@ -12,6 +12,7 @@
     "lint:fix": "eslint src --ext .js --fix",
     "format": "prettier --write \"src/**/*.js\"",
     "test": "prisma generate && node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "prisma generate && node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "prepare": "husky"
   },
   "dependencies": {
@@ -22,6 +23,7 @@
     "express": "^4.22.1",
     "node-cron": "^4.2.1",
     "pg": "^8.20.0",
+    "prisma": "^5.22.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.19.0",
