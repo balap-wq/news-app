@@ -65,18 +65,3 @@ export const ALLOWED_COUNTRIES = [
   'za',
 ];
 export const DEFAULT_COUNTRY = process.env.DEFAULT_COUNTRY || 'us';
-
-export function buildArticleValues(article) {
-  return [
-    article.title || null,
-    article.description || null,
-    article.urlToImage || article.url_to_image || null,
-    article.source?.name || article.source_name || null,
-    article.publishedAt || article.published_at || null,
-    article.content || null,
-    article.url || null,
-    article.author || null,
-    article.category || null,
-    article.country || null,
-  ];
-}

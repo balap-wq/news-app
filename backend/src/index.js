@@ -1,3 +1,7 @@
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
+
 import './config/env.js';
 import 'dotenv/config';
 import express from 'express';
