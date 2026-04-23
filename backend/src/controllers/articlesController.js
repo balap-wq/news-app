@@ -6,18 +6,15 @@ import snakeToCamel from '../utils/caseHandling.js';
 // 📰 GET HEADLINES
 async function getHeadlines(req, res) {
   try {
-    const query = req.query || {};
-
-    const page = query.page || 1;
-    const category = query.category;
+    const { page = 1, category } = req.query;
 
     const pageNumber = parseInt(page, 10);
+    const limit = 9;
 
     if (isNaN(pageNumber) || pageNumber < 1) {
       return res.status(400).json({ error: 'Invalid page number' });
     }
 
-    const limit = 9;
     const offset = (pageNumber - 1) * limit;
 
     const whereCondition = category ? { category } : {};
@@ -31,7 +28,7 @@ async function getHeadlines(req, res) {
         skip: offset,
         take: limit,
         orderBy: {
-          published_at: 'desc',
+          publishedAt: 'desc', // ✅ correct field
         },
       });
 
@@ -40,9 +37,6 @@ async function getHeadlines(req, res) {
       });
     } catch (dbError) {
       logger.error('DB Error in getHeadlines:', dbError);
-
-      articles = [];
-      totalCount = 0;
     }
 
     const transformedArticles = snakeToCamel(articles);

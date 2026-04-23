@@ -36,7 +36,7 @@ export async function upsertArticle(mappedArticle) {
 
     return 'success';
   } catch (error) {
-    logger.error('Database error:', error);
+    logger.error('Error in findArticleById:', error);
     throw error;
   }
 }
