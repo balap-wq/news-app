@@ -18,17 +18,17 @@ jobs:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: articles
-
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/articles  # ← ADD THIS
+  
       PORT: 5000
       FRONTEND_URL: http://localhost:5173
       CORS_ORIGIN: http://localhost:5173
-
+  
       NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
-
+  
       NEW_RELIC_ENABLED: false
       NEW_RELIC_NO_CONFIG_FILE: true
       NEW_RELIC_LICENSE_KEY: dummy
-
       NODE_OPTIONS: ""
 
     steps:
