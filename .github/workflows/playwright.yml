@@ -1,67 +1,40 @@
-name: Playwright Tests
+name: Playwright Smoke Tests
 
 on:
   push:
-    branches: [ main, master ]
+    branches:
+      - main
+      - master
+      - feature/**
   pull_request:
-    branches: [ main, master ]
+    branches:
+      - main
+      - master
+      - feature/**
 
 jobs:
-  test:
-    timeout-minutes: 60
+  e2e-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
-    # Install root deps
-    - name: Install root dependencies
-      run: npm install
+      - run: npm ci
+      - run: npm ci --prefix backend
+      - run: npm ci --prefix frontend
 
-    # Install backend deps
-    - name: Install backend dependencies
-      run: |
-        cd backend
-        npm install
+      - run: npx playwright install --with-deps
 
-    # Install frontend deps
-    - name: Install frontend dependencies
-      run: |
-        cd frontend
-        npm install
+      - run: npx playwright test
 
-    # Start backend
-    - name: Start backend
-      run: |
-        cd backend
-        npm run dev &
-    
-    # Start frontend
-    - name: Start frontend
-      run: |
-        cd frontend
-        npm run dev &
-
-    # Wait until servers are ready
-    - name: Wait for servers
-      run: npx wait-on http://localhost:5000 http://localhost:5173
-
-    # Install Playwright browsers
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-
-    # Run tests
-    - name: Run Playwright tests
-      run: npx playwright test
-
-    # Upload report
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
