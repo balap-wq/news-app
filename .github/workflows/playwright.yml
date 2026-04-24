@@ -2,15 +2,36 @@ name: Playwright Smoke Tests
 
 on:
   push:
-    branches: [main, master, feature/**]
+    branches:
+      - main
+      - master
+      - feature/**
 
   pull_request:
-    branches: [main, master, feature/**]
+    branches:
+      - main
+      - master
+      - feature/**
 
 jobs:
   e2e-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: articles
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d articles"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     env:
       DB_HOST: localhost
@@ -18,36 +39,49 @@ jobs:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: articles
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/articles  # ← ADD THIS
-  
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/articles
+
       PORT: 5000
       FRONTEND_URL: http://localhost:5173
       CORS_ORIGIN: http://localhost:5173
-  
+      NODE_ENV: development
+
       NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
-  
+      NEWS_API_BASE_URL: https://newsapi.org/v2/
+
       NEW_RELIC_ENABLED: false
       NEW_RELIC_NO_CONFIG_FILE: true
       NEW_RELIC_LICENSE_KEY: dummy
       NODE_OPTIONS: ""
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - run: npm ci
-      - run: npm ci --prefix backend
-      - run: npm ci --prefix frontend
+      - name: Install Root Dependencies
+        run: npm ci
 
-      - run: npx playwright install --with-deps
+      - name: Install Backend Dependencies
+        run: npm ci --prefix backend
 
-      - run: npx playwright test
+      - name: Install Frontend Dependencies
+        run: npm ci --prefix frontend
 
-      - uses: actions/upload-artifact@v4
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright Tests
+        run: npx playwright test
+
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
           path: playwright-report/
+          retention-days: 30
