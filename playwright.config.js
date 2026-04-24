@@ -15,7 +15,7 @@ export default defineConfig({
 
   use: {
     //  VERY IMPORTANT (ADD THIS)
-    baseURL: process.env.BASE_URL || 'http://localhost:5173',
+    baseURL: process.env.FRONTEND_URL || 'http://localhost:5173',
 
     headless: true,
 

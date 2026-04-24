@@ -1,24 +1,64 @@
 name: Playwright Tests
+
 on:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
+
+    # Install root deps
+    - name: Install root dependencies
+      run: npm install
+
+    # Install backend deps
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        npm install
+
+    # Install frontend deps
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        npm install
+
+    # Start backend
+    - name: Start backend
+      run: |
+        cd backend
+        npm run dev &
+    
+    # Start frontend
+    - name: Start frontend
+      run: |
+        cd frontend
+        npm run dev &
+
+    # Wait until servers are ready
+    - name: Wait for servers
+      run: npx wait-on http://localhost:5000 http://localhost:5173
+
+    # Install Playwright browsers
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
+
+    # Run tests
     - name: Run Playwright tests
       run: npx playwright test
+
+    # Upload report
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
