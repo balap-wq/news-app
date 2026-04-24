@@ -4,11 +4,6 @@ import 'dotenv/config';
 // ✅ 2. Load New Relic SECOND (VERY IMPORTANT)
 import 'newrelic';
 
-// ✅ 3. (Temporary Debug — remove later)
-import newrelic from 'newrelic';
-console.log('NR KEY:', process.env.NEW_RELIC_LICENSE_KEY);
-console.log('NR STATUS:', newrelic.agent ? 'ACTIVE' : 'NOT ACTIVE');
-
 // ✅ 4. Safe BigInt serialization
 BigInt.prototype.toJSON = function () {
   return this.toString();

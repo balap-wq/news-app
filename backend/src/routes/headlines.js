@@ -16,9 +16,6 @@ const router = express.Router();
  *       description: A list of news headlines
  */
 
-//✅ for testing delay:
-//  await new Promise((res) => setTimeout(res, 2000));
-
 router.get('/', getHeadlines);
 router.get(
   '/',
