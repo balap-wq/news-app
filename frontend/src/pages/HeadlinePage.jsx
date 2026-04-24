@@ -8,16 +8,7 @@ import ErrorMessage from '../Components/ErrorMessage';
 import { useSearchParams } from 'react-router-dom';
 import { TrendingUp } from 'lucide-react';
 import EmptyState from '../Components/EmptyState';
-
-const PRESET_CATEGORIES = [
-  'Business',
-  'Entertainment',
-  'General',
-  'Health',
-  'Science',
-  'Sports',
-  'Technology',
-];
+import { PRESET_CATEGORIES } from '../utils/categoryUtils';
 
 const HeadlinePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
