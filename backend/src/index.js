@@ -1,9 +1,16 @@
+// ✅ 1. Load env FIRST
+import 'dotenv/config';
+
+// ✅ 2. Load New Relic SECOND (VERY IMPORTANT)
+import 'newrelic';
+
+// ✅ 4. Safe BigInt serialization
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
-import './config/env.js';
-import 'dotenv/config';
+// ❌ REMOVED: import './config/env.js';
+
 import express from 'express';
 import cors from 'cors';
 import logger from './config/logger.js';
@@ -17,16 +24,16 @@ import swaggerSpec from './config/swagger.js';
 import { testConnection } from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
-// ✅ 3. TEST DATABASE CONNECTION
+// ✅ 5. Test DB connection
 await testConnection();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ DEBUG (very important)
+// ✅ Debug env
 console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
 
-// ✅ CORS FIX (safe + production ready)
+// ✅ CORS
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
@@ -43,22 +50,8 @@ app.use('/api/headlines', headlinesRouter);
 app.use('/api/admin', adminRoutes);
 
 // ✅ Health check
-
-/**
- * @swagger
- * /health:
- *   get:
- *     summary: Health check
- *     description: Checks the health of the API.
- *     responses:
- *       200:
- *         description: API is healthy
- */
-
-// ✅ 7. HEALTH CHECK
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
-  // ✅ Health check
 });
 
 // ✅ Sample endpoint
@@ -66,7 +59,13 @@ app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
 
-// ✅ 9. SWAGGER (ONLY IN PRODUCTION)
+// ✅ APM test endpoint (important for verification)
+app.get('/apm-test', (req, res) => {
+  console.log('APM TEST HIT');
+  res.send('APM test working');
+});
+
+// ✅ Swagger (dev only)
 if (process.env.NODE_ENV === 'development') {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 }
@@ -74,7 +73,7 @@ if (process.env.NODE_ENV === 'development') {
 // ✅ Cron job
 syncArticles();
 
-// ✅ Error handler (ALWAYS last)
+// ✅ Error handler (last)
 app.use(errorHandler);
 
 // ✅ Start server
