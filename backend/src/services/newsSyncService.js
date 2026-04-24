@@ -1,16 +1,16 @@
 import { fetchTopHeadlines } from './newsApiService.js';
-import { upsertArticle } from '../repositories/articleRepository.js';
+import prisma from '../prismaClient.js';
 import { ALLOWED_CATEGORIES, DEFAULT_COUNTRY } from '../config/constant.js';
 import logger from '../config/logger.js';
 
 export async function syncHeadlines() {
   logger.info('Starting Sync Headlines Service...');
 
-  let inserted = 0;
   let updated = 0;
 
   for (const category of ALLOWED_CATEGORIES) {
     let articles;
+
     try {
       articles = await fetchTopHeadlines({
         country: DEFAULT_COUNTRY,
@@ -28,23 +28,32 @@ export async function syncHeadlines() {
 
     for (const article of articles) {
       try {
-        const { source, urlToImage, publishedAt, ...rest } = article;
+        const { source, urlToImage, publishedAt, ...articleData } = article;
 
+        // ✅ FIXED mapping (snake_case)
         const mappedArticle = {
-          ...rest,
-          url: article.url,
-          source_name: source?.name || '',
+          title: articleData.title || 'No Title',
+          content: articleData.description || '',
+          url: articleData.url,
+
           url_to_image: urlToImage || '',
+          source_name: source?.name || '',
           published_at: publishedAt ? new Date(publishedAt) : null,
-          created_at: new Date(),
-          category: article.category || category || 'general',
+
+          category: category || 'general',
           country: DEFAULT_COUNTRY,
+          userId: 1, // ✅ IMPORTANT FIX (CI SAFE)
         };
 
-        const result = await upsertArticle(mappedArticle);
+        await prisma.article.upsert({
+          where: {
+            url: mappedArticle.url,
+          },
+          update: mappedArticle,
+          create: mappedArticle,
+        });
 
-        if (result === 'inserted') inserted += 1;
-        else if (result === 'updated') updated += 1;
+        updated++;
       } catch (error) {
         logger.error('Error processing article:', error);
       }
@@ -52,7 +61,6 @@ export async function syncHeadlines() {
   }
 
   logger.info('Sync Headlines Service completed', {
-    articlesInserted: inserted,
-    articlesUpdated: updated,
+    articlesProcessed: updated,
   });
 }

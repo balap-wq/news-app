@@ -25,7 +25,7 @@ const HeadlineCards = ({ article }) => {
           });
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
-        className=" cursor-pointer rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col hover:scale-105 "
+        className="h-full cursor-pointer rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col hover:scale-105 "
       >
         <img
           src={urlToImage || placeholder}
@@ -33,7 +33,7 @@ const HeadlineCards = ({ article }) => {
           className="w-full h-44 md:h-48 object-cover "
         />
 
-        <div className=" p-4 flex flex-col justify-between bg-gray-300 ">
+        <div className=" p-4 flex flex-col grow bg-gray-300 ">
           <h2 className="text-lg font-semibold line-clamp-2 leading-snug">{title}</h2>
 
           <div className="mt-3 text-sm text-gray-600 space-y-1">
