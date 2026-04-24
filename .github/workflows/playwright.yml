@@ -29,6 +29,8 @@ jobs:
       NEW_RELIC_NO_CONFIG_FILE: true
       NEW_RELIC_LICENSE_KEY: dummy
 
+      NODE_OPTIONS: ""
+
     steps:
       - uses: actions/checkout@v4
 
