@@ -14,7 +14,6 @@ test('GET /api/headlines - pipeline check', async ({ request }) => {
 
   // ✅ Now safe to parse JSON
   const data = await res.json();
-
   const articles = Array.isArray(data) ? data : data.articles;
 
   expect(articles.length).toBeGreaterThan(0);
