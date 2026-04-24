@@ -3,7 +3,7 @@ name: Mirror to Personal Repo
 on:
   push:
     branches:
-      - main # change if your branch is different
+      - main
 
 jobs:
   mirror:
@@ -13,13 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0   # IMPORTANT for full history
 
-      - name: Push to personal repo
+      - name: Mirror repo
         run: |
           git config --global user.name "mirror-bot"
           git config --global user.email "mirror@github.com"
 
           git remote add mirror https://x-access-token:${{ secrets.PERSONAL_TOKEN }}@github.com/balap-wq/news-app.git
 
-          git push mirror main --force
+          git push --mirror mirror
