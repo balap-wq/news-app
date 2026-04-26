@@ -78,13 +78,12 @@ jobs:
         run: npm ci --prefix backend
 
       - name: Generate Prisma Client
-        # Must run BEFORE the server starts (Playwright webServer config boots it).
-        # Without this step the import of PrismaClient throws at startup.
-        run: npx prisma generate --schema=backend/prisma/schema.prisma
+        working-directory: backend
+        run: npx prisma generate
 
       - name: Run Database Migrations
-        # Applies all pending migrations to the CI postgres instance.
-        run: npx prisma migrate deploy --schema=backend/prisma/schema.prisma
+        working-directory: backend
+        run: npx prisma migrate deploy
 
       # ── Frontend ─────────────────────────────────────────────────────────────
       - name: Install Frontend Dependencies
