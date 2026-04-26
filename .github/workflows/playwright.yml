@@ -62,25 +62,45 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          # Cache all three lockfiles so repeated runs skip re-downloading packages
+          cache: "npm"
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+            frontend/package-lock.json
 
+      # ── Root ─────────────────────────────────────────────────────────────────
       - name: Install Root Dependencies
         run: npm ci
 
+      # ── Backend ──────────────────────────────────────────────────────────────
       - name: Install Backend Dependencies
         run: npm ci --prefix backend
 
+      - name: Generate Prisma Client
+        # Must run BEFORE the server starts (Playwright webServer config boots it).
+        # Without this step the import of PrismaClient throws at startup.
+        run: npx prisma generate --schema=backend/prisma/schema.prisma
+
+      - name: Run Database Migrations
+        # Applies all pending migrations to the CI postgres instance.
+        run: npx prisma migrate deploy --schema=backend/prisma/schema.prisma
+
+      # ── Frontend ─────────────────────────────────────────────────────────────
       - name: Install Frontend Dependencies
         run: npm ci --prefix frontend
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
+      # ── Tests ─────────────────────────────────────────────────────────────────
       - name: Run Playwright Tests
         run: npx playwright test
 
+      # ── Artifacts ────────────────────────────────────────────────────────────
       - name: Upload HTML Report
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always()  # Upload even when tests fail so you can debug
         with:
           name: playwright-report
           path: playwright-report/
