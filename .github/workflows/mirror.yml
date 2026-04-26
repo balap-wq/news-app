@@ -3,7 +3,8 @@ name: Mirror to Personal Repo
 on:
   push:
     branches:
-      - main # change if your branch is different
+      - main
+  workflow_dispatch:   # 👈 add this line
 
 jobs:
   mirror:
@@ -15,11 +16,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Push to personal repo
+      - name: Push to mirror
+        env:
+          TOKEN: ${{ secrets.PERSONAL_TOKEN }}
         run: |
           git config --global user.name "mirror-bot"
           git config --global user.email "mirror@github.com"
 
-          git remote add mirror https://x-access-token:${{ secrets.PERSONAL_TOKEN }}@github.com/balap-wq/news-app.git
-
-          git push mirror main --force
+          git push https://x-access-token:$TOKEN@github.com/balap-wq/news-app.git --all
+          git push https://x-access-token:$TOKEN@github.com/balap-wq/news-app.git --tags
