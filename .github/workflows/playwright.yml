@@ -44,7 +44,9 @@ jobs:
       PORT: 5000
       FRONTEND_URL: http://localhost:5173
       CORS_ORIGIN: http://localhost:5173
-      NODE_ENV: development
+
+      NODE_ENV: test
+      DISABLE_CRON: true
 
       NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
       NEWS_API_BASE_URL: https://newsapi.org/v2/
@@ -62,18 +64,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          # Cache all three lockfiles so repeated runs skip re-downloading packages
-          cache: "npm"
+          cache: npm
           cache-dependency-path: |
             package-lock.json
             backend/package-lock.json
             frontend/package-lock.json
 
-      # ── Root ─────────────────────────────────────────────────────────────────
+      # Root
       - name: Install Root Dependencies
         run: npm ci
 
-      # ── Backend ──────────────────────────────────────────────────────────────
+      # Backend
       - name: Install Backend Dependencies
         run: npm ci --prefix backend
 
@@ -85,21 +86,25 @@ jobs:
         working-directory: backend
         run: npx prisma migrate deploy
 
-      # ── Frontend ─────────────────────────────────────────────────────────────
+      - name: Seed Test Data
+        working-directory: backend
+        run: node prisma/seed.js
+
+      # Frontend
       - name: Install Frontend Dependencies
         run: npm ci --prefix frontend
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      # ── Tests ─────────────────────────────────────────────────────────────────
+      # Tests
       - name: Run Playwright Tests
         run: npx playwright test
 
-      # ── Artifacts ────────────────────────────────────────────────────────────
+      # Reports
       - name: Upload HTML Report
         uses: actions/upload-artifact@v4
-        if: always()  # Upload even when tests fail so you can debug
+        if: always()
         with:
           name: playwright-report
           path: playwright-report/
