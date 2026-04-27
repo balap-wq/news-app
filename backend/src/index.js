@@ -1,19 +1,23 @@
 // ✅ 1. Load env FIRST
 import 'dotenv/config';
 
-// ✅ 2. Load New Relic SECOND (VERY IMPORTANT)
-import 'newrelic';
+// ✅ 2. Conditionally load New Relic (SAFE)
+if (process.env.NEW_RELIC_ENABLED === 'true' && process.env.NEW_RELIC_LICENSE_KEY) {
+  try {
+    await import('newrelic');
+    console.log('✅ New Relic initialized');
+  } catch (err) {
+    console.error('❌ New Relic failed:', err.message);
+  }
+}
 
-// ✅ 4. Safe BigInt serialization
+// ✅ 3. Safe BigInt serialization
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
-// ❌ REMOVED: import './config/env.js';
-
 import express from 'express';
 import cors from 'cors';
-import logger from './config/logger.js';
 import adminRoutes from './routes/adminRoutes.js';
 import articlesRoutes from './routes/articles.js';
 import syncArticles from './jobs/syncJob.js';
@@ -24,7 +28,7 @@ import swaggerSpec from './config/swagger.js';
 import { testConnection } from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
-// ✅ 5. Test DB connection
+// ✅ 4. Test DB connection
 await testConnection();
 
 const app = express();
@@ -59,8 +63,8 @@ app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
 
-// ✅ APM test endpoint (important for verification)
-app.get('/apm-test', (req, res) => {
+// ✅ APM test endpoint
+app.get('/apm-test', (_req, res) => {
   console.log('APM TEST HIT');
   res.send('APM test working');
 });
@@ -70,15 +74,25 @@ if (process.env.NODE_ENV === 'development') {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 }
 
+// ✅ Swagger JSON route (IMPORTANT for ticket)
+app.get('/api-docs.json', (_req, res) => {
+  res.json(swaggerSpec);
+});
+
 // ✅ Cron job
 syncArticles();
 
-// ✅ Error handler (last)
+// ✅ Error handler
 app.use(errorHandler);
 
-// ✅ Start server
+// ✅ Start server (Vite-style output)
 app.listen(PORT, () => {
-  logger.info(`Server running on port${PORT}`);
+  console.log('\n----------------------------------------');
+  console.log('🚀 Backend running at:\n');
+  console.log(`➜ API:          http://localhost:${PORT}`);
+  console.log(`➜ Swagger UI:   http://localhost:${PORT}/api-docs`);
+  console.log(`➜ Swagger JSON: http://localhost:${PORT}/api-docs.json`);
+  console.log('----------------------------------------\n');
 });
 
 export default app;
