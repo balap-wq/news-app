@@ -1,12 +1,6 @@
 name: Playwright Smoke Tests
 
 on:
-  push:
-    branches:
-      - main
-      - master
-      - feature/**
-
   pull_request:
     branches:
       - main
@@ -70,11 +64,9 @@ jobs:
             backend/package-lock.json
             frontend/package-lock.json
 
-      # Root
       - name: Install Root Dependencies
         run: npm ci
 
-      # Backend
       - name: Install Backend Dependencies
         run: npm ci --prefix backend
 
@@ -90,18 +82,15 @@ jobs:
         working-directory: backend
         run: node prisma/seed.js
 
-      # Frontend
       - name: Install Frontend Dependencies
         run: npm ci --prefix frontend
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      # Tests
       - name: Run Playwright Tests
         run: npx playwright test
 
-      # Reports
       - name: Upload HTML Report
         uses: actions/upload-artifact@v4
         if: always()
