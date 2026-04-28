@@ -53,8 +53,11 @@ app.use('/api/headlines', headlinesRouter);
 app.use('/api/admin', adminRoutes);
 
 // ✅ Health check
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get('/api/health', (_req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // ✅ Sample endpoint
