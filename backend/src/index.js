@@ -1,17 +1,9 @@
 // ✅ 1. Load env FIRST
-import 'dotenv/config';
-
-// ✅ 2. Conditionally load New Relic (SAFE)
-if (process.env.NEW_RELIC_ENABLED === 'true' && process.env.NEW_RELIC_LICENSE_KEY) {
-  try {
-    await import('newrelic');
-    console.log('✅ New Relic initialized');
-  } catch (err) {
-    console.error('❌ New Relic failed:', err.message);
-  }
+if (process.env.NODE_ENV !== 'production') {
+  await import('dotenv/config');
 }
 
-// ✅ 3. Safe BigInt serialization
+// ✅ 4. Safe BigInt serialization
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
@@ -32,7 +24,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 await testConnection();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 // ✅ Debug env
 console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
@@ -40,7 +32,10 @@ console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
 // ✅ CORS
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: [
+      'http://localhost:5173',
+      process.env.FRONTEND_URL, // ✅ ADD THIS
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   })
@@ -55,8 +50,11 @@ app.use('/api/admin', adminRoutes);
 app.use('/api-preview', previewRouter);
 
 // ✅ Health check
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get('/api/health', (_req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // ✅ Sample endpoint
