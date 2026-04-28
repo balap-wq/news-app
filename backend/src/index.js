@@ -21,7 +21,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 await testConnection();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 // ✅ DEBUG (very important)
 console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
@@ -29,7 +29,10 @@ console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
 // ✅ CORS FIX (safe + production ready)
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: [
+      'http://localhost:5173',
+      process.env.FRONTEND_URL, // ✅ ADD THIS
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   })
