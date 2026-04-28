@@ -24,7 +24,7 @@ import syncArticles from './jobs/syncJob.js';
 import headlinesRouter from './routes/headlines.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
-
+import previewRouter from './routes/preview.js';
 import { testConnection } from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -52,6 +52,7 @@ app.use(express.json());
 app.use('/api/articles', articlesRoutes);
 app.use('/api/headlines', headlinesRouter);
 app.use('/api/admin', adminRoutes);
+app.use('/api-preview', previewRouter);
 
 // ✅ Health check
 app.get('/health', (_req, res) => {

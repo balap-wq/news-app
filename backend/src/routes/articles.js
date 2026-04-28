@@ -6,7 +6,6 @@ import {
   updateArticle,
   deleteArticle,
 } from '../controllers/articlesController.js';
-
 import { validateRequest } from '../middleware/validateRequest.js';
 import { articleParamSchema, articleBodySchema } from '../schemas/articleSchema.js';
 
@@ -18,28 +17,28 @@ router.get('/', getHeadlines);
 // 🔹 GET article by ID
 router.get(
   '/:id',
-  validateRequest({ schema: articleParamSchema }), // ✅ FIX
+  validateRequest({ params: articleParamSchema }), // ✅ FIXED: schema → params
   getArticleById
 );
 
 // 🔹 CREATE article
 router.post(
   '/',
-  validateRequest({ schema: articleBodySchema }), // ✅ FIX
+  validateRequest({ body: articleBodySchema }), // ✅ FIXED: schema → body
   createArticle
 );
 
 // 🔹 UPDATE article
 router.put(
   '/:id',
-  validateRequest({ schema: articleBodySchema.partial() }), // ✅ FIX
+  validateRequest({ body: articleBodySchema.partial() }), // ✅ FIXED: schema → body
   updateArticle
 );
 
 // 🔹 DELETE article
 router.delete(
   '/:id',
-  validateRequest({ schema: articleParamSchema }), // ✅ FIX
+  validateRequest({ params: articleParamSchema }), // ✅ FIXED: schema → params
   deleteArticle
 );
 

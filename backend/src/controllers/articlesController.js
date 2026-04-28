@@ -7,7 +7,6 @@ import snakeToCamel from '../utils/caseHandling.js';
 async function getHeadlines(req, res) {
   try {
     const { page = 1, category } = req.query;
-
     const pageNumber = parseInt(page, 10);
     const limit = 9;
 
@@ -49,7 +48,6 @@ async function getHeadlines(req, res) {
     });
   } catch (error) {
     logger.error('Error fetching headlines:', error);
-
     return res.status(500).json({
       success: false,
       error: 'Internal server error',
@@ -62,19 +60,17 @@ async function getArticleById(req, res) {
   try {
     const articleId = parseInt(req.params.id, 10);
 
-    // ✅ IMPORTANT: must match test exactly
     if (isNaN(articleId) || articleId <= 0) {
       return res.status(400).json({
         success: false,
         error: 'Invalid request',
-        message: 'Invalid request', // ✅ REQUIRED
+        message: 'Invalid request',
         errors: { id: 'Invalid ID' },
       });
     }
 
     const article = await findArticleById(articleId);
 
-    // ✅ 404 must use "error"
     if (!article) {
       return res.status(404).json({
         success: false,
@@ -83,13 +79,15 @@ async function getArticleById(req, res) {
       });
     }
 
+    // 4️⃣ Response summary
+    logger.info(`   📦 Response    : status=200 | articleId=${articleId}`);
+
     return res.status(200).json(snakeToCamel(article));
   } catch (error) {
     logger.error('Error fetching article:', error);
-
     return res.status(500).json({
       success: false,
-      error: 'Internal server error', // ✅ must be "error"
+      error: 'Internal server error',
     });
   }
 }
@@ -169,9 +167,7 @@ async function createArticle(req, res) {
         error: 'Article with this URL already exists',
       });
     }
-
     logger.error('Error creating article:', error);
-
     return res.status(500).json({
       success: false,
       error: 'Internal server error',
@@ -201,7 +197,6 @@ async function updateArticle(req, res) {
     return res.status(200).json(updatedArticle);
   } catch (error) {
     logger.error('Error updating article:', error);
-
     return res.status(500).json({
       success: false,
       error: 'Internal server error',
@@ -227,15 +222,15 @@ async function deleteArticle(req, res) {
 
     return res.status(200).json({
       success: true,
-      message: 'Article deleted successfully', // ✅ FIXED
+      message: 'Article deleted successfully',
     });
   } catch (error) {
     logger.error('Error deleting article:', error);
-
     return res.status(500).json({
       success: false,
       error: 'Internal server error',
     });
   }
 }
+
 export { getArticleById, getHeadlines, createArticle, updateArticle, deleteArticle };
