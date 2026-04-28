@@ -1,8 +1,7 @@
 // ✅ 1. Load env FIRST
-import 'dotenv/config';
-
-// ✅ 2. Load New Relic SECOND (VERY IMPORTANT)
-import 'newrelic';
+if (process.env.NODE_ENV !== 'production') {
+  await import('dotenv/config');
+}
 
 // ✅ 4. Safe BigInt serialization
 BigInt.prototype.toJSON = function () {
