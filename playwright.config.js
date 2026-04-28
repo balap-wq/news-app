@@ -10,7 +10,7 @@ export default defineConfig({
   reporter: [['html'], ['list']],
 
   use: {
-    baseURL: process.env.FRONTEND_URL || 'http://localhost:5173',
+    baseURL: process.env.CORS_ORIGIN || 'http://localhost:5173',
     headless: true,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
@@ -20,15 +20,15 @@ export default defineConfig({
   webServer: [
     {
       command: 'npm run dev --prefix backend',
-      url: 'http://localhost:5000/health',
+      url: 'http://localhost:5000/api/health',
       reuseExistingServer: !process.env.CI,
-      timeout: 500,
+      timeout: 12000,
     },
     {
       command: 'npm run dev --prefix frontend',
       url: 'http://localhost:5173',
       reuseExistingServer: !process.env.CI,
-      timeout: 500,
+      timeout: 12000,
     },
   ],
 
