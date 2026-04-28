@@ -1,17 +1,19 @@
 import request from 'supertest';
 import { jest } from '@jest/globals';
 
-const mockFindArticleById = jest.fn();
-const mockFindTopHeadlines = jest.fn();
-const mockCountArticles = jest.fn();
-
-await jest.unstable_mockModule('../src/repositories/articleRepository.js', () => ({
-  findArticleById: mockFindArticleById,
-  findTopHeadlines: mockFindTopHeadlines,
-  countArticles: mockCountArticles,
+// ✅ MOCK PRISMA (IMPORTANT FIX)
+await jest.unstable_mockModule('../src/prismaClient.js', () => ({
+  __esModule: true,
+  default: {
+    article: {
+      findMany: jest.fn(),
+      count: jest.fn(),
+      findUnique: jest.fn(),
+    },
+  },
 }));
 
-// ✅ Mock logger to suppress Winston logs during tests
+// ✅ Mock logger
 await jest.unstable_mockModule('../src/config/logger.js', () => ({
   default: {
     info: jest.fn(),
@@ -20,6 +22,8 @@ await jest.unstable_mockModule('../src/config/logger.js', () => ({
   },
 }));
 
+// ✅ Import after mocks
+const { default: prisma } = await import('../src/prismaClient.js');
 const { default: app } = await import('../src/app.js');
 
 describe('GET /api/articles/:id Integration Tests', () => {
@@ -27,9 +31,9 @@ describe('GET /api/articles/:id Integration Tests', () => {
     jest.clearAllMocks();
   });
 
-  // ✅ Test 1 — Success with plain fields
+  // ✅ Test 1 — Success
   it('should return 200 with article data', async () => {
-    mockFindArticleById.mockResolvedValue({
+    prisma.article.findUnique.mockResolvedValue({
       id: 1,
       title: 'Test Article',
       description: 'Test Desc',
@@ -43,9 +47,9 @@ describe('GET /api/articles/:id Integration Tests', () => {
     expect(response.body).toHaveProperty('description', 'Test Desc');
   });
 
-  // ✅ Test 2 — Success with snake_case fields transformed to camelCase
+  // ✅ Test 2 — snake_case → camelCase
   it('should return 200 with camelCase transformed fields', async () => {
-    mockFindArticleById.mockResolvedValue({
+    prisma.article.findUnique.mockResolvedValue({
       id: 1,
       title: 'Test Article',
       url_to_image: 'https://example.com/image.jpg',
@@ -63,7 +67,7 @@ describe('GET /api/articles/:id Integration Tests', () => {
 
   // ✅ Test 3 — Not found
   it('should return 404 if article not found', async () => {
-    mockFindArticleById.mockResolvedValue(null);
+    prisma.article.findUnique.mockResolvedValue(null);
 
     const response = await request(app).get('/api/articles/9999');
 
@@ -72,7 +76,7 @@ describe('GET /api/articles/:id Integration Tests', () => {
     expect(response.body).toHaveProperty('articleId', 9999);
   });
 
-  // ✅ Test 4 — Invalid ID handled by Zod middleware
+  // ✅ Test 4 — Invalid ID
   it('should return 400 if id is not a valid number', async () => {
     const response = await request(app).get('/api/articles/abc');
 
@@ -82,18 +86,18 @@ describe('GET /api/articles/:id Integration Tests', () => {
     expect(response.body.errors).toHaveProperty('id');
   });
 
-  // ✅ Test 5 — No id segment → falls through to GET / (getHeadlines)
+  // ✅ Test 5 — GET /api/articles (THIS WAS FAILING BEFORE)
   it('should return 200 if no id segment in path', async () => {
-    // ✅ Mocks required by getHeadlines
-    mockFindTopHeadlines.mockResolvedValue([]);
-    mockCountArticles.mockResolvedValue(0);
+    prisma.article.findMany.mockResolvedValue([]);
+    prisma.article.count.mockResolvedValue(0);
 
     const response = await request(app).get('/api/articles/');
 
     expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('success', true);
   });
 
-  // ✅ Proper 404 test
+  // ✅ Test 6 — Unknown route
   it('should return 404 for unknown route', async () => {
     const response = await request(app).get('/api/unknown');
 
@@ -101,9 +105,9 @@ describe('GET /api/articles/:id Integration Tests', () => {
     expect(response.body).toHaveProperty('error', 'Route not found');
   });
 
-  // ✅ Test 6 — DB error returns 500
+  // ✅ Test 7 — DB error
   it('should return 500 on unexpected DB error', async () => {
-    mockFindArticleById.mockRejectedValue(new Error('DB error'));
+    prisma.article.findUnique.mockRejectedValue(new Error('DB error'));
 
     const response = await request(app).get('/api/articles/1');
 
