@@ -33,7 +33,8 @@ export async function syncHeadlines() {
         // ✅ FIXED mapping (snake_case)
         const mappedArticle = {
           title: articleData.title || 'No Title',
-          content: articleData.description || '',
+          description: articleData.description || '',
+          content: articleData.content || '',
           url: articleData.url,
 
           url_to_image: urlToImage || '',
@@ -42,7 +43,6 @@ export async function syncHeadlines() {
 
           category: category || 'general',
           country: DEFAULT_COUNTRY,
-          userId: 1, // ✅ IMPORTANT FIX (CI SAFE)
         };
 
         await prisma.article.upsert({
