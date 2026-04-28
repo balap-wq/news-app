@@ -40,9 +40,9 @@ async function main() {
         category: 'general',
         country: 'us',
         published_at: new Date(),
-      }
+      },
     ],
-    skipDuplicates: true
+    skipDuplicates: true,
   });
 
   const count = await prisma.article.count();

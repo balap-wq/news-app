@@ -8,11 +8,11 @@ This document explains how to run the automated smoke test suite for the News Ap
 
 The smoke test validates the core end-to-end flow of the application:
 
-* Frontend loads successfully
-* Backend APIs respond correctly
-* Database connectivity works
-* News articles are displayed in UI
-* Basic navigation works
+- Frontend loads successfully
+- Backend APIs respond correctly
+- Database connectivity works
+- News articles are displayed in UI
+- Basic navigation works
 
 This helps quickly detect major issues after code changes, deployments, or infrastructure updates.
 
@@ -22,11 +22,11 @@ This helps quickly detect major issues after code changes, deployments, or infra
 
 Before running tests, ensure:
 
-* Node.js installed
-* npm installed
-* Project dependencies installed
-* Backend environment variables configured
-* Database is accessible
+- Node.js installed
+- npm installed
+- Project dependencies installed
+- Backend environment variables configured
+- Database is accessible
 
 Install dependencies:
 
@@ -106,8 +106,8 @@ tests/
 
 Smoke tests run automatically in GitHub Actions for:
 
-* Push events
-* Pull Requests
+- Push events
+- Pull Requests
 
 Workflow file:
 
@@ -121,10 +121,10 @@ Workflow file:
 
 The smoke test confirms:
 
-* Application starts correctly
-* APIs return expected responses
-* UI renders news data
-* User can navigate successfully
+- Application starts correctly
+- APIs return expected responses
+- UI renders news data
+- User can navigate successfully
 
 ---
 

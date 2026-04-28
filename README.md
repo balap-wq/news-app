@@ -285,8 +285,8 @@ To allow communication between frontend and backend during development, CORS is 
 
 This ensures that the React development server can access backend APIs without CORS errors.
 
-
 ------------------------------------------------> APM {Using New Relic} <--------------------------------------------------------------
+
 # 📊 APM Setup (New Relic)
 
 ## 🚀 Overview
@@ -297,15 +297,15 @@ Integrated New Relic APM to monitor backend performance and set up alerts for pr
 
 ## 🛠️ Setup
 
-* Installed `newrelic`
-* Configured:
+- Installed `newrelic`
+- Configured:
 
 ```env
 NEW_RELIC_LICENSE_KEY=your_key
 NEW_RELIC_APP_NAME=news-app-backend
 ```
 
-* Initialized in app:
+- Initialized in app:
 
 ```js
 import 'newrelic';
@@ -315,39 +315,39 @@ import 'newrelic';
 
 ## 📈 Metrics Monitored
 
-* API Response Time
-* Error Rate
-* Throughput
-* Database Latency (P95)
+- API Response Time
+- Error Rate
+- Throughput
+- Database Latency (P95)
 
 ---
 
 ## 🚨 Alerts Configured
 
-* **Response Time**: > 500 ms
-* **Error Rate**: > 5%
-* **Throughput**: < 1 request/min
-* **DB Latency (P95)**: > 0.3 sec
-* API-level alerts for `/api/articles`
+- **Response Time**: > 500 ms
+- **Error Rate**: > 5%
+- **Throughput**: < 1 request/min
+- **DB Latency (P95)**: > 0.3 sec
+- API-level alerts for `/api/articles`
 
 ---
 
 ## 🔔 Notifications
 
-* Integrated with Slack for real-time alerts
+- Integrated with Slack for real-time alerts
 
 ---
 
 ## 👥 Access
 
-* Team access provided (Viewer role)
+- Team access provided (Viewer role)
 
 ---
 
 ## ✅ Outcome
 
-* Real-time monitoring
-* Alert-based issue detection
-* Improved backend observability
+- Real-time monitoring
+- Alert-based issue detection
+- Improved backend observability
 
 ---

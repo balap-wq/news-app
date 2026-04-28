@@ -48,7 +48,7 @@ jobs:
       NEW_RELIC_ENABLED: false
       NEW_RELIC_NO_CONFIG_FILE: true
       NEW_RELIC_LICENSE_KEY: dummy
-      NODE_OPTIONS: ""
+      NODE_OPTIONS: ''
 
     steps:
       - name: Checkout Code
