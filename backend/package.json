@@ -5,7 +5,7 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node -r newrelic src/index.js",
     "seed": "node src/seeds/sampleArticles.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint src --ext .js",
@@ -44,6 +44,6 @@
     "test": "3.3.0"
   },
   "engines": {
-    "node": ">=18.0.0"
-  }
+  "node": ">=20.0.0"
+}
 }
