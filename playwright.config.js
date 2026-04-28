@@ -22,13 +22,13 @@ export default defineConfig({
       command: 'npm run dev --prefix backend',
       url: 'http://localhost:5000/health',
       reuseExistingServer: !process.env.CI,
-      timeout: 120000,
+      timeout: 500,
     },
     {
       command: 'npm run dev --prefix frontend',
       url: 'http://localhost:5173',
       reuseExistingServer: !process.env.CI,
-      timeout: 120000,
+      timeout: 500,
     },
   ],
 
