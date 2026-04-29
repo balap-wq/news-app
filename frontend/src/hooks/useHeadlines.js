@@ -20,10 +20,14 @@ function useHeadlines({ page = 1, category, country, limit = 9 }) {
         if (category) params.category = category;
         if (country) params.country = country;
 
+        console.log('Fetching headlines with params:', params);
+
         const response = await axiosInstance.get('/api/headlines', {
           params,
           signal: controller.signal,
         });
+
+        console.log('API Response:', response.data);
 
         setData(response.data.articles || []);
         setTotalResults(response.data.totalResults || 0);
@@ -48,7 +52,6 @@ function useHeadlines({ page = 1, category, country, limit = 9 }) {
           setError(err.message);
         }
       } finally {
-        // only update state if request wasn't aborted
         if (!controller.signal.aborted) {
           setLoading(false);
         }
