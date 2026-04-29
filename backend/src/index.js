@@ -1,4 +1,4 @@
-// ✅ use this for production 1. Load env FIRST 
+// ✅ use this for production 1. Load env FIRST
 
 if (process.env.NODE_ENV !== 'production') {
   await import('dotenv/config');

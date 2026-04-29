@@ -24,13 +24,10 @@ export async function syncHeadlines() {
         });
 
         successFetch++;
-
       } catch (error) {
         // 🔴 Handle rate limit
         if (error.response?.status === 429) {
-          logger.warn(
-            `Rate limit hit for category ${category}. Stopping further requests.`
-          );
+          logger.warn(`Rate limit hit for category ${category}. Stopping further requests.`);
           break;
         }
 
@@ -72,7 +69,6 @@ export async function syncHeadlines() {
           });
 
           articlesProcessed++;
-
         } catch (error) {
           logger.error('Error processing article:', {
             error: error.message,
@@ -87,7 +83,6 @@ export async function syncHeadlines() {
       successFetch,
       failedFetch,
     });
-
   } catch (error) {
     logger.error('Sync Headlines Service failed completely', {
       error: error.message,
