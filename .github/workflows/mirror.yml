@@ -16,10 +16,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Debug Token
+        run: |
+          if [ -z "${{ secrets.MIRROR_ACCESS_TOKEN }}" ]; then
+            echo "❌ TOKEN IS EMPTY - Secret not found!"
+          else
+            echo "✅ TOKEN EXISTS thats good!"
+          fi
+
       - name: Push to mirror
         run: |
           git config --global user.name "mirror-bot"
           git config --global user.email "mirror@github.com"
-          git remote add mirror https://x-access-token:${{ secrets.PERSONAL_TOKEN }}@github.com/balap-wq/news-app.git
+          git remote add mirror https://x-access-token:${{ secrets.MIRROR_ACCESS_TOKEN }}@github.com/balap-wq/news-app.git
           git push mirror --all
           git push mirror --tags
