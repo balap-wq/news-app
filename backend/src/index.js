@@ -31,7 +31,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 await testConnection();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 // ✅ Debug env
 console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
@@ -39,7 +39,10 @@ console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
 // ✅ CORS
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: [
+      'http://localhost:5173',
+      process.env.FRONTEND_URL, // ✅ ADD THIS
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   })
@@ -84,7 +87,7 @@ app.use(errorHandler);
 
 // ✅ Start server
 app.listen(PORT, () => {
-  logger.info(`Server running on http://localhost:${PORT}`);
+  logger.info(`Server running on port${PORT}`);
 });
 
 export default app;
