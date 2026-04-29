@@ -1,10 +1,7 @@
 // ✅ 1. Load env FIRST
-if (process.env.NODE_ENV !== 'production') {
-  await import('dotenv/config');
-}
-import 'dotenv/config'; // ✅ MUST be line 1
+import 'dotenv/config';
 
-// ✅ 4. Safe BigInt serialization
+// ✅ 2. Safe BigInt serialization
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
@@ -21,11 +18,11 @@ import previewRouter from './routes/preview.js';
 import { testConnection } from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
-// ✅ 4. Test DB connection
+// ✅ 3. Test DB connection
 await testConnection();
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 
 // ✅ Debug env
 console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
@@ -33,10 +30,7 @@ console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
 // ✅ CORS
 app.use(
   cors({
-    origin: [
-      'http://localhost:5173',
-      process.env.FRONTEND_URL, // ✅ ADD THIS
-    ],
+    origin: ['http://localhost:5173', process.env.FRONTEND_URL],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   })
@@ -44,18 +38,17 @@ app.use(
 
 app.use(express.json());
 
+// ✅ Preview router — before other routes
+app.use('/api-preview', previewRouter);
+
 // ✅ Routes
 app.use('/api/articles', articlesRoutes);
 app.use('/api/headlines', headlinesRouter);
 app.use('/api/admin', adminRoutes);
-app.use('/api-preview', previewRouter);
 
 // ✅ Health check
 app.get('/api/health', (_req, res) => {
-  res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-  });
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // ✅ Sample endpoint
@@ -69,12 +62,10 @@ app.get('/apm-test', (_req, res) => {
   res.send('APM test working');
 });
 
-// ✅ Swagger (dev only)
-if (process.env.NODE_ENV === 'development') {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-}
+// ✅ Swagger — always available in dev
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// ✅ Swagger JSON route (IMPORTANT for ticket)
+// ✅ Swagger JSON route
 app.get('/api-docs.json', (_req, res) => {
   res.json(swaggerSpec);
 });
@@ -85,7 +76,7 @@ syncArticles();
 // ✅ Error handler
 app.use(errorHandler);
 
-// ✅ Start server (Vite-style output)
+// ✅ Start server
 app.listen(PORT, () => {
   console.log('\n----------------------------------------');
   console.log('🚀 Backend running at:\n');
