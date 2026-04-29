@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # 👈 add this line
+  workflow_dispatch:
 
 jobs:
   mirror:
@@ -17,11 +17,9 @@ jobs:
           fetch-depth: 0
 
       - name: Push to mirror
-        env:
-          TOKEN: ${{ secrets.PERSONAL_TOKEN }}
         run: |
           git config --global user.name "mirror-bot"
           git config --global user.email "mirror@github.com"
-
-          git push https://x-access-token:$TOKEN@github.com/balap-wq/news-app.git --all
-          git push https://x-access-token:$TOKEN@github.com/balap-wq/news-app.git --tags
+          git remote add mirror https://x-access-token:${{ secrets.PERSONAL_TOKEN }}@github.com/balap-wq/news-app.git
+          git push mirror --all
+          git push mirror --tags
