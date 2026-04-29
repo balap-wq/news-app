@@ -16,6 +16,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Debug Token
+        run: |
+          if [ -z "${{ secrets.PERSONAL_TOKEN }}" ]; then
+            echo "❌ TOKEN IS EMPTY - Secret not found!"
+          else
+            echo "✅ TOKEN EXISTS"
+          fi
+
       - name: Push to mirror
         run: |
           git config --global user.name "mirror-bot"
