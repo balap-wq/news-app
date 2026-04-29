@@ -25,7 +25,7 @@ export async function syncHeadlines() {
 
         successFetch++;
       } catch (error) {
-        // 🔴 Handle rate limit
+        //  Handle rate limit
         if (error.response?.status === 429) {
           logger.warn(`Rate limit hit for category ${category}. Stopping further requests.`);
           break;
@@ -37,7 +37,7 @@ export async function syncHeadlines() {
         });
       }
 
-      // ✅ ALWAYS delay (important fix)
+      // ALWAYS delay (important fix)
       await delay(1500);
 
       // Skip if no data
@@ -46,7 +46,7 @@ export async function syncHeadlines() {
         continue;
       }
 
-      // 🟢 Process articles
+      //  Process articles
       for (const article of articles) {
         try {
           const { source, urlToImage, publishedAt, ...articleData } = article;
@@ -77,7 +77,7 @@ export async function syncHeadlines() {
       }
     }
 
-    // ✅ Final summary log
+    // Final summary log
     logger.info('Sync Headlines Service completed', {
       articlesProcessed,
       successFetch,
