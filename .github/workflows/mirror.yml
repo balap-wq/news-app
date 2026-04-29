@@ -21,7 +21,7 @@ jobs:
           if [ -z "${{ secrets.MIRROR_ACCESS_TOKEN }}" ]; then
             echo "❌ TOKEN IS EMPTY - Secret not found!"
           else
-            echo "✅ TOKEN EXISTS"
+            echo "✅ TOKEN EXISTS thats good!"
           fi
 
       - name: Push to mirror
