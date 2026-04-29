@@ -25,9 +25,11 @@ jobs:
           fi
 
       - name: Push to mirror
+        env:
+          GH_TOKEN: ${{ secrets.MIRROR_ACCESS_TOKEN }}
         run: |
           git config --global user.name "mirror-bot"
           git config --global user.email "mirror@github.com"
-          git remote add mirror https://x-access-token:${{ secrets.MIRROR_ACCESS_TOKEN }}@github.com/balap-wq/news-app.git
+          git remote add mirror https://$GH_TOKEN@github.com/balap-wq/news-app.git
           git push mirror --all
           git push mirror --tags
