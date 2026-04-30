@@ -23,7 +23,6 @@
     "newrelic": "^13.19.2",
     "node-cron": "^4.2.1",
     "pg": "^8.20.0",
-    "prisma": "^5.22.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.19.0",
@@ -44,6 +43,6 @@
     "test": "3.3.0"
   },
   "engines": {
-  "node": ">=20.0.0"
-}
+    "node": ">=20.0.0"
+  }
 }
