@@ -28,7 +28,7 @@ async function getHeadlines(req, res) {
         skip: offset,
         take: limit,
         orderBy: {
-          published_at: 'desc', // ✅ correct field
+          published_at: 'desc', 
         },
       });
 

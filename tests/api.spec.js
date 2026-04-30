@@ -1,9 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-test('GET /api/headlines - pipeline check', async ({ request }) => {
-  const url = `http://localhost:5000/api/headlines`;
+test('GET /api/headlines - should return list of articles', async ({ request }) => {
 
-  const res = await request.get(url);
+  const res = await request.get('/api/headlines');
 
   // ✅ Check status first
   expect(res.status()).toBe(200);

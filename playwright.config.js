@@ -7,6 +7,10 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
 
+  expect: {
+    timeout: 15000,        // ← max time for each expect() assertion (15s)
+  },
+  
   reporter: [['html'], ['list']],
 
   use: {
@@ -35,7 +39,15 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      testMatch: 'tests/smoke.spec.js',
       use: { ...devices['Desktop Chrome'] },
     },
+    {
+      name: 'api',
+      testMatch: 'tests/api.spec.js',
+      use: {
+        baseURL: process.env.BACKEND_URL || 'http://localhost:5000',
+     },
+    }, 
   ],
 });
