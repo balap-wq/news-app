@@ -14,13 +14,10 @@ class ValidationError extends Error {
 // 🔍 Validate & normalize input
 function validateAndNormalize(value, allowedValues, fieldName) {
   if (!value) return undefined;
-
   const normalized = value.trim().toLowerCase();
-
   if (!allowedValues.includes(normalized)) {
     throw new ValidationError(`Invalid ${fieldName}. Allowed values: ${allowedValues.join(', ')}`);
   }
-
   return normalized;
 }
 
@@ -28,7 +25,6 @@ function validateAndNormalize(value, allowedValues, fieldName) {
 export async function getHeadlines(req, res) {
   try {
     const query = req.query || {};
-
     const { limit, category, country, page } = query;
 
     const pageNumber = page ? parseInt(page, 10) : 1;
@@ -49,9 +45,7 @@ export async function getHeadlines(req, res) {
     }
 
     const pageOffset = (pageNumber - 1) * pageLimit;
-
     const normalizedCategory = validateAndNormalize(category, ALLOWED_CATEGORIES, 'category');
-
     const normalizedCountry = validateAndNormalize(country, ALLOWED_COUNTRIES, 'country');
 
     const whereCondition = {
@@ -59,7 +53,6 @@ export async function getHeadlines(req, res) {
       ...(normalizedCountry && { country: normalizedCountry }),
     };
 
-    // ✅ SAFE DB CALL (VERY IMPORTANT FOR CI)
     let headlines = [];
     let totalResults = 0;
 
@@ -78,13 +71,16 @@ export async function getHeadlines(req, res) {
       });
     } catch (dbError) {
       logger.error('DB Error in getHeadlines:', dbError);
-
-      // ✅ fallback instead of crash
       headlines = [];
       totalResults = 0;
     }
 
     const transformedArticles = snakeToCamel(headlines);
+
+    // 4️⃣ Response summary
+    logger.info(
+      `   📦 Response    : status=200 | count=${transformedArticles.length} | total=${totalResults}`
+    );
 
     return res.status(200).json({
       success: true,
@@ -95,8 +91,6 @@ export async function getHeadlines(req, res) {
     });
   } catch (error) {
     logger.error('Error in getHeadlines:', error);
-
-    // ✅ DO NOT use next(error) in CI
     return res.status(500).json({
       success: false,
       error: 'Internal server error',
