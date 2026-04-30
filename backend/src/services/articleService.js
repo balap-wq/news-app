@@ -1,30 +1,39 @@
-import pool from '../config/db.js';
+import prisma from '../prismaClient.js';
 import logger from '../config/logger.js';
 
 // Get headlines with pagination
-export const findTopHeadlines = async ({ limit, offset }) => {
+export const findTopHeadlines = async ({ limit = 10, offset = 0 }) => {
   // 🛑 Prevent DB call during unit test
   if (process.env.NODE_ENV === 'test') {
     throw new Error('DB should not be called during unit test');
   }
 
   try {
-    const query = `
-      SELECT 
-        id, 
-        title, 
-        description,
-        url_to_image AS "urlToImage",
-        source_name AS "sourceName",
-        published_at AS "publishedAt"
-      FROM articles
-      ORDER BY published_at DESC
-      LIMIT $1 OFFSET $2
-    `;
+    const articles = await prisma.article.findMany({
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        url_to_image: true,
+        source_name: true,
+        published_at: true,
+      },
+      orderBy: {
+        published_at: 'desc',
+      },
+      take: limit,
+      skip: offset,
+    });
 
-    const { rows } = await pool.query(query, [limit, offset]);
-
-    return rows;
+    // 🔄 map to your API format
+    return articles.map((a) => ({
+      id: a.id,
+      title: a.title,
+      description: a.description,
+      urlToImage: a.url_to_image,
+      sourceName: a.source_name,
+      publishedAt: a.published_at,
+    }));
   } catch (error) {
     logger.error('Error in findTopHeadlines:', error);
     throw new Error('Failed to fetch headlines');
@@ -33,17 +42,13 @@ export const findTopHeadlines = async ({ limit, offset }) => {
 
 // Get total count
 export const countArticles = async () => {
-  // 🛑 Prevent DB call during unit test
   if (process.env.NODE_ENV === 'test') {
     throw new Error('DB should not be called during unit test');
   }
 
   try {
-    const query = `SELECT COUNT(*) FROM articles`;
-
-    const { rows } = await pool.query(query);
-
-    return parseInt(rows[0].count, 10);
+    const count = await prisma.article.count();
+    return count;
   } catch (error) {
     logger.error('Error in countArticles:', error);
     throw new Error('Failed to count articles');
