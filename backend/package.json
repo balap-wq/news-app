@@ -13,9 +13,11 @@
     "format": "prettier --write \"src/**/*.js\"",
     "test": "prisma generate && node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:e2e": "npx playwright test",
-    "prepare": "husky"
+    "prepare": "husky",
+    "swagger:validate": "node src/scripts/validateSwagger.js"
   },
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^8.5.0",
     "@prisma/client": "^6.19.3",
     "axios": "^1.14.0",
     "cors": "^2.8.6",
