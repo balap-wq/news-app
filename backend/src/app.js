@@ -3,18 +3,20 @@ import express from 'express';
 import cors from 'cors';
 import articlesRoutes from './routes/articles.js';
 import headlinesRoutes from './routes/headlines.js';
+import previewRouter from './routes/preview.js';
 import logger from './config/logger.js';
 
 const app = express();
 
-// ✅ Enable CORS (important for frontend connection)
+// ✅ Preview router BEFORE cors — no cors restriction needed
+app.use('/api-preview', previewRouter);
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL, // your Vite frontend
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   })
 );
-
 app.use(express.json());
 
 // Health check
@@ -28,9 +30,7 @@ app.use('/api/headlines', headlinesRoutes);
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).json({
-    error: 'Route not found',
-  });
+  res.status(404).json({ error: 'Route not found' });
 });
 
 // Global error handler

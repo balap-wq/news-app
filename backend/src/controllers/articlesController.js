@@ -7,16 +7,17 @@ import snakeToCamel from '../utils/caseHandling.js';
 async function getHeadlines(req, res) {
   try {
     const { page = 1, category } = req.query;
-
     const pageNumber = parseInt(page, 10);
     const limit = 9;
 
     if (isNaN(pageNumber) || pageNumber < 1) {
-      return res.status(400).json({ error: 'Invalid page number' });
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid page number',
+      });
     }
 
     const offset = (pageNumber - 1) * limit;
-
     const whereCondition = category ? { category } : {};
 
     let articles = [];
@@ -28,7 +29,7 @@ async function getHeadlines(req, res) {
         skip: offset,
         take: limit,
         orderBy: {
-          publishedAt: 'desc', // ✅ correct field
+          published_at: 'desc',
         },
       });
 
@@ -39,17 +40,14 @@ async function getHeadlines(req, res) {
       logger.error('DB Error in getHeadlines:', dbError);
     }
 
-    const transformedArticles = snakeToCamel(articles);
-
     return res.status(200).json({
       success: true,
-      articles: transformedArticles,
+      articles: snakeToCamel(articles),
       totalResults: totalCount,
       page: pageNumber,
     });
   } catch (error) {
     logger.error('Error fetching headlines:', error);
-
     return res.status(500).json({
       success: false,
       error: 'Internal server error',
@@ -60,13 +58,14 @@ async function getHeadlines(req, res) {
 // 📄 GET ARTICLE BY ID
 async function getArticleById(req, res) {
   try {
-    const id = req.params.id;
-    const articleId = parseInt(id, 10);
+    const articleId = parseInt(req.params.id, 10);
 
     if (isNaN(articleId) || articleId <= 0) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid article ID',
+        error: 'Invalid request',
+        message: 'Invalid request',
+        errors: { id: 'Invalid ID' },
       });
     }
 
@@ -74,17 +73,18 @@ async function getArticleById(req, res) {
 
     if (!article) {
       return res.status(404).json({
+        success: false,
         error: 'Article not found',
         articleId,
       });
     }
 
-    const transformedArticle = snakeToCamel(article);
+    // 4️⃣ Response summary
+    logger.info(`   📦 Response    : status=200 | articleId=${articleId}`);
 
-    return res.status(200).json(transformedArticle);
+    return res.status(200).json(snakeToCamel(article));
   } catch (error) {
     logger.error('Error fetching article:', error);
-
     return res.status(500).json({
       success: false,
       error: 'Internal server error',
@@ -139,7 +139,6 @@ async function createArticle(req, res) {
       });
     }
 
-    // ✅ Pre-check for duplicate
     const existing = await prisma.article.findUnique({
       where: { url: normalizedUrl },
     });
@@ -168,9 +167,9 @@ async function createArticle(req, res) {
         error: 'Article with this URL already exists',
       });
     }
-
     logger.error('Error creating article:', error);
     return res.status(500).json({
+      success: false,
       error: 'Internal server error',
     });
   }
@@ -179,8 +178,7 @@ async function createArticle(req, res) {
 // ✅ UPDATE
 async function updateArticle(req, res) {
   try {
-    const id = req.params.id;
-    const articleId = parseInt(id, 10);
+    const articleId = parseInt(req.params.id, 10);
 
     if (isNaN(articleId) || articleId <= 0) {
       return res.status(400).json({
@@ -199,15 +197,17 @@ async function updateArticle(req, res) {
     return res.status(200).json(updatedArticle);
   } catch (error) {
     logger.error('Error updating article:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+    });
   }
 }
 
 // ✅ DELETE
 async function deleteArticle(req, res) {
   try {
-    const id = req.params.id;
-    const articleId = parseInt(id, 10);
+    const articleId = parseInt(req.params.id, 10);
 
     if (isNaN(articleId) || articleId <= 0) {
       return res.status(400).json({
@@ -221,11 +221,15 @@ async function deleteArticle(req, res) {
     });
 
     return res.status(200).json({
+      success: true,
       message: 'Article deleted successfully',
     });
   } catch (error) {
     logger.error('Error deleting article:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({
+      success: false,
+      error: 'Internal server error',
+    });
   }
 }
 
