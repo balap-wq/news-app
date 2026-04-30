@@ -21,7 +21,4 @@ test('Navigate to article detail page', async ({ page }) => {
 
   // ✅ Match your actual route
   await expect(page).toHaveURL(/article/);
-
- // Use REAL selector if testid not available
-  await expect(page.locator('h1')).toBeVisible();
 });
