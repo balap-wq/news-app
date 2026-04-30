@@ -39,12 +39,12 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      testMatch: 'tests/smoke.spec.js',
+      testMatch: /tests\/smoke\.spec\.js/,
       use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'api',
-      testMatch: 'tests/api.spec.js',
+      testMatch: /tests\/api\.spec\.js/,
       use: {
         baseURL: process.env.BACKEND_URL || 'http://localhost:5000',
      },
