@@ -1,11 +1,11 @@
 // ✅ use this for production 1. Load env FIRST
 
-if (process.env.NODE_ENV !== 'production') {
-  await import('dotenv/config');
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   await import('dotenv/config');
+// }
 
 // // use this for local server:
-// import 'dotenv/config'; // ✅ 2. Simpler import
+import 'dotenv/config';
 
 // ✅ 4. Safe BigInt serialization
 BigInt.prototype.toJSON = function () {
@@ -21,11 +21,7 @@ import headlinesRouter from './routes/headlines.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 import previewRouter from './routes/preview.js';
-import { testConnection } from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
-
-// ✅ 3. Test DB connection
-await testConnection();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
