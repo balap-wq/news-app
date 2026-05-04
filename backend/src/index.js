@@ -46,11 +46,13 @@ app.use(
 app.use(express.json());
 
 // ✅ Session — required for passport OAuth handshake
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // ✅ Passport
 app.use(passport.initialize());
