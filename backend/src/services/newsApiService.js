@@ -13,11 +13,7 @@ if (!API_KEY && process.env.NODE_ENV !== 'test') {
   throw new Error('Missing NEWS_API_KEY in .env');
 }
 
-export const fetchTopHeadlines = async ({
-  country = 'us',
-  category,
-  pageSize = 100,
-}) => {
+export const fetchTopHeadlines = async ({ country = 'us', category, pageSize = 100 }) => {
   try {
     // ✅ FIXED: use BASE_URL (not FRONTEND_URL)
     const url = `${BASE_URL}/top-headlines`;

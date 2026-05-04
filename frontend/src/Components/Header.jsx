@@ -1,7 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 const Header = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        const isExpired = decoded.exp * 1000 < Date.now();
+        if (isExpired) {
+          localStorage.removeItem('jwt');
+        } else {
+          setUser(decoded);
+        }
+      } catch {
+        localStorage.removeItem('jwt');
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('jwt');
+    setUser(null);
+  };
+
   return (
     <>
       <div className="bg-black text-white p-4 sticky top-0 z-10 mx-auto md:flex items-center justify-between">
@@ -11,7 +36,7 @@ const Header = () => {
             <span className="text-7xl text-orange-400 font-kings font-extralight">h</span>ub
           </h1>
         </NavLink>
-        <nav>
+        <nav className="flex items-center gap-6">
           <ul className="flex space-x-4 mt-3">
             <li className="hover:text-orange-400">
               <NavLink to="/headlines">Headlines</NavLink>
@@ -20,6 +45,26 @@ const Header = () => {
               <NavLink to="/about">About</NavLink>
             </li>
           </ul>
+          {user ? (
+            <div className="flex items-center gap-3 mt-3">
+              <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-black font-extrabold text-sm">
+                {user.name?.charAt(0).toUpperCase()}
+              </div>
+              <span className="text-sm text-white">{user.name}</span>
+              <button
+                onClick={handleLogout}
+                className="text-xs text-gray-400 hover:text-orange-400 border border-gray-600 px-3 py-1 rounded"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <a href={`${import.meta.env.VITE_API_URL}/auth/google`} className="mt-3">
+              <button className="text-sm bg-orange-400 text-black font-bold px-4 py-1.5 rounded hover:bg-orange-300 transition-colors">
+                Sign in with Google
+              </button>
+            </a>
+          )}
         </nav>
       </div>
     </>
