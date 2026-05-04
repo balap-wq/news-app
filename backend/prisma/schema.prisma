@@ -26,3 +26,16 @@ model Article {
   @@index([published_at(sort: Desc)])
   @@map("articles")
 }
+
+model User {
+  id                 String   @id @default(cuid())
+  name               String
+  email              String   @unique
+  profileImage       String?
+  favoriteCategories String[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+@@map("users") 
+
+}
