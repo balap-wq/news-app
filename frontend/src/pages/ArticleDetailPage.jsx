@@ -20,8 +20,8 @@ export default function ArticleDetailPage() {
   // Preserve page number for back navigation
   const page = state?.page || new URLSearchParams(location.search).get('page') || 1;
 
-  // Always fetch by id — use state as override if available
-  const { article, loading, error, refetch } = useArticle(id);
+  // Skip fetching if article data already passed via navigation state
+  const { article, loading, error, refetch } = useArticle(state?.article ? null : id);
 
   // state.article comes from HeadlineCard navigation
   const data = state?.article || article;
@@ -141,9 +141,20 @@ export default function ArticleDetailPage() {
               )}
 
               {/* Content — strips NewsAPI "[+2847 chars]" truncation suffix */}
-              {content && (
-                <p className="text-base text-[#ceced8] leading-8 tracking-wide">
+              {content ? (
+                <p
+                  data-testid="article-content"
+                  className="text-base text-[#ceced8] leading-8 tracking-wide"
+                >
                   {stripNewsSuffix(content)}
+                </p>
+              ) : (
+                // Fallback: show description as content if content is null
+                <p
+                  data-testid="article-content"
+                  className="text-base text-[#ceced8] leading-8 tracking-wide"
+                >
+                  {description}
                 </p>
               )}
 
