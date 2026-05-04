@@ -1,13 +1,17 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL,
+const globalForPrisma = globalThis;
+
+export const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL,
+      },
     },
-  },
-  log: ['error'],
-});
+    log: ['error'],
+  });
 
 // ✅ Properly disconnect on shutdown
 process.on('beforeExit', async () => {
@@ -20,6 +24,10 @@ export const prisma =
   new PrismaClient({
     log: ['error'], // optional
   });
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;
