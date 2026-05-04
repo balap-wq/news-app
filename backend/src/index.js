@@ -3,6 +3,7 @@ if (process.env.NODE_ENV !== 'production') {
   await import('dotenv/config');
 }
 import 'dotenv/config';
+
 // ✅ 2. Safe BigInt serialization
 BigInt.prototype.toJSON = function () {
   return this.toString();
@@ -10,6 +11,8 @@ BigInt.prototype.toJSON = function () {
 
 import express from 'express';
 import cors from 'cors';
+import session from 'express-session';
+import passport from 'passport';
 import adminRoutes from './routes/adminRoutes.js';
 import articlesRoutes from './routes/articles.js';
 import syncArticles from './jobs/syncJob.js';
@@ -19,6 +22,8 @@ import swaggerSpec from './config/swagger.js';
 import previewRouter from './routes/preview.js';
 import { testConnection } from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import authRoutes from './routes/auth.js';
+import './config/passport.js';
 
 // ✅ 3. Test DB connection
 await testConnection();
@@ -40,8 +45,22 @@ app.use(
 
 app.use(express.json());
 
+// ✅ Session — required for passport OAuth handshake
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+}));
+
+// ✅ Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 // ✅ Preview router — before other routes
 app.use('/api-preview', previewRouter);
+
+// ✅ Auth routes
+app.use('/auth', authRoutes);
 
 // ✅ Routes
 app.use('/api/articles', articlesRoutes);
@@ -64,10 +83,8 @@ app.get('/apm-test', (_req, res) => {
   res.send('APM test working');
 });
 
-// ✅ Swagger — always available in dev
+// ✅ Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-// ✅ Swagger JSON route
 app.get('/api-docs.json', (_req, res) => {
   res.json(swaggerSpec);
 });
