@@ -49,6 +49,13 @@ app.use('/auth', authRoutes);
 // Your existing routes — unchanged
 app.use('/api/articles', articlesRoutes);
 app.use('/api/headlines', headlinesRoutes);
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'test-secret',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // 404 handler — unchanged
 app.use((req, res) => {

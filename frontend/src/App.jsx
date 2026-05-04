@@ -15,7 +15,7 @@ const App = () => {
             <Route path="/" element={<Navigate to="/headlines" />} />
             <Route path="/headlines" element={<HeadlinePage />} />
             <Route path="/article/:id" element={<ArticleDetailPage />} />
-            <Route path="/auth-success" element={<AuthSuccess />} />
+            <Route path="/auth/success" element={<AuthSuccess />} />
           </Routes>
         </BrowserRouter>
       </div>
