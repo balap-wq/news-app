@@ -67,5 +67,8 @@ app.use((err, req, res, _next) => {
   logger.error('Global Error:', err);
   res.status(500).json({ error: 'Something went wrong' });
 });
-
+app.use((err, req, res, _next) => {
+  logger.error('Global Error:', err);
+  res.status(500).json({ error: 'Internal server error' }); // ✅ Correct message
+});
 export default app;
