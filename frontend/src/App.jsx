@@ -1,24 +1,30 @@
-import React from 'react';
-import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
-import ArticleDetailPage from './pages/ArticleDetailPage';
-import Header from './Components/Header';
-import HeadlinePage from './pages/HeadlinePage';
+// src/App.jsx
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './Context/AuthContext';
+import ProtectedRoute from './Components/ProtectedRoute';
+import AuthCallback from './pages/AuthCallback';
+import Welcome from './pages/Welcome';
+// import Login from './pages/Login'; // your teammate's page
 
-const App = () => {
-  return (
-    <>
-      <div className="min-h-screen bg-[#FAFAFA]">
-        <BrowserRouter>
-          <Header />
-          <Routes>
-            <Route path="/" element={<Navigate to="/headlines" />} />
-            <Route path="/headlines" element={<HeadlinePage />} />
-            <Route path="/article/:id" element={<ArticleDetailPage />} />
-          </Routes>
-        </BrowserRouter>
-      </div>
-    </>
-  );
-};
+const App = () => (
+  <BrowserRouter>
+    <AuthProvider>
+      <Routes>
+        {/* <Route path="/login" element={<Login />} /> */}
+        <Route path="/auth/callback" element={<AuthCallback />} />
+
+        {/* Protected */}
+        <Route path="/welcome" element={
+          <ProtectedRoute>
+            <Welcome />
+          </ProtectedRoute>
+        } />
+
+        {/* Catch-all */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </AuthProvider>
+  </BrowserRouter>
+);
 
 export default App;

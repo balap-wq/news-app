@@ -1,13 +1,13 @@
-// ✅ use this for production 1. Load env FIRST
+// :white_check_mark: use this for production 1. Load env FIRST
 
-if (process.env.NODE_ENV !== 'production') {
-  await import('dotenv/config');
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   await import('dotenv/config');
+// }
 
 // // use this for local server:
-// import 'dotenv/config';
+import 'dotenv/config';
 
-// ✅ 4. Safe BigInt serialization
+// :white_check_mark: 4. Safe BigInt serialization
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
@@ -26,10 +26,10 @@ import { errorHandler } from './middleware/errorHandler.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ Debug env
+// :white_check_mark: Debug env
 console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
 
-// ✅ CORS
+// :white_check_mark: CORS
 app.use(
   cors({
     origin: ['http://localhost:5173', process.env.FRONTEND_URL],
@@ -40,10 +40,10 @@ app.use(
 
 app.use(express.json());
 
-// ✅ Preview router — before other routes
+// :white_check_mark: Preview router — before other routes
 app.use('/api-preview', previewRouter);
 
-// ✅ Routes
+// :white_check_mark: Routes
 app.use('/api/articles', articlesRoutes);
 app.use('/api/headlines', headlinesRouter);
 app.use('/api/admin', adminRoutes);
@@ -64,7 +64,7 @@ app.get('/apm-test', (_req, res) => {
   res.send('APM test working');
 });
 
-// ✅ Swagger — always available in dev
+// :white_check_mark: Swagger — always available in dev
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ✅ Swagger JSON route

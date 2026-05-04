@@ -41,14 +41,6 @@ function useHeadlines({ page = 1, category, country, limit = 9 }) {
             return;
           }
 
-          if (retryCount > 0) {
-            console.log('Retrying API...');
-            setTimeout(() => {
-              fetchHeadlines(retryCount - 1);
-            }, 2000); // wait 2s before retry
-            return;
-          }
-
           setError(err.message);
         }
       } finally {
