@@ -14,6 +14,7 @@ const HeadlineCards = ({ article }) => {
   return (
     <div className="mx-auto">
       <div
+        data-testid="article-card"
         role="button"
         tabIndex={0}
         onClick={() => {
