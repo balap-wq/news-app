@@ -30,7 +30,7 @@ const AuthCallback = () => {
       } catch {
         navigate('/login?error=invalid_token', { replace: true });
       }
-    }, []);
+    }, []);  
     
 
   return (

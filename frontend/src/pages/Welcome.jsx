@@ -23,7 +23,7 @@ const Welcome = ({
       <div className="bg-white rounded-3xl border border-gray-200 p-10 max-w-sm w-full text-center shadow-2xl animate-[popIn_0.45s_cubic-bezier(0.34,1.56,0.64,1)_both]">
 
         {/* Avatar */}
-        <div className="w-24 h-24 mx-auto mb-5 rounded-full p-[3px] bg-gradient-to-br from-violet-500 to-emerald-400 animate-pulse">
+        <div className="w-24 h-24 mx-auto mb-5 rounded-full p-0.75 bg-linear-to-br from-violet-500 to-emerald-400 animate-pulse">
           <div className="w-full h-full rounded-full bg-violet-100 flex items-center justify-center overflow-hidden border-2 border-white">
             {user?.picture ? (
               <img
@@ -62,7 +62,7 @@ const Welcome = ({
             onClick={() => navigate('/')}
             className="relative w-full py-2.5 rounded-xl font-medium cursor-pointer bg-emerald-300 text-gray-800 overflow-hidden group transition-colors duration-300 hover:text-white"
           >
-            <span className="absolute inset-0 bg-gradient-to-tr from-violet-500 to-emerald-500 translate-x-[-100%] translate-y-[100%] group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-500 ease-in-out" />
+            <span className="absolute inset-0 bg-linear-to-tr from-violet-500 to-emerald-500 -translate-x-full translate-y-full group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-500 ease-in-out" />
             <span className="relative z-10 text-sm">Open</span>
           </button>
         </div>
