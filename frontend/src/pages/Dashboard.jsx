@@ -1,23 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// ─────────────────────────────────────────────
-// Dashboard.jsx
-// ─────────────────────────────────────────────
-// Protected page — only accessible if Naren has a JWT.
-//
-// On load it calls GET /api/dashboard on the backend,
-// sending the stored JWT in the Authorization header.
-//
-// Backend middleware (verifyToken.js) checks:
-//   1. Is there a token?
-//   2. Is the signature valid?
-//   3. Has it expired?
-//
-// If all pass → returns Naren's user data.
-// If fail → 401 → redirect to login.
-// ─────────────────────────────────────────────
-
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
@@ -27,21 +10,17 @@ export default function Dashboard() {
     const token = localStorage.getItem('jwt');
 
     if (!token) {
-      // No JWT stored — not logged in
       navigate('/');
       return;
     }
 
-    // Call protected backend route
-    // Send JWT in Authorization header — NOT in URL
-    fetch('http://localhost:3000/api/dashboard', {
+    fetch(`${import.meta.env.VITE_API_URL}/api/dashboard`, {
       headers: {
-        Authorization: `Bearer ${token}`, // ← JWT travels here
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => {
         if (res.status === 401) {
-          // Token invalid or expired — clear and go to login
           localStorage.removeItem('jwt');
           navigate('/');
         }
@@ -49,11 +28,11 @@ export default function Dashboard() {
       })
       .then((data) => setUser(data.user))
       .catch(() => setError('Something went wrong'));
-  }, []);
+  }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('jwt'); // delete the JWT
-    navigate('/'); // back to login
+    localStorage.removeItem('jwt');
+    navigate('/');
   };
 
   if (error) return <p>{error}</p>;
@@ -68,7 +47,6 @@ export default function Dashboard() {
         </p>
         <p style={styles.email}>📧 {user.email}</p>
         <p style={styles.id}>🔑 Google ID: {user.id}</p>
-
         <button onClick={handleLogout} style={styles.logout}>
           Logout
         </button>

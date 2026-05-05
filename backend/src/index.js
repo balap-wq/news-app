@@ -26,20 +26,24 @@ import './config/passport.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors({
-  origin: ['http://localhost:5173', process.env.FRONTEND_URL],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: ['http://localhost:5173', process.env.FRONTEND_URL],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'test-secret',
-  resave: false,
-  saveUninitialized: false,
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'test-secret',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());

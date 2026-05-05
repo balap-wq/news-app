@@ -1,30 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
 
 const Header = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('jwt');
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        const isExpired = decoded.exp * 1000 < Date.now();
-        if (isExpired) {
-          localStorage.removeItem('jwt');
-        } else {
-          setUser(decoded);
-        }
-      } catch {
-        localStorage.removeItem('jwt');
-      }
-    }
+    fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+      credentials: 'include', // ← sends the httpOnly cookie automatically
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.user) setUser(data.user);
+      })
+      .catch(() => setUser(null));
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('jwt');
-    setUser(null);
+    fetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    }).then(() => setUser(null));
   };
 
   return (
