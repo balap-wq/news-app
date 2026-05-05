@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
 import passport from 'passport';
-
+import userRoutes from './routes/userRoutes.js';
 import articlesRoutes from './routes/articles.js';
 import headlinesRoutes from './routes/headlines.js';
 import previewRouter from './routes/preview.js';
@@ -14,6 +14,7 @@ import './config/passport.js';
 const app = express();
 
 app.use('/api-preview', previewRouter);
+app.use('/api/users', userRoutes);
 
 app.use(
   cors({

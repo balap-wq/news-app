@@ -27,7 +27,15 @@ router.get(
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
-    res.redirect(`${process.env.CLIENT_URL}/auth/success?token=${token}`);
+
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.redirect(`${process.env.CLIENT_URL}/auth/success`);
   }
 );
 
