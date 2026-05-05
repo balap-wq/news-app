@@ -5,6 +5,7 @@ import articlesRoutes from './routes/articles.js';
 import headlinesRoutes from './routes/headlines.js';
 import previewRouter from './routes/preview.js';
 import logger from './config/logger.js';
+import userRoutes from './routes/userRoutes.js';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use('/users', userRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

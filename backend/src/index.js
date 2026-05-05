@@ -3,16 +3,14 @@
 if (process.env.NODE_ENV !== 'production') {
   await import('dotenv/config');
 }
-import 'dotenv/config'; // :white_check_mark: MUST be line 1
 
 // // use this for local server:
-// import 'dotenv/config';
+import 'dotenv/config';
 
 // :white_check_mark: 4. Safe BigInt serialization
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
-
 import express from 'express';
 import cors from 'cors';
 import adminRoutes from './routes/adminRoutes.js';
