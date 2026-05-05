@@ -3,11 +3,12 @@
 if (process.env.NODE_ENV !== 'production') {
   await import('dotenv/config');
 }
+import 'dotenv/config'; // :white_check_mark: MUST be line 1
 
 // // use this for local server:
 // import 'dotenv/config';
 
-// ✅ 4. Safe BigInt serialization
+// :white_check_mark: 4. Safe BigInt serialization
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
@@ -26,10 +27,10 @@ import { errorHandler } from './middleware/errorHandler.js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ Debug env
+// :white_check_mark: Debug env
 console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
 
-// ✅ CORS
+// :white_check_mark: CORS
 app.use(
   cors({
     origin: ['http://localhost:5173', process.env.FRONTEND_URL],
@@ -47,13 +48,14 @@ app.use('/api-preview', previewRouter);
 app.use('/api/articles', articlesRoutes);
 app.use('/api/headlines', headlinesRouter);
 app.use('/api/admin', adminRoutes);
+// app.use('/api-preview', previewRouter);
 
-// ✅ Health check
+// :white_check_mark: Health check
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// ✅ Sample endpoint
+// :white_check_mark: Sample endpoint
 app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
@@ -72,13 +74,18 @@ app.get('/api-docs.json', (_req, res) => {
   res.json(swaggerSpec);
 });
 
-// ✅ Cron job
+// :white_check_mark: Swagger JSON route (IMPORTANT for ticket)
+app.get('/api-docs.json', (_req, res) => {
+  res.json(swaggerSpec);
+});
+
+// :white_check_mark: Cron job
 syncArticles();
 
 // ✅ Error handler
 app.use(errorHandler);
 
-// ✅ Start server
+// :white_check_mark: Start server (Vite-style output)
 app.listen(PORT, () => {
   console.log('\n----------------------------------------');
   console.log('🚀 Backend running at:\n');
