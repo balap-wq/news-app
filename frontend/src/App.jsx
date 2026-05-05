@@ -1,30 +1,52 @@
-// src/App.jsx
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
 import { AuthProvider } from './Context/AuthContext';
 import ProtectedRoute from './Components/ProtectedRoute';
-import AuthCallback from './pages/AuthCallback';
+import ArticleDetailPage from './pages/ArticleDetailPage';
+import Header from './Components/Header';
+import HeadlinePage from './pages/HeadlinePage';
 import Welcome from './pages/Welcome';
-// import Login from './pages/Login'; // your teammate's page
+import AuthCallback from './pages/AuthCallback';
+// import Login from './pages/';
 
-const App = () => (
-  <BrowserRouter>
-    <AuthProvider>
-      <Routes>
-        {/* <Route path="/login" element={<Login />} /> */}
-        <Route path="/auth/callback" element={<AuthCallback />} />
+const App = () => {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <div className="min-h-screen bg-[#FAFAFA]">
+          <Header />
+          <Routes>
+            {/* Public routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
 
-        {/* Protected */}
-        <Route path="/welcome" element={
-          <ProtectedRoute>
-            <Welcome />
-          </ProtectedRoute>
-        } />
+            {/* Protected routes */}
+            <Route path="/welcome" element={
+              <ProtectedRoute>
+                <Welcome />
+              </ProtectedRoute>
+            } />
+            <Route path="/headlines" element={
+              <ProtectedRoute>
+                <HeadlinePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/article/:id" element={
+              <ProtectedRoute>
+                <ArticleDetailPage />
+              </ProtectedRoute>
+            } />
 
-        {/* Catch-all */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </AuthProvider>
-  </BrowserRouter>
-);
+            {/* Default */}
+            <Route path="/" element={<Navigate to="/headlines" replace />} />
+
+            {/* Catch-all */}
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </div>
+      </AuthProvider>
+    </BrowserRouter>
+  );
+};
 
 export default App;

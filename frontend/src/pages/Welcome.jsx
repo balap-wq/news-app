@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useAuth  from '../pages/AuthCallback';
 
 const Welcome = ({
+  
   slogan = 'Build something great today.',
 }) => {
   const { user, logout } = useAuth();
