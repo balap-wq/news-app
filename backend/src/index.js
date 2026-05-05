@@ -1,11 +1,11 @@
 // ✅ use this for production 1. Load env FIRST
 
-if (process.env.NODE_ENV !== 'production') {
-  await import('dotenv/config');
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   await import('dotenv/config');
+// }
 
 // // use this for local server:
-// import 'dotenv/config';
+import 'dotenv/config';
 
 // :white_check_mark: 4. Safe BigInt serialization
 BigInt.prototype.toJSON = function () {
