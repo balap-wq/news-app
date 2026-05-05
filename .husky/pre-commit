@@ -4,9 +4,3 @@ echo "🚀 Husky pre-commit is running"
 npm run --prefix backend lint
 npm run --prefix backend test
 npm run --prefix backend swagger:validate
-
-echo "-----------------------------------"
-echo "✅ All checks passed"
-echo "➡️  http://localhost:5000/api-docs"
-echo "➡️  http://localhost:5000/api-docs.json"
-echo "-----------------------------------"

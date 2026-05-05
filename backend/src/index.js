@@ -11,7 +11,6 @@ import 'dotenv/config';
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
-
 import express from 'express';
 import cors from 'cors';
 import adminRoutes from './routes/adminRoutes.js';
@@ -47,13 +46,14 @@ app.use('/api-preview', previewRouter);
 app.use('/api/articles', articlesRoutes);
 app.use('/api/headlines', headlinesRouter);
 app.use('/api/admin', adminRoutes);
+// app.use('/api-preview', previewRouter);
 
-// ✅ Health check
+// :white_check_mark: Health check
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// ✅ Sample endpoint
+// :white_check_mark: Sample endpoint
 app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
@@ -72,13 +72,18 @@ app.get('/api-docs.json', (_req, res) => {
   res.json(swaggerSpec);
 });
 
-// ✅ Cron job
+// :white_check_mark: Swagger JSON route (IMPORTANT for ticket)
+app.get('/api-docs.json', (_req, res) => {
+  res.json(swaggerSpec);
+});
+
+// :white_check_mark: Cron job
 syncArticles();
 
 // ✅ Error handler
 app.use(errorHandler);
 
-// ✅ Start server
+// :white_check_mark: Start server (Vite-style output)
 app.listen(PORT, () => {
   console.log('\n----------------------------------------');
   console.log('🚀 Backend running at:\n');
