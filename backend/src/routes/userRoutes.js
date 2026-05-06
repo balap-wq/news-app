@@ -10,7 +10,6 @@ const router = Router();
 router.post('/', async (req, res) => {
   const { name, email, profileImage, favoriteCategories } = req.body;
 
-  // Basic validation
   if (!name || !email) {
     return res.status(400).json({
       success: false,
@@ -27,11 +26,9 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // Check if user already exists
     const existing = await prisma.user.findUnique({ where: { email } });
 
     if (existing) {
-      // Return existing user (idempotent — safe to call on every login)
       return res.status(200).json({
         success: true,
         created: false,
@@ -39,7 +36,6 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // Create new user
     const user = await prisma.user.create({
       data: {
         name,
@@ -55,7 +51,6 @@ router.post('/', async (req, res) => {
       user,
     });
   } catch (err) {
-    // P2002 = Prisma unique constraint violation (race condition safety net)
     if (err.code === 'P2002') {
       return res.status(409).json({
         success: false,
@@ -87,6 +82,37 @@ router.get('/:id', async (req, res) => {
 
     return res.status(200).json({ success: true, user });
   } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+// ← NEW: added below — nothing above changed
+/**
+ * PATCH /users/:id
+ * Update favourite categories for a user.
+ * Body: { favoriteCategories: string[] }
+ */
+router.patch('/:id', async (req, res) => {
+  const { favoriteCategories } = req.body;
+
+  if (!Array.isArray(favoriteCategories)) {
+    return res.status(400).json({
+      success: false,
+      error: 'favoriteCategories must be an array',
+    });
+  }
+
+  try {
+    const user = await prisma.user.update({
+      where: { id: req.params.id },
+      data: { favoriteCategories },
+    });
+    return res.status(200).json({ success: true, user });
+  } catch (err) {
+    if (err.code === 'P2025') {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
     console.error(err);
     return res.status(500).json({ success: false, error: 'Internal server error' });
   }
