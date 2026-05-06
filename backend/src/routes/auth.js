@@ -23,6 +23,7 @@ router.get(
         id: req.user.id,
         email: req.user.email,
         name: req.user.name,
+        favoriteCategories: req.user.favoriteCategories,
       },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
