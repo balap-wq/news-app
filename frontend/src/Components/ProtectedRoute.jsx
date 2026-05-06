@@ -1,13 +1,24 @@
 import { useAuth } from '../Context/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
+  const location = useLocation();
 
-  // Still hydrating from /auth/me — don't redirect yet
-  if (user === undefined) return null;
+  if (user === undefined) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#FAFAFA]">
+        <p className="text-gray-400 text-sm animate-pulse">Loading...</p>
+      </div>
+    );
+  }
 
-  return user ? children : <Navigate to="/login" replace />;
+  if (!user) {
+    // saves where they were trying to go
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;

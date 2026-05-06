@@ -8,13 +8,13 @@ export default function AuthSuccess() {
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
-      credentials: 'include', // sends the httpOnly jwt cookie
+      credentials: 'include',
     })
-      .then((r) => r.json())
-      .then(({ user }) => {
-        if (user) {
-          setUser(user);
-          navigate('/headlines', { replace: true });
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.user) {
+          setUser(data.user);
+          navigate('/welcome', { replace: true });
         } else {
           navigate('/login', { replace: true });
         }
@@ -23,8 +23,8 @@ export default function AuthSuccess() {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p className="text-gray-400 text-sm animate-pulse">Signing you in...</p>
+    <div className="min-h-screen flex items-center justify-center bg-[#0e0e0e]">
+      <p className="text-white/40 text-sm animate-pulse">Signing you in...</p>
     </div>
   );
 }

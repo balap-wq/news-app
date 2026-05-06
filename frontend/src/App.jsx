@@ -5,56 +5,50 @@ import ProtectedRoute from './Components/ProtectedRoute';
 import ArticleDetailPage from './pages/ArticleDetailPage';
 import Header from './Components/Header';
 import HeadlinePage from './pages/HeadlinePage';
-import AuthSuccess from './pages/AuthSuccess'; // ← NEW
+import AuthSuccess from './pages/AuthSuccess';
 import Welcome from './pages/Welcome';
-import AuthCallback from './pages/AuthCallback';
 import LoginPage from './pages/LoginPage';
 
 const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <div className="min-h-screen bg-[#FAFAFA]">
-          <Header />
-          <Routes>
-            {/* Public routes */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/auth/callback" element={<AuthCallback />} />
+        <Routes>
 
-            {/* Protected routes */}
-            <Route
-              path="/welcome"
-              element={
-                <ProtectedRoute>
-                  <Welcome />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/headlines"
-              element={
-                <ProtectedRoute>
-                  <HeadlinePage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/article/:id"
-              element={
-                <ProtectedRoute>
-                  <ArticleDetailPage />
-                </ProtectedRoute>
-              }
-            />
+          {/* Public — no header */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/auth/success" element={<AuthSuccess />} />
 
-            {/* Default */}
-            <Route path="/" element={<Navigate to="/headlines" replace />} />
+          {/* App routes — with header */}
+          <Route path="/*" element={
+            <div className="min-h-screen bg-[#FAFAFA]">
+              <Header />
+              <Routes>
 
-            {/* Catch-all */}
-            {/* <Route path="*" element={<Navigate to="/login" replace />} /> */}
-            <Route path="/auth/success" element={<AuthSuccess />} />
-          </Routes>
-        </div>
+                {/* Welcome as modal overlay over headlines */}
+                <Route path="/welcome" element={
+                  <ProtectedRoute>
+                    <div className="relative">
+                      <HeadlinePage />
+                      <Welcome />
+                    </div>
+                  </ProtectedRoute>
+                } />
+
+                {/* PUBLIC — anyone can see headlines, but cards redirect to login if not authed */}
+                <Route path="/headlines" element={<HeadlinePage />} />
+
+                {/* PROTECTED — only logged in users */}
+                <Route path="/article/:id" element={
+                  <ProtectedRoute><ArticleDetailPage /></ProtectedRoute>
+                } />
+
+                <Route path="/" element={<Navigate to="/headlines" replace />} />
+              </Routes>
+            </div>
+          } />
+
+        </Routes>
       </AuthProvider>
     </BrowserRouter>
   );
