@@ -3,7 +3,7 @@ import logger from '../config/logger.js';
 const BASE_URL = process.env.NEWS_API_BASE_URL;
 const API_KEY = process.env.NEWS_API_KEY;
 
-// ✅ FIX: allow tests to run
+// ✅ Allow tests but enforce in dev/prod
 if (!BASE_URL && process.env.NODE_ENV !== 'test') {
   throw new Error('Missing NEWS_API_BASE_URL in .env');
 }
@@ -14,7 +14,8 @@ if (!API_KEY && process.env.NODE_ENV !== 'test') {
 
 export const fetchTopHeadlines = async ({ country = 'us', category, pageSize = 100 }) => {
   try {
-    const url = `${process.env.FRONTEND_URL}/top-headlines`;
+    // ✅ FIXED: use BASE_URL (not FRONTEND_URL)
+    const url = `${BASE_URL}/top-headlines`;
 
     logger.info(`Requesting: ${url} (category: ${category})`);
 

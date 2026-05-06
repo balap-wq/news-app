@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-test('GET /api/headlines - should return list of articles', async ({ request }) => {
-
+test('GET /api/headlines - should return list of articles', async ({
+  request,
+}) => {
   const res = await request.get('/api/headlines');
 
   // ✅ Check status first

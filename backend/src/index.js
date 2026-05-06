@@ -1,18 +1,17 @@
-// ✅ use this for production 1. Load env FIRST
-
 if (process.env.NODE_ENV !== 'production') {
   await import('dotenv/config');
 }
-
-// // use this for local server:
 import 'dotenv/config';
 
-// :white_check_mark: 4. Safe BigInt serialization
 BigInt.prototype.toJSON = function () {
   return this.toString();
 };
+
 import express from 'express';
 import cors from 'cors';
+import session from 'express-session';
+import passport from 'passport';
+import cookieParser from 'cookie-parser';
 import adminRoutes from './routes/adminRoutes.js';
 import articlesRoutes from './routes/articles.js';
 import syncArticles from './jobs/syncJob.js';
@@ -21,14 +20,12 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 import previewRouter from './routes/preview.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import authRoutes from './routes/auth.js';
+import './config/passport.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// :white_check_mark: Debug env
-console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
-
-// :white_check_mark: CORS
 app.use(
   cors({
     origin: ['http://localhost:5173', process.env.FRONTEND_URL],
@@ -38,52 +35,48 @@ app.use(
 );
 
 app.use(express.json());
+app.use(cookieParser());
 
-// ✅ Preview router — before other routes
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'test-secret',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/api-preview', previewRouter);
-
-// ✅ Routes
+app.use('/auth', authRoutes);
 app.use('/api/articles', articlesRoutes);
 app.use('/api/headlines', headlinesRouter);
 app.use('/api/admin', adminRoutes);
-// app.use('/api-preview', previewRouter);
 
-// :white_check_mark: Health check
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// :white_check_mark: Sample endpoint
 app.get('/api/news', (_req, res) => {
   res.json({ message: 'News endpoint ready', articles: [] });
 });
 
-// ✅ APM test endpoint
 app.get('/apm-test', (_req, res) => {
   console.log('APM TEST HIT');
   res.send('APM test working');
 });
 
-// ✅ Swagger — always available in dev
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// ✅ Swagger JSON route
 app.get('/api-docs.json', (_req, res) => {
   res.json(swaggerSpec);
 });
 
-// :white_check_mark: Swagger JSON route (IMPORTANT for ticket)
-app.get('/api-docs.json', (_req, res) => {
-  res.json(swaggerSpec);
-});
-
-// :white_check_mark: Cron job
 syncArticles();
 
-// ✅ Error handler
 app.use(errorHandler);
 
-// :white_check_mark: Start server (Vite-style output)
 app.listen(PORT, () => {
   console.log('\n----------------------------------------');
   console.log('🚀 Backend running at:\n');

@@ -8,9 +8,9 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
 
   expect: {
-    timeout: 15000,        // ← max time for each expect() assertion (15s)
+    timeout: 15000, // ← max time for each expect() assertion (15s)
   },
-  
+
   reporter: [['html'], ['list']],
 
   use: {
@@ -47,7 +47,7 @@ export default defineConfig({
       testMatch: /tests\/api\.spec\.js/,
       use: {
         baseURL: process.env.BACKEND_URL || 'http://localhost:5000',
-     },
-    }, 
+      },
+    },
   ],
 });
