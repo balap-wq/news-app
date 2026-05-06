@@ -1,8 +1,10 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
+import verifyToken from './middleware/verifyToken.js';
 import userRoutes from './routes/userRoutes.js';
 import articlesRoutes from './routes/articles.js';
 import headlinesRoutes from './routes/headlines.js';
@@ -14,7 +16,6 @@ import './config/passport.js';
 const app = express();
 
 app.use('/api-preview', previewRouter);
-app.use('/api/users', userRoutes);
 
 app.use(
   cors({
@@ -23,8 +24,8 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(cookieParser());
 
-// ✅ Session middleware - ONLY ONCE
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'test-secret',
@@ -43,13 +44,12 @@ app.get('/health', (req, res) => {
 app.use('/auth', authRoutes);
 app.use('/api/articles', articlesRoutes);
 app.use('/api/headlines', headlinesRoutes);
+app.use('/api/users', verifyToken, userRoutes);
 
-// ✅ 404 handler - BEFORE global error handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// ✅ Global error handler - SINGLE handler with correct message
 app.use((err, req, res, _next) => {
   logger.error('Global Error:', err);
   res.status(500).json({ error: 'Internal server error' });
