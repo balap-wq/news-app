@@ -1,23 +1,13 @@
-import Cookies from 'js-cookie';
+import { useAuth } from '../Context/AuthContext';
 import { Navigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
 
 const ProtectedRoute = ({ children }) => {
-  const token = Cookies.get('token');
+  const { user } = useAuth();
 
-  if (!token) return <Navigate to="/login" replace />;
+  // Still hydrating from /auth/me — don't redirect yet
+  if (user === undefined) return null;
 
-  try {
-    const decoded = jwtDecode(token);
-    const isExpired = decoded.exp * 1000 < Date.now();
-    if (isExpired) {
-      Cookies.remove('token');
-      return <Navigate to="/login" replace />;
-    }
-  } catch {
-    return <Navigate to="/login" replace />;
-  }
-  return children;
+  return user ? children : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;

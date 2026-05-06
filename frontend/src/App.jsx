@@ -8,7 +8,7 @@ import HeadlinePage from './pages/HeadlinePage';
 import AuthSuccess from './pages/AuthSuccess'; // ← NEW
 import Welcome from './pages/Welcome';
 import AuthCallback from './pages/AuthCallback';
-// import Login from './pages/';
+import LoginPage from './pages/LoginPage';
 
 const App = () => {
   return (
@@ -18,31 +18,40 @@ const App = () => {
           <Header />
           <Routes>
             {/* Public routes */}
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
 
             {/* Protected routes */}
-            <Route path="/welcome" element={
-              <ProtectedRoute>
-                <Welcome />
-              </ProtectedRoute>
-            } />
-            <Route path="/headlines" element={
-              <ProtectedRoute>
-                <HeadlinePage />
-              </ProtectedRoute>
-            } />
-            <Route path="/article/:id" element={
-              <ProtectedRoute>
-                <ArticleDetailPage />
-              </ProtectedRoute>
-            } />
+            <Route
+              path="/welcome"
+              element={
+                <ProtectedRoute>
+                  <Welcome />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/headlines"
+              element={
+                <ProtectedRoute>
+                  <HeadlinePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/article/:id"
+              element={
+                <ProtectedRoute>
+                  <ArticleDetailPage />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Default */}
             <Route path="/" element={<Navigate to="/headlines" replace />} />
 
             {/* Catch-all */}
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            {/* <Route path="*" element={<Navigate to="/login" replace />} /> */}
             <Route path="/auth/success" element={<AuthSuccess />} />
           </Routes>
         </div>

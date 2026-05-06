@@ -1,16 +1,17 @@
 // src/pages/Welcome.jsx
 import { useNavigate } from 'react-router-dom';
-import useAuth  from '../pages/AuthCallback';
+import { useAuth } from '../Context/AuthContext';
 
-const Welcome = ({
-  
-  slogan = 'Build something great today.',
-}) => {
+const Welcome = ({ slogan = 'Build something great today.' }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const initials = user?.name
-    ? user.name.split(' ').map((n) => n[0]).join('').toUpperCase()
+    ? user.name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
     : '?';
 
   const handleLogout = () => {
@@ -21,7 +22,6 @@ const Welcome = ({
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white rounded-3xl border border-gray-200 p-10 max-w-sm w-full text-center shadow-2xl animate-[popIn_0.45s_cubic-bezier(0.34,1.56,0.64,1)_both]">
-
         {/* Avatar */}
         <div className="w-24 h-24 mx-auto mb-5 rounded-full p-0.75 bg-linear-to-br from-violet-500 to-emerald-400 animate-pulse">
           <div className="w-full h-full rounded-full bg-violet-100 flex items-center justify-center overflow-hidden border-2 border-white">
@@ -32,9 +32,7 @@ const Welcome = ({
                 className="w-full h-full object-cover rounded-full"
               />
             ) : (
-              <span className="text-violet-600 text-2xl font-semibold">
-                {initials}
-              </span>
+              <span className="text-violet-600 text-2xl font-semibold">{initials}</span>
             )}
           </div>
         </div>
@@ -42,13 +40,9 @@ const Welcome = ({
         {/* Name + Slogan */}
         <h1 className="text-2xl font-semibold text-gray-800 mb-1 animate-[fadeUp_0.5s_0.25s_both]">
           Welcome back,{' '}
-          <em className="text-violet-600 not-italic font-bold">
-            {user?.name?.split(' ')[0]}! 😄
-          </em>
+          <em className="text-violet-600 not-italic font-bold">{user?.name?.split(' ')[0]}! 😄</em>
         </h1>
-        <p className="text-sm text-gray-400 mb-5 animate-[fadeUp_0.5s_0.35s_both]">
-          {slogan}
-        </p>
+        <p className="text-sm text-gray-400 mb-5 animate-[fadeUp_0.5s_0.35s_both]">{slogan}</p>
 
         {/* Email pill */}
         <div className="inline-flex items-center gap-2 bg-violet-50 text-violet-800 text-sm font-medium px-4 py-2 rounded-full mb-6 animate-[slideIn_0.5s_0.45s_both]">
@@ -74,7 +68,6 @@ const Welcome = ({
         >
           Sign out
         </button>
-
       </div>
 
       {/* Keyframes */}
