@@ -24,7 +24,8 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
         },
 
-        '/auth': { // ✅ ADD THIS
+        '/auth': {
+          // ✅ ADD THIS
           target,
           changeOrigin: true,
         },
