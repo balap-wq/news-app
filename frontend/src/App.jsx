@@ -5,6 +5,7 @@ import ProtectedRoute from './Components/ProtectedRoute';
 import ArticleDetailPage from './pages/ArticleDetailPage';
 import Header from './Components/Header';
 import HeadlinePage from './pages/HeadlinePage';
+import AuthSuccess from './pages/AuthSuccess'; // ← NEW
 import Welcome from './pages/Welcome';
 import AuthCallback from './pages/AuthCallback';
 // import Login from './pages/';
@@ -42,6 +43,7 @@ const App = () => {
 
             {/* Catch-all */}
             <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="/auth/success" element={<AuthSuccess />} />
           </Routes>
         </div>
       </AuthProvider>
