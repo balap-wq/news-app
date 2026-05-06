@@ -3,7 +3,7 @@ import logger from '../config/logger.js';
 const BASE_URL = process.env.NEWS_API_BASE_URL;
 const API_KEY = process.env.NEWS_API_KEY;
 
-// ✅ FIX: allow tests to run
+// ✅ Allow tests but enforce in dev/prod
 if (!BASE_URL && process.env.NODE_ENV !== 'test') {
   throw new Error('Missing NEWS_API_BASE_URL in .env');
 }
