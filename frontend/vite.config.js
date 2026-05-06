@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
 
-  const target = env.VITE_API_URL || 'http://localhost:5000'; // ✅ FIX
+  const target = env.VITE_API_URL || 'http://localhost:5000';
 
   return {
     plugins: [
@@ -14,11 +14,18 @@ export default defineConfig(({ mode }) => {
         config: './tailwind.config.js',
       }),
     ],
+
     server: {
       port: 5173,
+
       proxy: {
         '/api': {
-          target, // ✅ use fallback
+          target,
+          changeOrigin: true,
+        },
+
+        '/auth': { // ✅ ADD THIS
+          target,
           changeOrigin: true,
         },
       },
