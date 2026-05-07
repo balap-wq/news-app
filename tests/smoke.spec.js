@@ -1,13 +1,13 @@
 import { test, expect } from '@playwright/test';
 
 test('Homepage loads and shows articles', async ({ page }) => {
-  await page.route('**/auth/me', route => {
+  await page.route('**/auth/me', (route) => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
-        user: { id: '123', name: 'Test User', email: 'test@example.com' }
-      })
+        user: { id: '123', name: 'Test User', email: 'test@example.com' },
+      }),
     });
   });
 
@@ -18,13 +18,13 @@ test('Homepage loads and shows articles', async ({ page }) => {
 });
 
 test('Navigate to article detail page', async ({ page }) => {
-  await page.route('**/auth/me', route => {
+  await page.route('**/auth/me', (route) => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
-        user: { id: '123', name: 'Test User', email: 'test@example.com' }
-      })
+        user: { id: '123', name: 'Test User', email: 'test@example.com' },
+      }),
     });
   });
 
