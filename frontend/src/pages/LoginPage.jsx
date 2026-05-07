@@ -1,61 +1,89 @@
-// ─────────────────────────────────────────────
-// LoginPage.jsx
-// ─────────────────────────────────────────────
-// Shows the "Sign in with Google" button.
-// Clicking it goes to YOUR backend route /auth/google
-// which then redirects to Google's login page.
-//
-// Flow from here:
-//   Naren clicks → GET localhost:3000/auth/google
-//   → passport redirects to Google
-//   → Naren logs in on Google
-//   → Google sends code to /auth/google/callback
-//   → Backend creates JWT
-//   → Redirects to /auth/success?token=...
-// ─────────────────────────────────────────────
+import { ArrowLeft } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 
-export default function LoginPage() {
+const LoginPage = () => {
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>Welcome</h1>
-        <p style={styles.subtitle}>Sign in to continue to the app</p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      {/* Modal card */}
+      <div
+        className="bg-[#161616] border border-white/10 rounded-3xl px-8 py-10 max-w-sm w-full mx-4 text-center shadow-2xl
+                      animate-[popIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)_both]"
+      >
+        <NavLink to="/headlines">
+          <span className="text-white">
+            <ArrowLeft />
+          </span>
+        </NavLink>
 
-        {/* This href points to your BACKEND — not Google directly */}
-        {/* Your backend will handle the Google redirect */}
-        <a href="http://localhost:3000/auth/google" style={styles.link}>
-          <button style={styles.button}>🔵 Sign in with Google</button>
+        {/* Logo */}
+        <div className="flex justify-center mb-8">
+          <span className="text-5xl text-orange-400 font-monoton font-extralight">N</span>
+        </div>
+
+        {/* Heading */}
+        <h1 className="text-white text-[32px] font-semibold font-mono tracking-tight text-center mb-1">
+          Sign <span className="text-orange-400">In</span>
+        </h1>
+        <p className="text-gray-300 text-sm text-center mb-8 leading-relaxed">
+          Sign in to continue reading the news
+        </p>
+
+        {/* Google OAuth button */}
+        <a
+          href={`${import.meta.env.VITE_API_URL}/auth/google?prompt=select_account`}
+          className="flex items-center justify-center gap-3 w-full h-11 rounded-xl
+                     bg-white text-[#1a1a1a] text-sm font-medium
+                     hover:bg-white/90 active:scale-[0.98]
+                     transition-all duration-150 shadow-sm"
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path
+              d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908C16.658 14.07 17.64 11.763 17.64 9.205z"
+              fill="#4285F4"
+            />
+            <path
+              d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"
+              fill="#34A853"
+            />
+            <path
+              d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+              fill="#FBBC05"
+            />
+            <path
+              d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
+              fill="#EA4335"
+            />
+          </svg>
+          Continue with Google
         </a>
+
+        <p className="text-gray-300 text-[11px] text-center mt-7 leading-relaxed">
+          By continuing, you agree to our{' '}
+          <a
+            href="#"
+            className="text-orange-400 underline underline-offset-2 hover:text-white/60 transition-colors"
+          >
+            Terms
+          </a>{' '}
+          and{' '}
+          <a
+            href="#"
+            className="text-orange-400 underline underline-offset-2 hover:text-white/60 transition-colors"
+          >
+            Privacy Policy
+          </a>
+          .
+        </p>
       </div>
+
+      <style>{`
+        @keyframes popIn {
+          from { opacity: 0; transform: scale(0.88); }
+          to   { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
     </div>
   );
-}
-
-const styles = {
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100vh',
-    backgroundColor: '#f5f5f5',
-  },
-  card: {
-    background: 'white',
-    padding: '48px',
-    borderRadius: '12px',
-    textAlign: 'center',
-    boxShadow: '0 2px 16px rgba(0,0,0,0.1)',
-  },
-  title: { fontSize: '28px', marginBottom: '8px' },
-  subtitle: { color: '#666', marginBottom: '32px' },
-  link: { textDecoration: 'none' },
-  button: {
-    padding: '12px 32px',
-    fontSize: '16px',
-    backgroundColor: '#4285F4',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-  },
 };
+
+export default LoginPage;

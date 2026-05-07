@@ -4,12 +4,13 @@ import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-router.get(
-  '/google',
+router.get('/google', (req, res, next) => {
+  const prompt = req.query.prompt || 'none';
   passport.authenticate('google', {
     scope: ['profile', 'email'],
-  })
-);
+    prompt, // ← passes 'select_account' from frontend
+  })(req, res, next);
+});
 
 router.get(
   '/google/callback',
@@ -44,14 +45,14 @@ router.get('/me', (req, res) => {
   const token = req.cookies?.jwt;
 
   if (!token) {
-    return res.status(401).json({ user: null });
+    return res.status(200).json({ user: null });
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     return res.json({ user: decoded });
   } catch {
-    return res.status(401).json({ user: null });
+    return res.status(200).json({ user: null });
   }
 });
 
