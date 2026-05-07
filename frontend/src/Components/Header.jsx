@@ -15,7 +15,9 @@ const Header = () => {
     <div className="bg-black text-white p-4 sticky top-0 z-10 mx-auto md:flex items-center justify-between">
       <NavLink to="/headlines">
         <h1 className="text-4xl md:text-5xl font-extrabold">
-          <span className="text-5xl md:text-7xl text-orange-400 font-monoton font-extralight">N</span>
+          <span className="text-5xl md:text-7xl text-orange-400 font-monoton font-extralight">
+            N
+          </span>
           ews
           <span className="text-5xl md:text-7xl text-orange-400 font-kings font-extralight">h</span>
           ub
@@ -46,7 +48,10 @@ const Header = () => {
             </button>
           </div>
         ) : (
-          <a href={`${import.meta.env.VITE_API_URL}/auth/google?prompt=select_account`} className="mt-3">
+          <a
+            href={`${import.meta.env.VITE_API_URL}/auth/google?prompt=select_account`}
+            className="mt-3"
+          >
             <button className="text-sm bg-orange-400 text-black font-bold px-4 py-1.5 rounded hover:bg-orange-300 transition-colors cursor-pointer">
               Sign in with Google
             </button>

@@ -10,8 +10,8 @@ export default function AuthSuccess() {
     fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
       credentials: 'include',
     })
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
         if (data?.user) {
           setUser(data.user);
           navigate('/welcome', { replace: true });

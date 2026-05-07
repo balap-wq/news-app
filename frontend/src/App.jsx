@@ -14,40 +14,48 @@ const App = () => {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-
           {/* Public — no header */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/auth/success" element={<AuthSuccess />} />
 
           {/* App routes — with header */}
-          <Route path="/*" element={
-            <div className="min-h-screen bg-[#FAFAFA]">
-              <Header />
-              <Routes>
+          <Route
+            path="/*"
+            element={
+              <div className="min-h-screen bg-[#FAFAFA]">
+                <Header />
+                <Routes>
+                  {/* Welcome as modal overlay over headlines */}
+                  <Route
+                    path="/welcome"
+                    element={
+                      <ProtectedRoute>
+                        <div className="relative">
+                          <HeadlinePage />
+                          <Welcome />
+                        </div>
+                      </ProtectedRoute>
+                    }
+                  />
 
-                {/* Welcome as modal overlay over headlines */}
-                <Route path="/welcome" element={
-                  <ProtectedRoute>
-                    <div className="relative">
-                      <HeadlinePage />
-                      <Welcome />
-                    </div>
-                  </ProtectedRoute>
-                } />
+                  {/* PUBLIC — anyone can see headlines, but cards redirect to login if not authed */}
+                  <Route path="/headlines" element={<HeadlinePage />} />
 
-                {/* PUBLIC — anyone can see headlines, but cards redirect to login if not authed */}
-                <Route path="/headlines" element={<HeadlinePage />} />
+                  {/* PROTECTED — only logged in users */}
+                  <Route
+                    path="/article/:id"
+                    element={
+                      <ProtectedRoute>
+                        <ArticleDetailPage />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                {/* PROTECTED — only logged in users */}
-                <Route path="/article/:id" element={
-                  <ProtectedRoute><ArticleDetailPage /></ProtectedRoute>
-                } />
-
-                <Route path="/" element={<Navigate to="/headlines" replace />} />
-              </Routes>
-            </div>
-          } />
-
+                  <Route path="/" element={<Navigate to="/headlines" replace />} />
+                </Routes>
+              </div>
+            }
+          />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

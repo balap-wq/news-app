@@ -6,7 +6,11 @@ const Welcome = () => {
   const navigate = useNavigate();
 
   const initials = user?.name
-    ? user.name.split(' ').map(n => n[0]).join('').toUpperCase()
+    ? user.name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
     : '?';
 
   const handleLogout = () => {
@@ -21,16 +25,20 @@ const Welcome = () => {
   return (
     // Full screen overlay with blur
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-
       {/* Modal card */}
-      <div className="bg-white rounded-3xl border border-gray-200 p-10 max-w-sm w-full mx-4 text-center shadow-2xl
-                      animate-[popIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)_both]">
-
+      <div
+        className="bg-white rounded-3xl border border-gray-200 p-10 max-w-sm w-full mx-4 text-center shadow-2xl
+                      animate-[popIn_0.4s_cubic-bezier(0.34,1.56,0.64,1)_both]"
+      >
         {/* Avatar */}
         <div className="w-20 h-20 mx-auto mb-5 rounded-full bg-linear-to-br from-violet-500 to-emerald-400 p-0.5">
           <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
             {user?.picture ? (
-              <img src={user.picture} alt="avatar" className="w-full h-full object-cover rounded-full" />
+              <img
+                src={user.picture}
+                alt="avatar"
+                className="w-full h-full object-cover rounded-full"
+              />
             ) : (
               <span className="text-violet-600 text-2xl font-semibold">{initials}</span>
             )}
