@@ -5,10 +5,11 @@ import { ArrowRight, ArrowLeft, AlertCircle, SlidersHorizontal } from 'lucide-re
 import Button from '../Components/Button';
 import HeadlineCardSkeleton from '../Components/HeadlineCardSkeleton';
 import ErrorMessage from '../Components/ErrorMessage';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { TrendingUp } from 'lucide-react';
 import EmptyState from '../Components/EmptyState';
 import { PRESET_CATEGORIES } from '../utils/categoryUtils';
+import { useAuth } from '../Context/AuthContext';
 
 const HeadlinePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,6 +17,8 @@ const HeadlinePage = () => {
   const [pageInput, setPageInput] = useState('');
   const [activeCategory, setActiveCategory] = useState('');
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const currentPage = parseInt(searchParams.get('page')) || 1;
   const pageSize = 9;
@@ -57,6 +60,10 @@ const HeadlinePage = () => {
 
   const handlePage = (e) => {
     if (e.key === 'Enter') {
+      if (!user) {
+        navigate('/login', { replace: true });
+        return;
+      }
       const page = Number(pageInput);
       if (!page || page < 1 || page > totalPages) {
         setInputError(`Enter a valid page (1 - ${totalPages})`);
@@ -98,7 +105,7 @@ const HeadlinePage = () => {
         </h1>
       </div>
 
-      {/* ── Mobile filter icon — only visible below md ── */}
+      {/* Mobile filter */}
       <div className="flex md:hidden justify-end px-6 mt-6 relative">
         <button
           onClick={() => setMobileDropdownOpen((prev) => !prev)}
@@ -115,36 +122,23 @@ const HeadlinePage = () => {
             : 'Filter'}
         </button>
 
-        {/* Mobile Dropdown */}
         {mobileDropdownOpen && (
           <div className="absolute top-12 right-6 z-50 bg-white border border-gray-200 rounded-2xl shadow-xl w-48 py-2 overflow-hidden">
-            {/* All option */}
             <button
               onClick={() => handleCategoryChange('')}
               className={`w-full text-left px-4 py-2.5 text-sm font-medium transition-colors
-                ${
-                  activeCategory === ''
-                    ? 'bg-yellow-50 text-yellow-700 font-semibold'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
+                ${activeCategory === '' ? 'bg-yellow-50 text-yellow-700 font-semibold' : 'text-gray-700 hover:bg-gray-50'}`}
             >
               All
               {activeCategory === '' && <span className="float-right text-yellow-500">✓</span>}
             </button>
-
             <div className="border-t border-gray-100 my-1" />
-
-            {/* Preset categories */}
             {PRESET_CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 onClick={() => handleCategoryChange(cat.toLowerCase())}
                 className={`w-full text-left px-4 py-2.5 text-sm transition-colors
-                  ${
-                    activeCategory === cat.toLowerCase()
-                      ? 'bg-yellow-50 text-yellow-700 font-semibold'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
+                  ${activeCategory === cat.toLowerCase() ? 'bg-yellow-50 text-yellow-700 font-semibold' : 'text-gray-700 hover:bg-gray-50'}`}
               >
                 {cat}
                 {activeCategory === cat.toLowerCase() && (
@@ -156,10 +150,9 @@ const HeadlinePage = () => {
         )}
       </div>
 
-      {/* ── Desktop Category Filter Bar — hidden on mobile ── */}
-      <div className="max-w-7xl mx-auto px-6 mt-4">
-        <div className="hidden md:flex flex-wrap items-center gap-2">
-          {/* All chip */}
+      {/* Desktop Category Filter */}
+      <div className="max-w-6xl mx-auto px-6 mt-6">
+        <div className="hidden md:flex flex-wrap gap-2">
           <button
             onClick={() => handleCategoryChange('')}
             className={`ml-43 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 cursor-pointer
@@ -171,8 +164,6 @@ const HeadlinePage = () => {
           >
             All
           </button>
-
-          {/* Preset category chips */}
           {PRESET_CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -188,8 +179,6 @@ const HeadlinePage = () => {
             </button>
           ))}
         </div>
-
-        {/* Active filter label — desktop only */}
         {activeCategory && (
           <p className="hidden md:block mt-3 text-sm text-gray-500 ml-44">
             Showing results for{' '}
@@ -222,6 +211,10 @@ const HeadlinePage = () => {
         <Button
           aria-label="Previous page"
           onClick={() => {
+            if (!user) {
+              navigate('/login', { replace: true });
+              return;
+            }
             if (currentPage === 1) return;
             setSearchParams((prev) => {
               const params = new URLSearchParams(prev);
@@ -260,6 +253,10 @@ const HeadlinePage = () => {
         <Button
           aria-label="Next page"
           onClick={() => {
+            if (!user) {
+              navigate('/login', { replace: true });
+              return;
+            }
             if (currentPage >= totalPages) return;
             setSearchParams((prev) => {
               const params = new URLSearchParams(prev);
