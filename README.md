@@ -351,3 +351,69 @@ import 'newrelic';
 - Improved backend observability
 
 ---
+------------------------->  ## 🐳 Dockerized Setup
+This project is fully containerized using Docker. No manual setup required.
+
+## 🚀 Running the Project with Docker
+
+### Prerequisites
+
+* Install Docker
+* Install Docker Compose (v2)
+
+---
+
+### 📦 Setup
+
+1. Clone the repository:
+
+```bash
+git clone <your-repo-url>
+cd news-app
+```
+
+2. Create `.env` file in backend:
+
+```env
+NEWS_API_BASE_URL=https://newsapi.org/v2
+NEWS_API_KEY=your_api_key
+```
+
+---
+
+### ▶️ Run the application
+
+```bash
+docker compose up --build
+```
+
+---
+
+### 🌐 Access the app
+
+* Frontend: http://localhost:5173
+* Backend: http://localhost:5000
+
+---
+
+### 🛑 Stop the application
+
+```bash
+docker compose down
+```
+
+---
+
+### 🔄 Rebuild after changes
+
+```bash
+docker compose up --build
+```
+
+---
+
+### ⚠️ Notes
+
+* Frontend and backend communicate using service names (not localhost)
+* Make sure `.env` is correctly configured
+* First build may take some time

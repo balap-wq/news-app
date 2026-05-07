@@ -14,8 +14,7 @@ if (!API_KEY && process.env.NODE_ENV !== 'test') {
 
 export const fetchTopHeadlines = async ({ country = 'us', category, pageSize = 100 }) => {
   try {
-    // ✅ FIXED: use BASE_URL (not FRONTEND_URL)
-    const url = `${BASE_URL}/top-headlines`;
+    const url = `${process.env.NEWS_API_BASE_URL}/top-headlines`;
 
     logger.info(`Requesting: ${url} (category: ${category})`);
 
