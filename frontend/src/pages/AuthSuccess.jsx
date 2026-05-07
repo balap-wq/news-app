@@ -7,7 +7,7 @@ export default function AuthSuccess() {
   const { setUser } = useAuth();
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+    fetch(`/auth/me`, {
       credentials: 'include',
     })
       .then((r) => (r.ok ? r.json() : null))

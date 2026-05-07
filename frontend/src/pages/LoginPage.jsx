@@ -30,7 +30,7 @@ const LoginPage = () => {
 
         {/* Google OAuth button */}
         <a
-          href={`${import.meta.env.VITE_API_URL}/auth/google?prompt=select_account`}
+          href={`/auth/google?prompt=select_account`}
           className="flex items-center justify-center gap-3 w-full h-11 rounded-xl
                      bg-white text-[#1a1a1a] text-sm font-medium
                      hover:bg-white/90 active:scale-[0.98]
