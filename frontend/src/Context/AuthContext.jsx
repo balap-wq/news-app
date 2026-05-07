@@ -6,7 +6,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(undefined); // undefined = loading, null = logged out
 
   useEffect(() => {
-    fetch(`/auth/me`, {
+    fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
       credentials: 'include',
     })
       .then((r) => {
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const logout = () => {
-    fetch(`/auth/logout`, {
+    fetch(`${import.meta.env.VITE_API_URL}/auth/logout`, {
       method: 'POST',
       credentials: 'include',
     }).then(() => setUser(null));
