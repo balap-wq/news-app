@@ -22,7 +22,7 @@ const Header = () => {
         </h1>
       </NavLink>
 
-      <nav className="flex items-center gap-6">
+      <nav className="flex items-center gap-3 ">
         <ul className="flex space-x-4 mt-3">
           <li className="hover:text-orange-400">
             <NavLink to="/headlines">Headlines</NavLink>
@@ -33,11 +33,11 @@ const Header = () => {
         </ul>
 
         {user ? (
-          <div className="flex items-center gap-3 mt-3">
+          <div className="flex items-center gap-2 mt-3">
             <div className="w-8 h-8 rounded-full bg-orange-400 flex items-center justify-center text-black font-extrabold text-sm">
               {user.name?.charAt(0).toUpperCase()}
             </div>
-            <span className="text-sm text-white">{user.name}</span>
+            <span className="text-sm text-wrap text-white">{user.name}</span>
             <button
               onClick={handleLogout}
               className="text-xs text-gray-400 hover:text-orange-400 border border-gray-600 px-3 py-1 rounded cursor-pointer"

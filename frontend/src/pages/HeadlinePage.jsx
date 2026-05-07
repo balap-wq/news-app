@@ -136,8 +136,8 @@ const HeadlinePage = () => {
       </div>
 
       {/* Desktop Category Filter */}
-      <div className="max-w-7xl mx-auto px-6 mt-4">
-        <div className="hidden md:flex flex-wrap items-center gap-2">
+      <div className="max-w-6xl mx-auto px-6 mt-6">
+        <div className="hidden md:flex flex-wrap gap-2">
           <button
             onClick={() => handleCategoryChange('')}
             className={`ml-43 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 cursor-pointer

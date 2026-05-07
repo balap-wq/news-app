@@ -46,14 +46,14 @@ router.get('/me', (req, res) => {
   const token = req.cookies?.jwt;
 
   if (!token) {
-    return res.status(401).json({ user: null });
+    return res.status(200).json({ user: null });
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     return res.json({ user: decoded });
   } catch {
-    return res.status(401).json({ user: null });
+    return res.status(200).json({ user: null });
   }
 });
 
