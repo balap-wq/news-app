@@ -4,13 +4,12 @@ import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-router.get('/google', (req, res, next) => {
-  const prompt = req.query.prompt || 'none';
+router.get(
+  '/google',
   passport.authenticate('google', {
     scope: ['profile', 'email'],
-    prompt, // ← passes 'select_account' from frontend
-  })(req, res, next);
-});
+  })
+);
 
 router.get(
   '/google/callback',
@@ -24,46 +23,35 @@ router.get(
         id: req.user.id,
         email: req.user.email,
         name: req.user.name,
-        favoriteCategories: req.user.favoriteCategories,
       },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
-    // :white_check_mark: FIXED: Set cookie with domain-safe options for local dev
-    // Also pass token in URL so frontend can store it if cookie is dropped
     res.cookie('jwt', token, {
       httpOnly: true,
-      secure: false, // false for localhost dev
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    // :white_check_mark: Pass token in URL so AuthSuccess can store it as fallback
-    res.redirect(`${process.env.CLIENT_URL}/auth/success?token=${token}`);
+    res.redirect(`${process.env.CLIENT_URL}/auth/success`);
   }
 );
 
-// :white_check_mark: Reads JWT from cookie OR Authorization header
+// :white_check_mark: Reads JWT from cookie and returns user
 router.get('/me', (req, res) => {
-  // Try cookie first
-  let token = req.cookies?.jwt;
-
-  // :white_check_mark: Fallback: read from Authorization header (sent by frontend if no cookie)
-  if (!token) {
-    const authHeader = req.headers['authorization'];
-    token = authHeader?.split(' ')[1];
-  }
+  const token = req.cookies?.jwt;
 
   if (!token) {
-    return res.status(200).json({ user: null });
+    return res.status(401).json({ user: null });
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     return res.json({ user: decoded });
   } catch {
-    return res.status(200).json({ user: null });
+    return res.status(401).json({ user: null });
   }
 });
 
@@ -71,7 +59,7 @@ router.get('/me', (req, res) => {
 router.post('/logout', (req, res) => {
   res.clearCookie('jwt', {
     httpOnly: true,
-    secure: false,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
   });
   res.json({ message: 'Logged out' });
