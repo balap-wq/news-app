@@ -30,19 +30,30 @@ router.get(
       { expiresIn: '7d' }
     );
 
+    // :white_check_mark: FIXED: Set cookie with domain-safe options for local dev
+    // Also pass token in URL so frontend can store it if cookie is dropped
     res.cookie('jwt', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false, // false for localhost dev
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    res.redirect(`${process.env.CLIENT_URL}/headlines`);
+
+    // :white_check_mark: Pass token in URL so AuthSuccess can store it as fallback
+    res.redirect(`${process.env.CLIENT_URL}/auth/success?token=${token}`);
   }
 );
 
-// ✅ Reads JWT from cookie and returns user
+// :white_check_mark: Reads JWT from cookie OR Authorization header
 router.get('/me', (req, res) => {
-  const token = req.cookies?.jwt;
+  // Try cookie first
+  let token = req.cookies?.jwt;
+
+  // :white_check_mark: Fallback: read from Authorization header (sent by frontend if no cookie)
+  if (!token) {
+    const authHeader = req.headers['authorization'];
+    token = authHeader?.split(' ')[1];
+  }
 
   if (!token) {
     return res.status(200).json({ user: null });
@@ -56,11 +67,11 @@ router.get('/me', (req, res) => {
   }
 });
 
-// ✅ Clears cookie on logout
+// :white_check_mark: Clears cookie on logout
 router.post('/logout', (req, res) => {
   res.clearCookie('jwt', {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,
     sameSite: 'lax',
   });
   res.json({ message: 'Logged out' });
