@@ -49,7 +49,7 @@ const Welcome = () => {
         <h1 className="text-2xl font-semibold text-gray-800 mb-1">
           Welcome, <span className="text-violet-600">{user?.name?.split(' ')[0]}! 👋</span>
         </h1>
-        <p className="text-sm text-gray-400 mb-5">You're successfully signed in.</p>
+        <p className="text-sm text-gray-400 mb-5">You are successfully signed in.</p>
 
         {/* Email pill */}
         <div className="inline-flex items-center gap-2 bg-violet-50 text-violet-700 text-sm font-medium px-4 py-2 rounded-full mb-8">
