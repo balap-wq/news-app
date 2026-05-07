@@ -351,15 +351,16 @@ import 'newrelic';
 - Improved backend observability
 
 ---
-------------------------->  ## 🐳 Dockerized Setup
+
+-------------------------> ## 🐳 Dockerized Setup
 This project is fully containerized using Docker. No manual setup required.
 
 ## 🚀 Running the Project with Docker
 
 ### Prerequisites
 
-* Install Docker
-* Install Docker Compose (v2)
+- Install Docker
+- Install Docker Compose (v2)
 
 ---
 
@@ -391,8 +392,8 @@ docker compose up --build
 
 ### 🌐 Access the app
 
-* Frontend: http://localhost:5173
-* Backend: http://localhost:5000
+- Frontend: http://localhost:5173
+- Backend: http://localhost:5000
 
 ---
 
@@ -414,6 +415,6 @@ docker compose up --build
 
 ### ⚠️ Notes
 
-* Frontend and backend communicate using service names (not localhost)
-* Make sure `.env` is correctly configured
-* First build may take some time
+- Frontend and backend communicate using service names (not localhost)
+- Make sure `.env` is correctly configured
+- First build may take some time
